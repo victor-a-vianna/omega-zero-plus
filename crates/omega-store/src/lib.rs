@@ -13,6 +13,7 @@ pub mod ps1;
 mod region;
 mod ring;
 mod scan;
+pub mod sega;
 pub mod snes;
 mod stamp;
 mod theme;

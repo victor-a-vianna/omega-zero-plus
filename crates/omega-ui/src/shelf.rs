@@ -5,7 +5,12 @@ use crate::cart::{cart_box, label_colour, label_text, model_box, model_of, CART_
 use crate::chrome::BAR_H;
 use crate::hud::Millis;
 use crate::models::disc::{self, DiscStack};
-use crate::models::snes;
+use crate::models::{
+    atari_800, atari_console, atari_jaguar, atari_lynx, famicom_disk_system, generic_chip,
+    generic_floppy, genesis, genesis_32x, megaduck, neo_geo_aes, neo_geo_pocket, nes, pokemon_mini,
+    sega_8bit, snes, sufami_turbo, supervision, tf_card, tg16_pce, vectrex, virtual_boy,
+    wonderswan,
+};
 use crate::motion::ease;
 use crate::silhouette::GbShell;
 use crate::spin::{self, CartMeshes, CartModel, Pose};
@@ -22,9 +27,51 @@ pub const GB_SHELF_SCALE: f32 = 0.8;
 pub fn shelf_scale(platform: Platform) -> f32 {
     match platform {
         Platform::Gba => 1.0,
+        Platform::Atari2600 | Platform::Atari5200 | Platform::Atari7800 => {
+            atari_console::SHELF_SCALE
+        }
+        Platform::Atari800 => atari_800::SHELF_SCALE,
+        Platform::AtariLynx => atari_lynx::SHELF_SCALE,
         Platform::Gb | Platform::Gbc => GB_SHELF_SCALE,
+        Platform::Genesis => genesis::SHELF_SCALE,
+        Platform::GameGear | Platform::MasterSystem | Platform::Sg1000 => sega_8bit::SHELF_SCALE,
+        Platform::Sega32X => genesis_32x::SHELF_SCALE,
+        Platform::Nes => nes::SHELF_SCALE,
+        Platform::FamicomDiskSystem => famicom_disk_system::SHELF_SCALE,
+        Platform::VirtualBoy => virtual_boy::SHELF_SCALE,
+        Platform::PokemonMini => pokemon_mini::SHELF_SCALE,
+        Platform::GameAndWatch
+        | Platform::Arduboy
+        | Platform::Tic80
+        | Platform::Chip8
+        | Platform::Pico8
+        | Platform::Cps1
+        | Platform::Cps2
+        | Platform::Cps3
+        | Platform::FbNeo => generic_chip::SHELF_SCALE,
+        Platform::Mame => generic_chip::SHELF_SCALE,
+        Platform::Java | Platform::Vircon32 | Platform::Uzem | Platform::Gp32 => {
+            tf_card::SHELF_SCALE
+        }
+        Platform::WonderSwan | Platform::WonderSwanColor => wonderswan::SHELF_SCALE,
+        Platform::MegaDuck => megaduck::SHELF_SCALE,
+        Platform::Supervision => supervision::SHELF_SCALE,
+        Platform::Vectrex => vectrex::SHELF_SCALE,
+        Platform::NeoGeoPocket | Platform::NeoGeoPocketColor => neo_geo_pocket::SHELF_SCALE,
+        Platform::AtariJaguar => atari_jaguar::SHELF_SCALE,
+        Platform::AtariJaguarCd => disc::SHELF_SCALE,
+        Platform::AtariSt | Platform::Pc8800 | Platform::Pc9800 => generic_floppy::SHELF_SCALE,
+        Platform::Tg16Pce | Platform::SuperGrafx => tg16_pce::SHELF_SCALE,
+        Platform::NeoGeo => neo_geo_aes::SHELF_SCALE,
         Platform::Snes => snes::SHELF_SCALE,
-        Platform::Ps1 => disc::SHELF_SCALE,
+        Platform::SufamiTurbo => sufami_turbo::SHELF_SCALE,
+        Platform::SegaCd
+        | Platform::Cd32
+        | Platform::Daphne
+        | Platform::Tg16CdPceCd
+        | Platform::NeoGeoCd
+        | Platform::PcFx
+        | Platform::Ps1 => disc::SHELF_SCALE,
     }
 }
 
@@ -34,6 +81,28 @@ pub fn model_scale(model: CartModel) -> f32 {
         CartModel::Gba => 1.0,
         CartModel::Gb(_) => GB_SHELF_SCALE,
         CartModel::Snes(_) => snes::SHELF_SCALE,
+        CartModel::Nes(_) => nes::SHELF_SCALE,
+        CartModel::Genesis => genesis::SHELF_SCALE,
+        CartModel::Genesis32X => genesis_32x::SHELF_SCALE,
+        CartModel::Sega8(_) => sega_8bit::SHELF_SCALE,
+        CartModel::Atari(_) => atari_console::SHELF_SCALE,
+        CartModel::Atari800 => atari_800::SHELF_SCALE,
+        CartModel::AtariLynx => atari_lynx::SHELF_SCALE,
+        CartModel::FamicomDiskSystem => famicom_disk_system::SHELF_SCALE,
+        CartModel::VirtualBoy => virtual_boy::SHELF_SCALE,
+        CartModel::PokemonMini => pokemon_mini::SHELF_SCALE,
+        CartModel::NeoGeoPocket => neo_geo_pocket::SHELF_SCALE,
+        CartModel::WonderSwan => wonderswan::SHELF_SCALE,
+        CartModel::MegaDuck => megaduck::SHELF_SCALE,
+        CartModel::Supervision => supervision::SHELF_SCALE,
+        CartModel::Vectrex => vectrex::SHELF_SCALE,
+        CartModel::AtariJaguar => atari_jaguar::SHELF_SCALE,
+        CartModel::GenericFloppy => generic_floppy::SHELF_SCALE,
+        CartModel::GenericChip => generic_chip::SHELF_SCALE,
+        CartModel::TfCard => tf_card::SHELF_SCALE,
+        CartModel::Tg16Pce => tg16_pce::SHELF_SCALE,
+        CartModel::NeoGeoAes => neo_geo_aes::SHELF_SCALE,
+        CartModel::SufamiTurbo => sufami_turbo::SHELF_SCALE,
         CartModel::Disc => disc::SHELF_SCALE,
     }
 }

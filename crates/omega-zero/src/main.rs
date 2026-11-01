@@ -18,5 +18,5 @@ fn main() {
     host_app::run();
 
     #[cfg(not(feature = "host"))]
-    device_app::run();
+    std::process::exit(device_app::run());
 }

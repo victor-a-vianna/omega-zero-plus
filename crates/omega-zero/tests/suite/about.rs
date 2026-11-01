@@ -163,9 +163,8 @@ fn every_credit_is_kept_and_slot_is_not_named() {
     for owed in [
         "mGBA (MPL-2.0)",
         "gpSP (GPL-2.0)",
-        "Snes9x (no commercial use)",
-        "Mednafen's\nSupafaust",
-        "PCSX-ReARMed (both GPL-2.0)",
+        "PicoDrive and Snes9x (non-commercial)",
+        "Supafaust and PCSX-ReARMed (GPL-2.0)",
         "BaseOS by pvaibhav",
         "Pixel Code by Qwerasd",
         "GigaHerz's LCD3x",

@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500">
+  <!-- Metal shutter and its viewing slot. -->
+  <path d="M 68 0 H 398 V 150 Q 398 160 388 160 H 78 Q 68 160 68 150 Z" fill="#000" fill-opacity="0.14"/>
+  <path d="M 68 0 V 150 Q 68 160 78 160 H 388" fill="none" stroke="#000" stroke-opacity="0.52" stroke-width="4"/>
+  <path d="M 398 0 V 150 Q 398 160 388 160" fill="none" stroke="#fff" stroke-opacity="0.30" stroke-width="3"/>
+  <rect x="320" y="18" width="48" height="114" rx="2" fill="#000" fill-opacity="0.58"/>
+  <!-- Recessed label panel. The scraped label is composited inside this area. -->
+  <path d="M 70 202 Q 70 182 90 182 H 410 Q 430 182 430 202 V 500 H 70 Z" fill="#000" fill-opacity="0.12"/>
+  <path d="M 70 500 V 202 Q 70 182 90 182 H 410 Q 430 182 430 202" fill="none" stroke="#000" stroke-opacity="0.58" stroke-width="5"/>
+  <path d="M 78 500 V 207 Q 78 190 95 190 H 405" fill="none" stroke="#fff" stroke-opacity="0.28" stroke-width="3"/>
+  <!-- Header band and ruled writing area retained from the reference without embedded text. -->
+  <path d="M 86 210 Q 86 198 98 198 H 402 Q 414 198 414 210 V 252 H 86 Z" fill="#000" fill-opacity="0.18"/>
+  <g stroke="#000" stroke-opacity="0.18" stroke-width="2">
+    <path d="M 112 292 H 388"/><path d="M 112 336 H 388"/><path d="M 112 380 H 388"/><path d="M 112 424 H 388"/>
+  </g>
+  <!-- Write-protect and density windows. -->
+  <rect x="26" y="436" width="34" height="42" fill="#000" fill-opacity="0.36"/>
+  <rect x="440" y="448" width="34" height="24" fill="#000" fill-opacity="0.36"/>
+</svg>

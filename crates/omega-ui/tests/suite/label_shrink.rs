@@ -83,6 +83,9 @@ fn a_kept_size_never_grows_keeps_the_scans_shape_and_covers_every_face_of_its_sy
         Platform::Gba,
         Platform::Gb,
         Platform::Gbc,
+        Platform::Genesis,
+        Platform::Sega32X,
+        Platform::SegaCd,
         Platform::Snes,
         Platform::Ps1,
     ] {

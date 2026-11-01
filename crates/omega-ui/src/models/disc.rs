@@ -81,7 +81,11 @@ pub const SPIN: f32 = 0.0;
 /// [`MAX_STACK`].
 pub fn stack_of(cart: &Cart) -> usize {
     match cart.platform {
-        Platform::Ps1 => ps1::discs(&cart.rom).len().clamp(1, MAX_STACK),
+        Platform::SegaCd
+        | Platform::Tg16CdPceCd
+        | Platform::NeoGeoCd
+        | Platform::PcFx
+        | Platform::Ps1 => ps1::discs(&cart.rom).len().clamp(1, MAX_STACK),
         _ => 1,
     }
 }
@@ -281,7 +285,7 @@ fn card_root(rom: &Path) -> Option<PathBuf> {
 fn label_of(cart: &Cart, paths: &[PathBuf], disc: usize) -> Option<PathBuf> {
     let own = card_root(&cart.rom)
         .zip(paths.get(disc))
-        .map(|(root, path)| ps1::disc_label(&root, path))
+        .map(|(root, path)| ps1::disc_label_for(&root, cart.platform, path))
         .filter(|p| p.is_file());
     own.or_else(|| cart.label.clone().filter(|_| disc == 0))
 }

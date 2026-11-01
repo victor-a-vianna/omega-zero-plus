@@ -81,6 +81,9 @@ pub use models::disc::{
     push_disc, push_disc_alone, push_stack, stack_of, DiscStack, StackDive, StackMeshes, DISC_PX,
     MAX_STACK, STACK_DIVE,
 };
+pub use models::genesis::silhouette as genesis_silhouette;
+pub use models::genesis_32x::silhouette as genesis_32x_silhouette;
+pub use models::nes::{silhouette as nes_silhouette, NesShell};
 pub use models::snes::{silhouette as snes_silhouette, SnesShell};
 pub use motion::ease;
 pub use opening::{opening_line, OPENING_ADVANCE, OPENING_PITCH, OPENING_RISE};

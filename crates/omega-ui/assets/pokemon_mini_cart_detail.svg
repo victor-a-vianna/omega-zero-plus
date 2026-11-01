@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 430">
+  <!-- Translucent lid, PCB and contact row. -->
+  <path d="M 38 8 H 462 Q 481 8 485 27 L 491 110" fill="none" stroke="#fff" stroke-opacity="0.60" stroke-width="6"/>
+  <path d="M 491 140 L 486 320 Q 487 369 454 391 Q 360 421 250 421" fill="none" stroke="#000" stroke-opacity="0.25" stroke-width="6"/>
+  <path d="M 54 45 H 446 V 119 H 54 Z" fill="#000" fill-opacity="0.13"/>
+  <g fill="#000" fill-opacity="0.30">
+    <rect x="74" y="48" width="11" height="38"/><rect x="91" y="48" width="11" height="38"/><rect x="108" y="48" width="11" height="38"/>
+    <rect x="125" y="48" width="11" height="38"/><rect x="142" y="48" width="11" height="38"/><rect x="159" y="48" width="11" height="38"/>
+    <rect x="176" y="48" width="11" height="38"/><rect x="193" y="48" width="11" height="38"/><rect x="210" y="48" width="11" height="38"/>
+    <rect x="227" y="48" width="11" height="38"/><rect x="244" y="48" width="11" height="38"/><rect x="261" y="48" width="11" height="38"/>
+    <rect x="278" y="48" width="11" height="38"/><rect x="295" y="48" width="11" height="38"/><rect x="312" y="48" width="11" height="38"/>
+    <rect x="329" y="48" width="11" height="38"/><rect x="346" y="48" width="11" height="38"/><rect x="363" y="48" width="11" height="38"/>
+    <rect x="380" y="48" width="11" height="38"/><rect x="397" y="48" width="11" height="38"/><rect x="414" y="48" width="11" height="38"/>
+  </g>
+  <!-- Broad label with curved lower edge. -->
+  <path d="M 47 151 Q 47 137 61 137 H 439 Q 453 137 453 151 V 300 Q 453 319 436 329 Q 345 358 250 358 Q 155 358 64 329 Q 47 319 47 300 Z" fill="#000" fill-opacity="0.12"/>
+  <path d="M 61 137 H 439 Q 453 137 453 151 V 298" fill="none" stroke="#000" stroke-opacity="0.40" stroke-width="4"/>
+  <path d="M 436 329 Q 345 358 250 358 Q 155 358 64 329 Q 47 319 47 300 V 151" fill="none" stroke="#fff" stroke-opacity="0.45" stroke-width="3"/>
+  <path d="M 230 384 L 250 407 L 270 384 Z" fill="#000" fill-opacity="0.10" stroke="#000" stroke-opacity="0.22" stroke-width="3"/>
+</svg>

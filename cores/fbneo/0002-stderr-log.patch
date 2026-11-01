@@ -1,0 +1,16 @@
+--- a/src/burner/libretro/libretro.cpp
++++ b/src/burner/libretro/libretro.cpp
+@@ -157,6 +157,7 @@ const int nConfigMinVersion = 0x020921;
+ 
++#undef fprintf
+ int HandleMessage(enum retro_log_level level, TCHAR* szFormat, ...)
+ {
+ 	char buf[PRINTF_BUFFER_SIZE];
+@@ -191,6 +192,7 @@ int HandleMessage(enum retro_log_level level, TCHAR* szFormat, ...)
+ 				}
+ 			}
+ 		}
++		fprintf(stderr, "[FBNeo:%d] %s", (int)level, buf);
+ 		log_cb(level, "%s", buf);
+ 	}
+ 

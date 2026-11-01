@@ -18,6 +18,32 @@ pub const MAX_FRAME_H: u32 = 576;
 #[derive(Copy, Clone, Default, PartialEq, Eq, Debug)]
 pub struct ButtonMask(pub u16);
 
+/// Computer-style input supplied beside the joypad. `keys` uses the `KEY_*` bits below;
+/// mouse motion is relative for the next emulated frame.
+#[derive(Copy, Clone, Default, PartialEq, Eq, Debug)]
+pub struct ComputerInput {
+    pub keys: u16,
+    pub mouse_x: i16,
+    pub mouse_y: i16,
+    pub mouse_buttons: u8,
+}
+
+impl ComputerInput {
+    pub const UP: u16 = 1 << 0;
+    pub const DOWN: u16 = 1 << 1;
+    pub const LEFT: u16 = 1 << 2;
+    pub const RIGHT: u16 = 1 << 3;
+    pub const ENTER: u16 = 1 << 4;
+    pub const SPACE: u16 = 1 << 5;
+    pub const ESCAPE: u16 = 1 << 6;
+    pub const TAB: u16 = 1 << 7;
+    pub const SHIFT: u16 = 1 << 8;
+    pub const CONTROL: u16 = 1 << 9;
+    pub const BACKSPACE: u16 = 1 << 10;
+    pub const MOUSE_LEFT: u8 = 1 << 0;
+    pub const MOUSE_RIGHT: u8 = 1 << 1;
+}
+
 impl ButtonMask {
     pub const B: u16 = 1 << 0;
     pub const Y: u16 = 1 << 1;
@@ -89,6 +115,7 @@ pub trait RetroCore: Send {
     fn run_frame_linked(&mut self, p1: ButtonMask, _p2: ButtonMask) {
         self.run_frame(p1);
     }
+    fn set_computer_input(&mut self, _input: ComputerInput) {}
     fn set_option(&mut self, _key: &str, _value: &str) {}
     fn set_frame_skip(&mut self, _skip: bool) {}
     /// The last picture the core drew, XRGB8888 in rows `video_size().0` pixels long.

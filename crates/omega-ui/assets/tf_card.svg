@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 520">
+  <!-- Generic full-size TF/microSD adapter. Monochrome silhouette with the characteristic
+       clipped upper-right corner and the write-lock notch on the left edge. -->
+  <path fill="#fff" d="M38 0h304l58 58v424q0 38-38 38H38Q0 520 0 482V112h16V72H0V38Q0 0 38 0z"/>
+</svg>

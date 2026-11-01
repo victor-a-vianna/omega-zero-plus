@@ -1,0 +1,4 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 430">
+  <!-- Small translucent Pokémon mini cartridge with clipped shoulders and bowed bottom. -->
+  <path d="M 35 0 H 465 Q 489 0 493 25 L 500 116 L 488 138 L 494 322 Q 495 377 459 399 Q 365 430 250 430 Q 135 430 41 399 Q 5 377 6 322 L 12 138 L 0 116 L 7 25 Q 11 0 35 0 Z" fill="#fff"/>
+</svg>

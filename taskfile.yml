@@ -3,19 +3,63 @@ version: '3'
 vars:
   CORE: vendor/mgba_libretro.dylib
   GPSP_HOST: vendor/gpsp_libretro.dylib
+  PICODRIVE_HOST: vendor/picodrive_libretro.dylib
+  MESEN_HOST: vendor/mesen_libretro.dylib
   SNES9X_HOST: vendor/snes9x_libretro.dylib
   SUPAFAUST_HOST: vendor/mednafen_supafaust_libretro.dylib
   PCSX_HOST: vendor/pcsx_rearmed_libretro.dylib
   MGBA_COMMIT: e31759b24e7a4e3899285ff720d7b573ac328ae7
   GPSP_COMMIT: 7b2dd37394e2822110cacef321e9bb291a305b77
+  PICODRIVE_COMMIT: 26ecb2b6358fefba24e3d68b9eb2efba7f10d5ee
+  MESEN_COMMIT: 0102910c39ad1a62bc3f784466f3f67ca9eae335
+  ATARI800_COMMIT: 4e7fbc73765c1a9670c7506616046ad1d4ccda51
+  STELLA2023_COMMIT: ba52c43b9eda950eb0c0eec69cda9b17dee8c39b
+  PROSYSTEM_COMMIT: 8a88014287c7a01cd568067e5a557d0a2b2a051f
+  BEETLE_VB_COMMIT: d5ae54c8e23b573a3b34e888b2d48a588027e92c
+  POKEMINI_COMMIT: 132111b76343559860532a1ccc094f93f1ed5650
+  GW_COMMIT: 91d599b951e7bfe7e040347f58667cba20074adc
+  ARDUOUS_COMMIT: 831b83e67ad46e8c86b8165649ff81bc6fc6c157
+  BEETLE_WSWAN_COMMIT: 4b01295838ea89e3f1355bbe4cb5cf98aa6108cd
+  SAMEDUCK_COMMIT: 040e19c379f00dae10afe0eb0c1b2b019b985bbe
+  POTATOR_COMMIT: 227c5f6f3ce74d32e9002ce24c1420288559a860
+  TIC80_COMMIT: 14fd99edc29962778bc88d81773288ffc6e8aa53
+  TIC80_ENGINE_COMMIT: 4609f5f724b5f5398a591532c1a6e71bb747ca4f
+  JAXE_COMMIT: c767afd785e01a15bcd575a2d93b737add82b675
+  RETRO8_COMMIT: ddc06a142398ee9755894b3f0bb17c8dc428151d
+  SQUIRRELJME_COMMIT: 58c64581371c8ab46a3a711de3a0e8aec3829674
+  VIRCON32_COMMIT: 8b4ff35efb0f3a4c2599fa85ec0e588713f83182
+  UZEM_COMMIT: d991ee94547c8294abc1c4cb73d63116aa58b5bc
+  HYPSEUS_COMMIT: 4cfd20d834ee6cf42c1c347ffd2627d87aaf8e2f
+  HANDY_COMMIT: bc55d462f0b2d6b073ea93dc552ebd73cec60fd1
+  HATARI_COMMIT: ab55c3ed0e620c91e7f059a6d3fbef7acf9bfca8
+  QUASI88_COMMIT: 7884be5277776a5d8c4fdc4e574e9b5b589945c9
+  NP2KAI_COMMIT: 1ea561cd7fd62b33f4e7b3f1c2e30fc3e6089f28
+  BEETLE_NGP_COMMIT: a50d5ac288a81f2104ddf43195a4efdd15c72227
+  BEETLE_PCE_FAST_COMMIT: 4eee99c451f85ebe66d1591de88b892015b23059
+  BEETLE_SUPERGRAFX_COMMIT: 9c11dcd213a79d57d2c86313971631af801f2cdc
+  BEETLE_PCFX_COMMIT: c1650bad5fbdcc3c3ccd45e29e3983e1ccf16cff
+  FBNEO_COMMIT: 32958a89abd645ed20387c8d31d21ede3bc48161
+  MAME2003_PLUS_COMMIT: b168882c39c9194be08819634f97e8fc24635036
+  GP32EMU_COMMIT: 9ca3a72fac79eb57dd16ec21f3756e243e4a579d
+  PUAE_COMMIT: 356160901b4563a60d663829a2e1d07a9207671c
+  VECX_COMMIT: dccff5402a16d1ea7c112095a8e42632bf149506
   SNES9X_COMMIT: fae2fea08f74180759ef540ee94259213f503480
   SUPAFAUST_COMMIT: 642d1d1b6684aa7e306a02a89885f3f5456a5157
   PCSX_COMMIT: c8816799b50388e61cfe237fe2cdbb7d8175f20a
+  BIGPEMU_VERSION: v1221
+  BIGPEMU_SHA256: a73cb33b27cf1178e487c9eb5b784bdcaac2209fe92a8ed85d3905d52a37a7e4
+  GL4ES_COMMIT: c1d7d014fcf687ed33f30ce78b6480b3be1cbeee
+  BIGPEMU_SDL2_VERSION: 2.30.6
+  BIGPEMU_SDL2_SHA256: c6ef64ca18a19d13df6eb22df9aff19fb0db65610a74cc81dae33a82235cacd4
   # The libretro names of the cores the device bundle ships, <name>_libretro.so in System/
-  DEVICE_CORES: mgba gpsp snes9x mednafen_supafaust pcsx_rearmed
+  DEVICE_CORES: mgba gpsp picodrive mesen stella2023 atari800 prosystem handy hatari2014 quasi88 np2kai mednafen_vb pokemini gw arduous mednafen_wswan sameduck potator tic80 jaxe retro8 squirreljme vircon32 uzem mednafen_ngp mednafen_pce_fast mednafen_supergrafx mednafen_pcfx fbneo mame2003_plus gp32emu vecx puae snes9x mednafen_supafaust pcsx_rearmed
+  # H700 excludes QUASI88, NP2Kai, Beetle PC-FX, GP32emu and PUAE. Jaguar/BigPEmu and
+  # Daphne/Hypseus are standalone runtimes and are likewise omitted by the H700 profile.
+  H700_DEVICE_CORES: mgba gpsp picodrive mesen stella2023 atari800 prosystem handy hatari2014 mednafen_vb pokemini gw arduous mednafen_wswan sameduck potator tic80 jaxe retro8 squirreljme vircon32 uzem mednafen_ngp mednafen_pce_fast mednafen_supergrafx fbneo mame2003_plus vecx snes9x mednafen_supafaust pcsx_rearmed
   # The cores built by cores/<name>/build.sh whose source archive ships in System/licenses/
   # beside them, as <name>:<libretro name>. gpSP's ships too, the way it always has
-  SOURCE_CORES: snes9x:snes9x supafaust:mednafen_supafaust pcsx_rearmed:pcsx_rearmed
+  SOURCE_CORES: picodrive:picodrive mesen:mesen stella2023:stella2023 atari800:atari800 prosystem:prosystem handy:handy hatari:hatari2014 quasi88:quasi88 np2kai:np2kai beetle_vb:mednafen_vb pokemini:pokemini gw:gw arduous:arduous beetle_wswan:mednafen_wswan sameduck:sameduck potator:potator tic80:tic80 jaxe:jaxe retro8:retro8 squirreljme:squirreljme vircon32:vircon32 uzem:uzem beetle_ngp:mednafen_ngp beetle_pce_fast:mednafen_pce_fast beetle_supergrafx:mednafen_supergrafx beetle_pcfx:mednafen_pcfx fbneo:fbneo mame2003_plus:mame2003_plus gp32emu:gp32emu vecx:vecx puae:puae snes9x:snes9x supafaust:mednafen_supafaust pcsx_rearmed:pcsx_rearmed
+  H700_SOURCE_CORES: picodrive:picodrive mesen:mesen stella2023:stella2023 atari800:atari800 prosystem:prosystem handy:handy hatari:hatari2014 beetle_vb:mednafen_vb pokemini:pokemini gw:gw arduous:arduous beetle_wswan:mednafen_wswan sameduck:sameduck potator:potator tic80:tic80 jaxe:jaxe retro8:retro8 squirreljme:squirreljme vircon32:vircon32 uzem:uzem beetle_ngp:mednafen_ngp beetle_pce_fast:mednafen_pce_fast beetle_supergrafx:mednafen_supergrafx fbneo:fbneo mame2003_plus:mame2003_plus vecx:vecx snes9x:snes9x supafaust:mednafen_supafaust pcsx_rearmed:pcsx_rearmed
 
 tasks:
   default:
@@ -78,7 +122,7 @@ tasks:
   lint:device:
     desc: Clippy the device build, which the host lint never compiles
     cmds:
-      - cargo clippy -p omega-zero --no-default-features --features device -- -D warnings
+      - cargo clippy -p omega-zero --no-default-features --features device,h700 -- -D warnings
 
   check:
     desc: Everything a CI run would do
@@ -120,11 +164,13 @@ tasks:
 
   core:
     desc: >-
-      Build mGBA and Supafaust and fetch gpSP, Snes9x and pcsx_rearmed for this host. A missing
+      Build mGBA and Supafaust and fetch gpSP, PicoDrive, Snes9x and pcsx_rearmed for this host. A missing
       core silently runs the mock (a test pattern and a sine tone) instead
     cmds:
       - task: core:mgba:host
       - task: core:gpsp:host
+      - task: core:picodrive:host
+      - task: core:mesen:host
       - task: core:snes9x:host
       - task: core:supafaust:host
       - task: core:pcsx:host
@@ -145,11 +191,23 @@ tasks:
       - task: core:buildbot
         vars: {LIB: gpsp}
 
+  core:picodrive:host:
+    desc: Fetch the host PicoDrive core from the libretro buildbot
+    cmds:
+      - task: core:buildbot
+        vars: {LIB: picodrive}
+
   core:snes9x:host:
     desc: Fetch the host Snes9x core from the libretro buildbot
     cmds:
       - task: core:buildbot
         vars: {LIB: snes9x}
+
+  core:mesen:host:
+    desc: Fetch the host Mesen core from the libretro buildbot
+    cmds:
+      - task: core:buildbot
+        vars: {LIB: mesen}
 
   core:pcsx:host:
     desc: Fetch the host pcsx_rearmed core from the libretro buildbot
@@ -199,12 +257,14 @@ tasks:
 
   core:src:
     desc: >-
-      Fetch libretro/NAME's source archive at COMMIT into vendor/NAME-src.tar.gz, checking it
+      Fetch OWNER/NAME's source archive at COMMIT into vendor/NAME-src.tar.gz, checking it
       holds FILE, and note the commit beside it in vendor/NAME-src.sha
     internal: true
     run: when_changed
     requires:
       vars: [NAME, COMMIT, FILE]
+    vars:
+      OWNER: '{{.OWNER | default "libretro"}}'
     status:
       - test -f vendor/{{.NAME}}-src.tar.gz
       - test "$(cat vendor/{{.NAME}}-src.sha 2>/dev/null)" = "{{.COMMIT}}"
@@ -214,17 +274,17 @@ tasks:
         mkdir -p vendor
         rm -f vendor/{{.NAME}}-src.tar.gz vendor/{{.NAME}}-src.sha
         curl -fsSL -o vendor/{{.NAME}}-src.tar.gz \
-          "https://github.com/libretro/{{.NAME}}/archive/{{.COMMIT}}.tar.gz"
+          "https://github.com/{{.OWNER}}/{{.NAME}}/archive/{{.COMMIT}}.tar.gz"
         tar -tzf vendor/{{.NAME}}-src.tar.gz | grep "^{{.NAME}}-{{.COMMIT}}/{{.FILE}}$" > /dev/null
         echo "{{.COMMIT}}" > vendor/{{.NAME}}-src.sha
 
   core:update:
     desc: >-
-      Rebuild mGBA and Supafaust and re-fetch gpSP, Snes9x and pcsx_rearmed for this host even
+      Rebuild mGBA and Supafaust and re-fetch gpSP, PicoDrive, Snes9x and pcsx_rearmed for this host even
       if they are already vendored
     cmds:
       - >-
-        rm -f {{.CORE}} {{.CORE}}.meta {{.GPSP_HOST}} {{.SNES9X_HOST}} {{.SUPAFAUST_HOST}}
+        rm -f {{.CORE}} {{.CORE}}.meta {{.GPSP_HOST}} {{.PICODRIVE_HOST}} {{.MESEN_HOST}} {{.SNES9X_HOST}} {{.SUPAFAUST_HOST}}
         {{.SUPAFAUST_HOST}}.meta {{.PCSX_HOST}}
       - task: core
 
@@ -395,6 +455,669 @@ tasks:
       - file vendor/snes9x_libretro.so | grep -q aarch64
       - 'echo "built vendor/snes9x_libretro.so from vendor/snes9x-src.tar.gz @ {{.SNES9X_COMMIT}}"'
 
+  core:mesen:
+    desc: Build the aarch64 Linux Mesen core for NES and Famicom
+    status:
+      - test -f vendor/mesen_libretro.so
+      - test "$(cat vendor/mesen-src.sha 2>/dev/null)" = "{{.MESEN_COMMIT}}"
+      - test "$(cat vendor/mesen_libretro.so.meta 2>/dev/null)" = "$(sh cores/mesen/build.sh stamp {{.MESEN_COMMIT}})"
+    cmds:
+      - task: core:src
+        vars: {NAME: Mesen, COMMIT: '{{.MESEN_COMMIT}}', FILE: Libretro/Makefile}
+      - mv vendor/Mesen-src.tar.gz vendor/mesen-src.tar.gz
+      - mv vendor/Mesen-src.sha vendor/mesen-src.sha
+      - task: device:sh
+        vars:
+          CMD: >-
+            sh cores/mesen/build.sh build {{.MESEN_COMMIT}} vendor/mesen-src.tar.gz
+            target-device/mesen vendor/mesen_libretro.so
+      - file vendor/mesen_libretro.so | grep -q aarch64
+
+  core:mesen:update:
+    desc: Refetch and rebuild the Mesen device core
+    cmds:
+      - rm -f vendor/mesen_libretro.so vendor/mesen_libretro.so.meta vendor/mesen-src.tar.gz vendor/mesen-src.sha vendor/Mesen-src.tar.gz vendor/Mesen-src.sha
+      - task: core:mesen
+
+  core:atari800:
+    desc: Build the aarch64 Linux Atari800 core for the Atari 8-bit family
+    status:
+      - test -f vendor/atari800_libretro.so
+      - test "$(cat vendor/atari800-src.sha 2>/dev/null)" = "{{.ATARI800_COMMIT}}"
+      - test "$(cat vendor/atari800_libretro.so.meta 2>/dev/null)" = "$(sh cores/atari800/build.sh stamp {{.ATARI800_COMMIT}})"
+    cmds:
+      - task: core:src
+        vars: {NAME: libretro-atari800, COMMIT: '{{.ATARI800_COMMIT}}', FILE: Makefile}
+      - mv vendor/libretro-atari800-src.tar.gz vendor/atari800-src.tar.gz
+      - mv vendor/libretro-atari800-src.sha vendor/atari800-src.sha
+      - task: device:sh
+        vars:
+          CMD: >-
+            sh cores/atari800/build.sh build {{.ATARI800_COMMIT}} vendor/atari800-src.tar.gz
+            target-device/atari800 vendor/atari800_libretro.so
+      - file vendor/atari800_libretro.so | grep -q aarch64
+
+  core:atari800:update:
+    desc: Refetch and rebuild the Atari800 device core
+    cmds:
+      - rm -f vendor/atari800_libretro.so vendor/atari800_libretro.so.meta vendor/atari800-src.tar.gz vendor/atari800-src.sha vendor/libretro-atari800-src.tar.gz vendor/libretro-atari800-src.sha
+      - task: core:atari800
+
+  core:stella2023:
+    desc: Build the aarch64 Linux Stella 2023 core for Atari 2600
+    status:
+      - test -f vendor/stella2023_libretro.so
+      - test "$(cat vendor/stella2023-src.sha 2>/dev/null)" = "{{.STELLA2023_COMMIT}}"
+    cmds:
+      - task: core:src
+        vars: {NAME: stella2023, COMMIT: '{{.STELLA2023_COMMIT}}', FILE: Makefile}
+      - task: device:sh
+        vars: {CMD: 'sh cores/stella2023/build.sh build {{.STELLA2023_COMMIT}} vendor/stella2023-src.tar.gz target-device/stella2023 vendor/stella2023_libretro.so'}
+      - file vendor/stella2023_libretro.so | grep -q aarch64
+
+  core:prosystem:
+    desc: Build the aarch64 Linux ProSystem core for Atari 7800
+    status:
+      - test -f vendor/prosystem_libretro.so
+      - test "$(cat vendor/prosystem-src.sha 2>/dev/null)" = "{{.PROSYSTEM_COMMIT}}"
+    cmds:
+      - task: core:src
+        vars: {NAME: prosystem-libretro, COMMIT: '{{.PROSYSTEM_COMMIT}}', FILE: Makefile}
+      - mv vendor/prosystem-libretro-src.tar.gz vendor/prosystem-src.tar.gz
+      - mv vendor/prosystem-libretro-src.sha vendor/prosystem-src.sha
+      - task: device:sh
+        vars: {CMD: 'sh cores/prosystem/build.sh build {{.PROSYSTEM_COMMIT}} vendor/prosystem-src.tar.gz target-device/prosystem vendor/prosystem_libretro.so'}
+      - file vendor/prosystem_libretro.so | grep -q aarch64
+
+  core:beetle-vb:
+    desc: Build the aarch64 Linux Beetle VB core for Virtual Boy
+    status:
+      - test -f vendor/mednafen_vb_libretro.so
+      - test "$(cat vendor/beetle_vb-src.sha 2>/dev/null)" = "{{.BEETLE_VB_COMMIT}}"
+      - test "$(cat vendor/mednafen_vb_libretro.so.meta 2>/dev/null)" = "$(sh cores/beetle_vb/build.sh stamp {{.BEETLE_VB_COMMIT}})"
+    cmds:
+      - task: core:src
+        vars: {NAME: beetle-vb-libretro, COMMIT: '{{.BEETLE_VB_COMMIT}}', FILE: Makefile}
+      - mv vendor/beetle-vb-libretro-src.tar.gz vendor/beetle_vb-src.tar.gz
+      - mv vendor/beetle-vb-libretro-src.sha vendor/beetle_vb-src.sha
+      - task: device:sh
+        vars: {CMD: 'sh cores/beetle_vb/build.sh build {{.BEETLE_VB_COMMIT}} vendor/beetle_vb-src.tar.gz target-device/beetle_vb vendor/mednafen_vb_libretro.so'}
+      - file vendor/mednafen_vb_libretro.so | grep -q aarch64
+
+  core:beetle-vb:update:
+    desc: Refetch and rebuild the Beetle VB device core
+    cmds:
+      - rm -f vendor/mednafen_vb_libretro.so vendor/mednafen_vb_libretro.so.meta vendor/beetle_vb-src.tar.gz vendor/beetle_vb-src.sha vendor/beetle-vb-libretro-src.tar.gz vendor/beetle-vb-libretro-src.sha
+      - task: core:beetle-vb
+
+  core:pokemini:
+    desc: Build the aarch64 Linux PokeMini core for Pokémon Mini
+    status:
+      - test -f vendor/pokemini_libretro.so
+      - test "$(cat vendor/pokemini-src.sha 2>/dev/null)" = "{{.POKEMINI_COMMIT}}"
+      - test "$(cat vendor/pokemini_libretro.so.meta 2>/dev/null)" = "$(sh cores/pokemini/build.sh stamp {{.POKEMINI_COMMIT}})"
+    cmds:
+      - task: core:src
+        vars: {NAME: PokeMini, COMMIT: '{{.POKEMINI_COMMIT}}', FILE: Makefile.libretro}
+      - mv vendor/PokeMini-src.tar.gz vendor/pokemini-src.tar.gz
+      - mv vendor/PokeMini-src.sha vendor/pokemini-src.sha
+      - task: device:sh
+        vars: {CMD: 'sh cores/pokemini/build.sh build {{.POKEMINI_COMMIT}} vendor/pokemini-src.tar.gz target-device/pokemini vendor/pokemini_libretro.so'}
+      - file vendor/pokemini_libretro.so | grep -q aarch64
+
+  core:pokemini:update:
+    desc: Refetch and rebuild the PokeMini device core
+    cmds:
+      - rm -f vendor/pokemini_libretro.so vendor/pokemini_libretro.so.meta vendor/pokemini-src.tar.gz vendor/pokemini-src.sha vendor/PokeMini-src.tar.gz vendor/PokeMini-src.sha
+      - task: core:pokemini
+
+  core:gw:
+    desc: Build the aarch64 Linux Game & Watch core
+    status:
+      - test -f vendor/gw_libretro.so
+      - test "$(cat vendor/gw-src.sha 2>/dev/null)" = "{{.GW_COMMIT}}"
+      - test "$(cat vendor/gw_libretro.so.meta 2>/dev/null)" = "$(sh cores/gw/build.sh stamp {{.GW_COMMIT}})"
+    cmds:
+      - task: core:src
+        vars: {NAME: gw-libretro, COMMIT: '{{.GW_COMMIT}}', FILE: Makefile.libretro}
+      - mv vendor/gw-libretro-src.tar.gz vendor/gw-src.tar.gz
+      - mv vendor/gw-libretro-src.sha vendor/gw-src.sha
+      - task: device:sh
+        vars: {CMD: 'sh cores/gw/build.sh build {{.GW_COMMIT}} vendor/gw-src.tar.gz target-device/gw vendor/gw_libretro.so'}
+      - file vendor/gw_libretro.so | grep -q aarch64
+
+  core:gw:update:
+    desc: Refetch and rebuild the Game & Watch device core
+    cmds:
+      - rm -f vendor/gw_libretro.so vendor/gw_libretro.so.meta vendor/gw-src.tar.gz vendor/gw-src.sha vendor/gw-libretro-src.tar.gz vendor/gw-libretro-src.sha
+      - task: core:gw
+
+  core:arduous:
+    desc: Build the aarch64 Linux Arduous core for Arduboy
+    status:
+      - test -f vendor/arduous_libretro.so
+      - test "$(cat vendor/arduous-src.sha 2>/dev/null)" = "{{.ARDUOUS_COMMIT}}"
+      - test "$(cat vendor/arduous_libretro.so.meta 2>/dev/null)" = "$(sh cores/arduous/build.sh stamp {{.ARDUOUS_COMMIT}})"
+    cmds:
+      - rm -rf vendor/arduous-{{.ARDUOUS_COMMIT}} vendor/arduous-src.tar.gz vendor/arduous-src.sha
+      - git clone --recursive https://github.com/libretro/arduous.git vendor/arduous-{{.ARDUOUS_COMMIT}}
+      - git -C vendor/arduous-{{.ARDUOUS_COMMIT}} checkout {{.ARDUOUS_COMMIT}}
+      - git -C vendor/arduous-{{.ARDUOUS_COMMIT}} submodule update --init --recursive
+      - COPYFILE_DISABLE=1 tar --no-xattrs --exclude='.git' -czf vendor/arduous-src.tar.gz -C vendor arduous-{{.ARDUOUS_COMMIT}}
+      - echo '{{.ARDUOUS_COMMIT}}' > vendor/arduous-src.sha
+      - rm -rf vendor/arduous-{{.ARDUOUS_COMMIT}}
+      - task: device:sh
+        vars:
+          IMAGE: rust:1-bullseye
+          CMD: >-
+            command -v cmake >/dev/null 2>&1 ||
+            (apt-get update && apt-get install -y --no-install-recommends cmake);
+            sh cores/arduous/build.sh build {{.ARDUOUS_COMMIT}}
+            vendor/arduous-src.tar.gz target-device/arduous vendor/arduous_libretro.so
+      - file vendor/arduous_libretro.so | grep -q aarch64
+
+  core:arduous:update:
+    desc: Refetch and rebuild the Arduous device core
+    cmds:
+      - rm -rf vendor/arduous-{{.ARDUOUS_COMMIT}} vendor/arduous_libretro.so vendor/arduous_libretro.so.meta vendor/arduous-src.tar.gz vendor/arduous-src.sha
+      - task: core:arduous
+
+  core:handy:
+    desc: Build the aarch64 Linux Handy core for Atari Lynx
+    status:
+      - test -f vendor/handy_libretro.so
+      - test "$(cat vendor/handy-src.sha 2>/dev/null)" = "{{.HANDY_COMMIT}}"
+      - test "$(cat vendor/handy_libretro.so.meta 2>/dev/null)" = "$(sh cores/handy/build.sh stamp {{.HANDY_COMMIT}})"
+    cmds:
+      - task: core:src
+        vars: {NAME: libretro-handy, COMMIT: '{{.HANDY_COMMIT}}', FILE: Makefile}
+      - mv vendor/libretro-handy-src.tar.gz vendor/handy-src.tar.gz
+      - mv vendor/libretro-handy-src.sha vendor/handy-src.sha
+      - task: device:sh
+        vars: {CMD: 'sh cores/handy/build.sh build {{.HANDY_COMMIT}} vendor/handy-src.tar.gz target-device/handy vendor/handy_libretro.so'}
+      - file vendor/handy_libretro.so | grep -q aarch64
+
+  core:handy:update:
+    desc: Refetch and rebuild the Handy device core
+    cmds:
+      - rm -f vendor/handy_libretro.so vendor/handy_libretro.so.meta vendor/handy-src.tar.gz vendor/handy-src.sha vendor/libretro-handy-src.tar.gz vendor/libretro-handy-src.sha
+      - task: core:handy
+
+  core:hatari:
+    desc: Build the aarch64 Linux Hatari core for Atari ST
+    status:
+      - test -f vendor/hatari2014_libretro.so
+      - test "$(cat vendor/hatari-src.sha 2>/dev/null)" = "{{.HATARI_COMMIT}}"
+      - test "$(cat vendor/hatari2014_libretro.so.meta 2>/dev/null)" = "$(sh cores/hatari/build.sh stamp {{.HATARI_COMMIT}})"
+    cmds:
+      - task: core:src
+        vars: {NAME: hatari, COMMIT: '{{.HATARI_COMMIT}}', FILE: Makefile.libretro}
+      - task: device:sh
+        vars: {CMD: 'sh cores/hatari/build.sh build {{.HATARI_COMMIT}} vendor/hatari-src.tar.gz target-device/hatari vendor/hatari2014_libretro.so'}
+      - file vendor/hatari2014_libretro.so | grep -q aarch64
+
+  core:hatari:update:
+    desc: Refetch and rebuild the Hatari device core
+    cmds:
+      - rm -f vendor/hatari2014_libretro.so vendor/hatari2014_libretro.so.meta vendor/hatari-src.tar.gz vendor/hatari-src.sha
+      - task: core:hatari
+
+  core:np2kai:
+    desc: Build the aarch64 Linux NP2kai core for NEC PC-9800
+    status:
+      - test -f vendor/np2kai_libretro.so
+      - test "$(cat vendor/np2kai-src.sha 2>/dev/null)" = "{{.NP2KAI_COMMIT}}"
+      - test "$(cat vendor/np2kai_libretro.so.meta 2>/dev/null)" = "$(sh cores/np2kai/build.sh stamp {{.NP2KAI_COMMIT}})"
+    cmds:
+      - task: core:src
+        vars: {NAME: NP2kai, COMMIT: '{{.NP2KAI_COMMIT}}', FILE: sdl/Makefile.libretro}
+      - mv vendor/NP2kai-src.tar.gz vendor/np2kai-src.tar.gz
+      - mv vendor/NP2kai-src.sha vendor/np2kai-src.sha
+      - task: device:sh
+        vars: {CMD: 'sh cores/np2kai/build.sh build {{.NP2KAI_COMMIT}} vendor/np2kai-src.tar.gz target-device/np2kai vendor/np2kai_libretro.so'}
+      - file vendor/np2kai_libretro.so | grep -q aarch64
+
+  core:quasi88:
+    desc: Build the aarch64 Linux QUASI88 core for NEC PC-8800
+    status:
+      - test -f vendor/quasi88_libretro.so
+      - test "$(cat vendor/quasi88-src.sha 2>/dev/null)" = "{{.QUASI88_COMMIT}}"
+      - test "$(cat vendor/quasi88_libretro.so.meta 2>/dev/null)" = "$(sh cores/quasi88/build.sh stamp {{.QUASI88_COMMIT}})"
+    cmds:
+      - task: core:src
+        vars: {NAME: quasi88-libretro, COMMIT: '{{.QUASI88_COMMIT}}', FILE: Makefile}
+      - mv vendor/quasi88-libretro-src.tar.gz vendor/quasi88-src.tar.gz
+      - mv vendor/quasi88-libretro-src.sha vendor/quasi88-src.sha
+      - task: device:sh
+        vars: {CMD: 'sh cores/quasi88/build.sh build {{.QUASI88_COMMIT}} vendor/quasi88-src.tar.gz target-device/quasi88 vendor/quasi88_libretro.so'}
+      - file vendor/quasi88_libretro.so | grep -q aarch64
+
+  core:quasi88:update:
+    desc: Refetch and rebuild the QUASI88 device core
+    cmds:
+      - rm -f vendor/quasi88_libretro.so vendor/quasi88_libretro.so.meta vendor/quasi88-src.tar.gz vendor/quasi88-src.sha vendor/quasi88-libretro-src.tar.gz vendor/quasi88-libretro-src.sha
+      - task: core:quasi88
+
+  core:np2kai:update:
+    desc: Refetch and rebuild the NP2kai device core
+    cmds:
+      - rm -f vendor/np2kai_libretro.so vendor/np2kai_libretro.so.meta vendor/np2kai-src.tar.gz vendor/np2kai-src.sha vendor/NP2kai-src.tar.gz vendor/NP2kai-src.sha
+      - task: core:np2kai
+
+  core:beetle-ngp:
+    desc: Build the aarch64 Linux Beetle NeoPop core for Neo Geo Pocket and Color
+    status:
+      - test -f vendor/mednafen_ngp_libretro.so
+      - test "$(cat vendor/beetle_ngp-src.sha 2>/dev/null)" = "{{.BEETLE_NGP_COMMIT}}"
+      - test "$(cat vendor/mednafen_ngp_libretro.so.meta 2>/dev/null)" = "$(sh cores/beetle_ngp/build.sh stamp {{.BEETLE_NGP_COMMIT}})"
+    cmds:
+      - task: core:src
+        vars: {NAME: beetle-ngp-libretro, COMMIT: '{{.BEETLE_NGP_COMMIT}}', FILE: Makefile}
+      - mv vendor/beetle-ngp-libretro-src.tar.gz vendor/beetle_ngp-src.tar.gz
+      - mv vendor/beetle-ngp-libretro-src.sha vendor/beetle_ngp-src.sha
+      - task: device:sh
+        vars: {CMD: 'sh cores/beetle_ngp/build.sh build {{.BEETLE_NGP_COMMIT}} vendor/beetle_ngp-src.tar.gz target-device/beetle_ngp vendor/mednafen_ngp_libretro.so'}
+      - file vendor/mednafen_ngp_libretro.so | grep -q aarch64
+
+  core:beetle-wswan:
+    desc: Build the aarch64 Linux Beetle WonderSwan core for WS and WSC
+    status:
+      - test -f vendor/mednafen_wswan_libretro.so
+      - test "$(cat vendor/beetle_wswan-src.sha 2>/dev/null)" = "{{.BEETLE_WSWAN_COMMIT}}"
+      - test "$(cat vendor/mednafen_wswan_libretro.so.meta 2>/dev/null)" = "$(sh cores/beetle_wswan/build.sh stamp {{.BEETLE_WSWAN_COMMIT}})"
+    cmds:
+      - task: core:src
+        vars: {NAME: beetle-wswan-libretro, COMMIT: '{{.BEETLE_WSWAN_COMMIT}}', FILE: Makefile}
+      - mv vendor/beetle-wswan-libretro-src.tar.gz vendor/beetle_wswan-src.tar.gz
+      - mv vendor/beetle-wswan-libretro-src.sha vendor/beetle_wswan-src.sha
+      - task: device:sh
+        vars: {CMD: 'sh cores/beetle_wswan/build.sh build {{.BEETLE_WSWAN_COMMIT}} vendor/beetle_wswan-src.tar.gz target-device/beetle_wswan vendor/mednafen_wswan_libretro.so'}
+      - file vendor/mednafen_wswan_libretro.so | grep -q aarch64
+
+  core:beetle-wswan:update:
+    desc: Refetch and rebuild the Beetle WonderSwan device core
+    cmds:
+      - rm -f vendor/mednafen_wswan_libretro.so vendor/mednafen_wswan_libretro.so.meta vendor/beetle_wswan-src.tar.gz vendor/beetle_wswan-src.sha vendor/beetle-wswan-libretro-src.tar.gz vendor/beetle-wswan-libretro-src.sha
+      - task: core:beetle-wswan
+
+  core:sameduck:
+    desc: Build the aarch64 Linux SameDuck core for Mega Duck
+    status:
+      - test -f vendor/sameduck_libretro.so
+      - test "$(cat vendor/sameduck-src.sha 2>/dev/null)" = "{{.SAMEDUCK_COMMIT}}"
+      - test "$(cat vendor/sameduck_libretro.so.meta 2>/dev/null)" = "$(sh cores/sameduck/build.sh stamp {{.SAMEDUCK_COMMIT}})"
+    cmds:
+      - task: core:src
+        vars: {NAME: sameduck, COMMIT: '{{.SAMEDUCK_COMMIT}}', FILE: Makefile}
+      - task: device:sh
+        vars: {CMD: 'sh cores/sameduck/build.sh build {{.SAMEDUCK_COMMIT}} vendor/sameduck-src.tar.gz target-device/sameduck vendor/sameduck_libretro.so'}
+      - file vendor/sameduck_libretro.so | grep -q aarch64
+
+  core:sameduck:update:
+    desc: Refetch and rebuild the SameDuck device core
+    cmds:
+      - rm -f vendor/sameduck_libretro.so vendor/sameduck_libretro.so.meta vendor/sameduck-src.tar.gz vendor/sameduck-src.sha
+      - task: core:sameduck
+
+  core:potator:
+    desc: Build the aarch64 Linux Potator core for Watara Supervision
+    status:
+      - test -f vendor/potator_libretro.so
+      - test "$(cat vendor/potator-src.sha 2>/dev/null)" = "{{.POTATOR_COMMIT}}"
+      - test "$(cat vendor/potator_libretro.so.meta 2>/dev/null)" = "$(sh cores/potator/build.sh stamp {{.POTATOR_COMMIT}})"
+    cmds:
+      - task: core:src
+        vars: {NAME: potator, COMMIT: '{{.POTATOR_COMMIT}}', FILE: platform/libretro/Makefile}
+      - task: device:sh
+        vars: {CMD: 'sh cores/potator/build.sh build {{.POTATOR_COMMIT}} vendor/potator-src.tar.gz target-device/potator vendor/potator_libretro.so'}
+      - file vendor/potator_libretro.so | grep -q aarch64
+
+  core:potator:update:
+    desc: Refetch and rebuild the Potator device core
+    cmds:
+      - rm -f vendor/potator_libretro.so vendor/potator_libretro.so.meta vendor/potator-src.tar.gz vendor/potator-src.sha
+      - task: core:potator
+
+  core:tic80:
+    desc: Build the aarch64 Linux TIC-80 libretro core
+    status:
+      - test -f vendor/tic80_libretro.so
+      - test "$(cat vendor/tic80-src.sha 2>/dev/null)" = "{{.TIC80_COMMIT}}"
+      - test "$(cat vendor/tic80_libretro.so.meta 2>/dev/null)" = "$(TIC80_ENGINE_COMMIT={{.TIC80_ENGINE_COMMIT}} sh cores/tic80/build.sh stamp {{.TIC80_COMMIT}})"
+    cmds:
+      - sh cores/tic80/source.sh {{.TIC80_COMMIT}} target-device/tic80-source vendor/tic80-src.tar.gz {{.TIC80_ENGINE_COMMIT}}
+      - echo "{{.TIC80_COMMIT}}" > vendor/tic80-src.sha
+      - task: device:sh
+        vars:
+          IMAGE: rust:1-bookworm
+          CMD: >-
+            command -v cmake >/dev/null 2>&1 ||
+            (apt-get update && apt-get install -y --no-install-recommends cmake);
+            TIC80_ENGINE_COMMIT={{.TIC80_ENGINE_COMMIT}} sh cores/tic80/build.sh build {{.TIC80_COMMIT}}
+            vendor/tic80-src.tar.gz target-device/tic80 vendor/tic80_libretro.so
+      - file vendor/tic80_libretro.so | grep -q aarch64
+
+  core:tic80:update:
+    desc: Refetch and rebuild the TIC-80 device core
+    cmds:
+      - rm -f vendor/tic80_libretro.so vendor/tic80_libretro.so.meta vendor/tic80-src.tar.gz vendor/tic80-src.sha
+      - task: core:tic80
+
+  core:retro8:
+    desc: Build the aarch64 Linux Retro8 core for PICO-8
+    status:
+      - test -f vendor/retro8_libretro.so
+      - test "$(cat vendor/retro8-src.sha 2>/dev/null)" = "{{.RETRO8_COMMIT}}"
+      - test "$(cat vendor/retro8_libretro.so.meta 2>/dev/null)" = "$(sh cores/retro8/build.sh stamp {{.RETRO8_COMMIT}})"
+    cmds:
+      - task: core:src
+        vars: {NAME: retro8, COMMIT: '{{.RETRO8_COMMIT}}', FILE: Makefile}
+      - task: device:sh
+        vars: {CMD: 'sh cores/retro8/build.sh build {{.RETRO8_COMMIT}} vendor/retro8-src.tar.gz target-device/retro8 vendor/retro8_libretro.so'}
+      - file vendor/retro8_libretro.so | grep -q aarch64
+
+  core:retro8:update:
+    desc: Refetch and rebuild the Retro8 device core
+    cmds:
+      - rm -f vendor/retro8_libretro.so vendor/retro8_libretro.so.meta vendor/retro8-src.tar.gz vendor/retro8-src.sha
+      - task: core:retro8
+
+  core:jaxe:
+    desc: Build the aarch64 Linux JAXE core for CHIP-8
+    status:
+      - test -f vendor/jaxe_libretro.so
+      - test "$(cat vendor/jaxe-src.sha 2>/dev/null)" = "{{.JAXE_COMMIT}}"
+      - test "$(cat vendor/jaxe_libretro.so.meta 2>/dev/null)" = "$(sh cores/jaxe/build.sh stamp {{.JAXE_COMMIT}})"
+    cmds:
+      - sh cores/jaxe/source.sh {{.JAXE_COMMIT}} target-device/jaxe-source vendor/jaxe-src.tar.gz
+      - echo "{{.JAXE_COMMIT}}" > vendor/jaxe-src.sha
+      - task: device:sh
+        vars: {CMD: 'sh cores/jaxe/build.sh build {{.JAXE_COMMIT}} vendor/jaxe-src.tar.gz target-device/jaxe vendor/jaxe_libretro.so'}
+      - file vendor/jaxe_libretro.so | grep -q aarch64
+
+  core:jaxe:update:
+    desc: Refetch and rebuild the JAXE device core
+    cmds:
+      - rm -f vendor/jaxe_libretro.so vendor/jaxe_libretro.so.meta vendor/jaxe-src.tar.gz vendor/jaxe-src.sha
+      - task: core:jaxe
+
+  core:squirreljme:
+    desc: Build the aarch64 Linux SquirrelJME core for Java ME
+    status:
+      - test -f vendor/squirreljme_libretro.so
+      - test -f vendor/squirreljme-0.3.0-fast.jar
+      - test "$(cat vendor/squirreljme-src.sha 2>/dev/null)" = "{{.SQUIRRELJME_COMMIT}}"
+      - test "$(cat vendor/squirreljme_libretro.so.meta 2>/dev/null)" = "$(sh cores/squirreljme/build.sh stamp {{.SQUIRRELJME_COMMIT}})"
+    cmds:
+      - |
+        set -euo pipefail
+        mkdir -p vendor
+        curl -fsSL -o vendor/squirreljme-src.tar.gz \
+          "https://github.com/SquirrelJME/SquirrelJME/archive/{{.SQUIRRELJME_COMMIT}}.tar.gz"
+        tar -tzf vendor/squirreljme-src.tar.gz | \
+          grep -q '^SquirrelJME-{{.SQUIRRELJME_COMMIT}}/nanocoat/frontend/libretro/CMakeLists.txt$'
+        echo "{{.SQUIRRELJME_COMMIT}}" > vendor/squirreljme-src.sha
+      - task: device:sh
+        vars:
+          IMAGE: rust:1-bookworm
+          CMD: >-
+            command -v javac >/dev/null 2>&1 && command -v cmake >/dev/null 2>&1 ||
+            (apt-get update && apt-get install -y --no-install-recommends cmake openjdk-17-jdk-headless);
+            sh cores/squirreljme/build.sh build {{.SQUIRRELJME_COMMIT}}
+            vendor/squirreljme-src.tar.gz target-device/squirreljme
+            vendor/squirreljme_libretro.so vendor/squirreljme-0.3.0-fast.jar
+      - file vendor/squirreljme_libretro.so | grep -q aarch64
+
+  core:squirreljme:update:
+    desc: Refetch and rebuild the SquirrelJME device core
+    cmds:
+      - rm -f vendor/squirreljme_libretro.so vendor/squirreljme_libretro.so.meta vendor/squirreljme-0.3.0-fast.jar vendor/squirreljme-src.tar.gz vendor/squirreljme-src.sha
+      - task: core:squirreljme
+
+  core:vircon32:
+    desc: Build the aarch64 Linux Vircon32 core with OpenGL ES 2
+    status:
+      - test -f vendor/vircon32_libretro.so
+      - test "$(cat vendor/vircon32-src.sha 2>/dev/null)" = "{{.VIRCON32_COMMIT}}"
+      - test "$(cat vendor/vircon32_libretro.so.meta 2>/dev/null)" = "$(sh cores/vircon32/build.sh stamp {{.VIRCON32_COMMIT}})"
+    cmds:
+      - |
+        set -euo pipefail
+        mkdir -p vendor
+        curl -fsSL -o vendor/vircon32-src.tar.gz \
+          "https://github.com/vircon32/vircon32-libretro/archive/{{.VIRCON32_COMMIT}}.tar.gz"
+        tar -tzf vendor/vircon32-src.tar.gz | \
+          grep -q '^vircon32-libretro-{{.VIRCON32_COMMIT}}/CMakeLists.txt$'
+        echo "{{.VIRCON32_COMMIT}}" > vendor/vircon32-src.sha
+      - task: device:sh
+        vars:
+          IMAGE: ubuntu:20.04
+          CMD: >-
+            export DEBIAN_FRONTEND=noninteractive;
+            test -f /usr/include/GLES2/gl2.h ||
+            (apt-get update && apt-get install -y --no-install-recommends build-essential libgles2-mesa-dev python3-pip);
+            pip3 install --no-cache-dir cmake==3.28.4;
+            sh cores/vircon32/build.sh build {{.VIRCON32_COMMIT}}
+            vendor/vircon32-src.tar.gz target-device/vircon32
+            vendor/vircon32_libretro.so
+      - file vendor/vircon32_libretro.so | grep -q aarch64
+
+  core:vircon32:update:
+    desc: Refetch and rebuild the Vircon32 device core
+    cmds:
+      - rm -f vendor/vircon32_libretro.so vendor/vircon32_libretro.so.meta vendor/vircon32-src.tar.gz vendor/vircon32-src.sha
+      - task: core:vircon32
+
+  core:uzem:
+    desc: Build the aarch64 Linux Uzem core for Uzebox
+    status:
+      - test -f vendor/uzem_libretro.so
+      - test "$(cat vendor/uzem-src.sha 2>/dev/null)" = "{{.UZEM_COMMIT}}"
+      - test "$(cat vendor/uzem_libretro.so.meta 2>/dev/null)" = "$(sh cores/uzem/build.sh stamp {{.UZEM_COMMIT}})"
+    cmds:
+      - task: core:src
+        vars: {NAME: libretro-uzem, COMMIT: '{{.UZEM_COMMIT}}', FILE: Makefile}
+      - mv vendor/libretro-uzem-src.tar.gz vendor/uzem-src.tar.gz
+      - mv vendor/libretro-uzem-src.sha vendor/uzem-src.sha
+      - task: device:sh
+        vars: {CMD: 'sh cores/uzem/build.sh build {{.UZEM_COMMIT}} vendor/uzem-src.tar.gz target-device/uzem vendor/uzem_libretro.so'}
+      - file vendor/uzem_libretro.so | grep -q aarch64
+
+  core:uzem:update:
+    desc: Refetch and rebuild the Uzem device core
+    cmds:
+      - rm -f vendor/uzem_libretro.so vendor/uzem_libretro.so.meta vendor/uzem-src.tar.gz vendor/uzem-src.sha vendor/libretro-uzem-src.tar.gz vendor/libretro-uzem-src.sha
+      - task: core:uzem
+
+  core:beetle-ngp:update:
+    desc: Refetch and rebuild the Beetle NeoPop device core
+    cmds:
+      - rm -f vendor/mednafen_ngp_libretro.so vendor/mednafen_ngp_libretro.so.meta vendor/beetle_ngp-src.tar.gz vendor/beetle_ngp-src.sha vendor/beetle-ngp-libretro-src.tar.gz vendor/beetle-ngp-libretro-src.sha
+      - task: core:beetle-ngp
+
+  core:beetle-pce-fast:
+    desc: Build the aarch64 Linux Beetle PCE Fast core for TG16/PCE and CD
+    status:
+      - test -f vendor/mednafen_pce_fast_libretro.so
+      - test "$(cat vendor/beetle_pce_fast-src.sha 2>/dev/null)" = "{{.BEETLE_PCE_FAST_COMMIT}}"
+      - test "$(cat vendor/mednafen_pce_fast_libretro.so.meta 2>/dev/null)" = "$(sh cores/beetle_pce_fast/build.sh stamp {{.BEETLE_PCE_FAST_COMMIT}})"
+    cmds:
+      - task: core:src
+        vars: {NAME: beetle-pce-fast-libretro, COMMIT: '{{.BEETLE_PCE_FAST_COMMIT}}', FILE: Makefile}
+      - mv vendor/beetle-pce-fast-libretro-src.tar.gz vendor/beetle_pce_fast-src.tar.gz
+      - mv vendor/beetle-pce-fast-libretro-src.sha vendor/beetle_pce_fast-src.sha
+      - task: device:sh
+        vars: {CMD: 'sh cores/beetle_pce_fast/build.sh build {{.BEETLE_PCE_FAST_COMMIT}} vendor/beetle_pce_fast-src.tar.gz target-device/beetle_pce_fast vendor/mednafen_pce_fast_libretro.so'}
+      - file vendor/mednafen_pce_fast_libretro.so | grep -q aarch64
+
+  core:beetle-supergrafx:
+    desc: Build the aarch64 Linux Beetle SuperGrafx core
+    status:
+      - test -f vendor/mednafen_supergrafx_libretro.so
+      - test "$(cat vendor/beetle_supergrafx-src.sha 2>/dev/null)" = "{{.BEETLE_SUPERGRAFX_COMMIT}}"
+      - test "$(cat vendor/mednafen_supergrafx_libretro.so.meta 2>/dev/null)" = "$(sh cores/beetle_supergrafx/build.sh stamp {{.BEETLE_SUPERGRAFX_COMMIT}})"
+    cmds:
+      - task: core:src
+        vars: {NAME: beetle-supergrafx-libretro, COMMIT: '{{.BEETLE_SUPERGRAFX_COMMIT}}', FILE: Makefile}
+      - mv vendor/beetle-supergrafx-libretro-src.tar.gz vendor/beetle_supergrafx-src.tar.gz
+      - mv vendor/beetle-supergrafx-libretro-src.sha vendor/beetle_supergrafx-src.sha
+      - task: device:sh
+        vars: {CMD: 'sh cores/beetle_supergrafx/build.sh build {{.BEETLE_SUPERGRAFX_COMMIT}} vendor/beetle_supergrafx-src.tar.gz target-device/beetle_supergrafx vendor/mednafen_supergrafx_libretro.so'}
+      - file vendor/mednafen_supergrafx_libretro.so | grep -q aarch64
+
+  core:beetle-pcfx:
+    desc: Build the aarch64 Linux Beetle PC-FX core
+    status:
+      - test -f vendor/mednafen_pcfx_libretro.so
+      - test "$(cat vendor/beetle_pcfx-src.sha 2>/dev/null)" = "{{.BEETLE_PCFX_COMMIT}}"
+      - test "$(cat vendor/mednafen_pcfx_libretro.so.meta 2>/dev/null)" = "$(sh cores/beetle_pcfx/build.sh stamp {{.BEETLE_PCFX_COMMIT}})"
+    cmds:
+      - task: core:src
+        vars: {NAME: beetle-pcfx-libretro, COMMIT: '{{.BEETLE_PCFX_COMMIT}}', FILE: Makefile}
+      - mv vendor/beetle-pcfx-libretro-src.tar.gz vendor/beetle_pcfx-src.tar.gz
+      - mv vendor/beetle-pcfx-libretro-src.sha vendor/beetle_pcfx-src.sha
+      - task: device:sh
+        vars: {CMD: 'sh cores/beetle_pcfx/build.sh build {{.BEETLE_PCFX_COMMIT}} vendor/beetle_pcfx-src.tar.gz target-device/beetle_pcfx vendor/mednafen_pcfx_libretro.so'}
+      - file vendor/mednafen_pcfx_libretro.so | grep -q aarch64
+
+  core:beetle-pcfx:update:
+    desc: Refetch and rebuild the Beetle PC-FX device core
+    cmds:
+      - rm -f vendor/mednafen_pcfx_libretro.so vendor/mednafen_pcfx_libretro.so.meta vendor/beetle_pcfx-src.tar.gz vendor/beetle_pcfx-src.sha vendor/beetle-pcfx-libretro-src.tar.gz vendor/beetle-pcfx-libretro-src.sha
+      - task: core:beetle-pcfx
+
+  core:fbneo:
+    desc: Build the aarch64 Linux FinalBurn Neo core for Neo Geo AES and CD
+    status:
+      - test -f vendor/fbneo_libretro.so
+      - test "$(cat vendor/fbneo-src.sha 2>/dev/null)" = "{{.FBNEO_COMMIT}}"
+      - test "$(cat vendor/fbneo_libretro.so.meta 2>/dev/null)" = "$(sh cores/fbneo/build.sh stamp {{.FBNEO_COMMIT}})"
+    cmds:
+      - task: core:src
+        vars: {NAME: FBNeo, COMMIT: '{{.FBNEO_COMMIT}}', FILE: makefile}
+      - mv vendor/FBNeo-src.tar.gz vendor/fbneo-src.tar.gz
+      - mv vendor/FBNeo-src.sha vendor/fbneo-src.sha
+      - task: device:sh
+        vars: {CMD: 'sh cores/fbneo/build.sh build {{.FBNEO_COMMIT}} vendor/fbneo-src.tar.gz target-device/fbneo vendor/fbneo_libretro.so'}
+      - file vendor/fbneo_libretro.so | grep -q aarch64
+
+  core:mame2003-plus:
+    desc: Build the aarch64 Linux MAME 2003-Plus arcade core
+    status:
+      - test -f vendor/mame2003_plus_libretro.so
+      - test "$(cat vendor/mame2003_plus-src.sha 2>/dev/null)" = "{{.MAME2003_PLUS_COMMIT}}"
+      - test "$(cat vendor/mame2003_plus_libretro.so.meta 2>/dev/null)" = "$(sh cores/mame2003_plus/build.sh stamp {{.MAME2003_PLUS_COMMIT}})"
+    cmds:
+      - task: core:src
+        vars: {NAME: mame2003-plus-libretro, COMMIT: '{{.MAME2003_PLUS_COMMIT}}', FILE: Makefile}
+      - mv vendor/mame2003-plus-libretro-src.tar.gz vendor/mame2003_plus-src.tar.gz
+      - mv vendor/mame2003-plus-libretro-src.sha vendor/mame2003_plus-src.sha
+      - task: device:sh
+        vars: {CMD: 'sh cores/mame2003_plus/build.sh build {{.MAME2003_PLUS_COMMIT}} vendor/mame2003_plus-src.tar.gz target-device/mame2003_plus vendor/mame2003_plus_libretro.so'}
+      - file vendor/mame2003_plus_libretro.so | grep -q aarch64
+
+  core:mame2003-plus:update:
+    desc: Refetch and rebuild the MAME 2003-Plus device core
+    cmds:
+      - rm -f vendor/mame2003_plus_libretro.so vendor/mame2003_plus_libretro.so.meta vendor/mame2003_plus-src.tar.gz vendor/mame2003_plus-src.sha vendor/mame2003-plus-libretro-src.tar.gz vendor/mame2003-plus-libretro-src.sha
+      - task: core:mame2003-plus
+
+  core:gp32emu:
+    desc: Build the aarch64 Linux GP32emu core for GamePark GP32
+    status:
+      - test -f vendor/gp32emu_libretro.so
+      - test "$(cat vendor/gp32emu-src.sha 2>/dev/null)" = "{{.GP32EMU_COMMIT}}"
+      - test "$(cat vendor/gp32emu_libretro.so.meta 2>/dev/null)" = "$(sh cores/gp32emu/build.sh stamp {{.GP32EMU_COMMIT}})"
+    cmds:
+      - task: core:src
+        vars: {OWNER: gameblabla, NAME: gp32emu, COMMIT: '{{.GP32EMU_COMMIT}}', FILE: Makefile.libretro}
+      - task: device:sh
+        vars: {CMD: 'sh cores/gp32emu/build.sh build {{.GP32EMU_COMMIT}} vendor/gp32emu-src.tar.gz target-device/gp32emu vendor/gp32emu_libretro.so'}
+      - file vendor/gp32emu_libretro.so | grep -q aarch64
+
+  core:gp32emu:update:
+    desc: Refetch and rebuild the GP32emu device core
+    cmds:
+      - rm -f vendor/gp32emu_libretro.so vendor/gp32emu_libretro.so.meta vendor/gp32emu-src.tar.gz vendor/gp32emu-src.sha
+      - task: core:gp32emu
+
+  core:puae:
+    desc: Build the aarch64 Linux PUAE core for Amiga CD32
+    status:
+      - test -f vendor/puae_libretro.so
+      - test "$(cat vendor/puae-src.sha 2>/dev/null)" = "{{.PUAE_COMMIT}}"
+      - test "$(cat vendor/puae_libretro.so.meta 2>/dev/null)" = "$(sh cores/puae/build.sh stamp {{.PUAE_COMMIT}})"
+    cmds:
+      - task: core:src
+        vars: {NAME: libretro-uae, COMMIT: '{{.PUAE_COMMIT}}', FILE: Makefile}
+      - mv vendor/libretro-uae-src.tar.gz vendor/puae-src.tar.gz
+      - mv vendor/libretro-uae-src.sha vendor/puae-src.sha
+      - task: device:sh
+        vars: {CMD: 'sh cores/puae/build.sh build {{.PUAE_COMMIT}} vendor/puae-src.tar.gz target-device/puae vendor/puae_libretro.so'}
+      - file vendor/puae_libretro.so | grep -q aarch64
+
+  core:vecx:
+    desc: Build the aarch64 Linux VecX core for Vectrex
+    status:
+      - test -f vendor/vecx_libretro.so
+      - test "$(cat vendor/vecx-src.sha 2>/dev/null)" = "{{.VECX_COMMIT}}"
+      - test "$(cat vendor/vecx_libretro.so.meta 2>/dev/null)" = "$(sh cores/vecx/build.sh stamp {{.VECX_COMMIT}})"
+    cmds:
+      - task: core:src
+        vars: {NAME: libretro-vecx, COMMIT: '{{.VECX_COMMIT}}', FILE: Makefile.libretro}
+      - mv vendor/libretro-vecx-src.tar.gz vendor/vecx-src.tar.gz
+      - mv vendor/libretro-vecx-src.sha vendor/vecx-src.sha
+      - task: device:sh
+        vars: {CMD: 'sh cores/vecx/build.sh build {{.VECX_COMMIT}} vendor/vecx-src.tar.gz target-device/vecx vendor/vecx_libretro.so'}
+      - file vendor/vecx_libretro.so | grep -q aarch64
+
+  core:vecx:update:
+    desc: Refetch and rebuild the VecX device core
+    cmds:
+      - rm -f vendor/vecx_libretro.so vendor/vecx_libretro.so.meta vendor/vecx-src.tar.gz vendor/vecx-src.sha vendor/libretro-vecx-src.tar.gz vendor/libretro-vecx-src.sha
+      - task: core:vecx
+
+  core:puae:update:
+    desc: Refetch and rebuild the PUAE device core
+    cmds:
+      - rm -f vendor/puae_libretro.so vendor/puae_libretro.so.meta vendor/puae-src.tar.gz vendor/puae-src.sha vendor/libretro-uae-src.tar.gz vendor/libretro-uae-src.sha
+      - task: core:puae
+
+  core:picodrive:
+    desc: Build the aarch64 Linux PicoDrive core for Genesis, 32X and Sega CD
+    status:
+      - test -f vendor/picodrive_libretro.so
+      - test "$(cat vendor/picodrive-src.sha 2>/dev/null)" = "{{.PICODRIVE_COMMIT}}"
+      - test "$(cat vendor/picodrive_libretro.so.meta 2>/dev/null)" = "$(sh cores/picodrive/build.sh stamp {{.PICODRIVE_COMMIT}})"
+    cmds:
+      - |
+        set -euo pipefail
+        source_dir="target-device/picodrive-source"
+        rm -f vendor/picodrive-src.tar.gz vendor/picodrive-src.sha
+        rm -rf "$source_dir"
+        git clone --quiet --no-checkout https://github.com/notaz/picodrive.git "$source_dir/picodrive-{{.PICODRIVE_COMMIT}}"
+        git -C "$source_dir/picodrive-{{.PICODRIVE_COMMIT}}" checkout --quiet {{.PICODRIVE_COMMIT}}
+        git -C "$source_dir/picodrive-{{.PICODRIVE_COMMIT}}" submodule update --init --recursive --quiet
+        tar --exclude='.git' --exclude='.git/*' -czf vendor/picodrive-src.tar.gz \
+          -C "$source_dir" "picodrive-{{.PICODRIVE_COMMIT}}"
+        tar -tzf vendor/picodrive-src.tar.gz | grep "^picodrive-{{.PICODRIVE_COMMIT}}/Makefile.libretro$" > /dev/null
+        tar -tzf vendor/picodrive-src.tar.gz | grep "^picodrive-{{.PICODRIVE_COMMIT}}/platform/libpicofe/plat.h$" > /dev/null
+        echo "{{.PICODRIVE_COMMIT}}" > vendor/picodrive-src.sha
+      - task: device:sh
+        vars:
+          CMD: >-
+            sh cores/picodrive/build.sh build {{.PICODRIVE_COMMIT}} vendor/picodrive-src.tar.gz
+            target-device/picodrive vendor/picodrive_libretro.so
+      - file vendor/picodrive_libretro.so | grep -q aarch64
+
+  core:picodrive:update:
+    desc: Refetch and rebuild the PicoDrive device core
+    cmds:
+      - >-
+        rm -f vendor/picodrive_libretro.so vendor/picodrive_libretro.so.meta
+        vendor/picodrive-src.tar.gz vendor/picodrive-src.sha
+      - task: core:picodrive
+
   core:snes9x:update:
     desc: Refetch Snes9x's source archive and rebuild the device core from it, even if the set is current
     cmds:
@@ -461,8 +1184,12 @@ tasks:
       - task: core:pcsx
 
   cores:device:
-    desc: Build every core the device bundle ships, mGBA, gpSP, Snes9x, Supafaust and pcsx_rearmed
-    deps: [core:device, core:gpsp, core:snes9x, core:supafaust, core:pcsx]
+    desc: Build every ARM64 core retained by the project, including cores omitted from H700
+    deps: [core:device, core:gpsp, core:picodrive, core:mesen, core:stella2023, core:atari800, core:prosystem, core:handy, core:hatari, core:quasi88, core:np2kai, core:beetle-vb, core:pokemini, core:gw, core:arduous, core:beetle-wswan, core:sameduck, core:potator, core:tic80, core:jaxe, core:retro8, core:squirreljme, core:vircon32, core:uzem, core:beetle-ngp, core:beetle-pce-fast, core:beetle-supergrafx, core:beetle-pcfx, core:fbneo, core:mame2003-plus, core:gp32emu, core:vecx, core:puae, core:snes9x, core:supafaust, core:pcsx]
+
+  cores:h700:
+    desc: Build only the cores shipped in the H700 profile
+    deps: [core:device, core:gpsp, core:picodrive, core:mesen, core:stella2023, core:atari800, core:prosystem, core:handy, core:hatari, core:beetle-vb, core:pokemini, core:gw, core:arduous, core:beetle-wswan, core:sameduck, core:potator, core:tic80, core:jaxe, core:retro8, core:squirreljme, core:vircon32, core:uzem, core:beetle-ngp, core:beetle-pce-fast, core:beetle-supergrafx, core:fbneo, core:mame2003-plus, core:vecx, core:snes9x, core:supafaust, core:pcsx]
 
   device:sh:
     desc: >-
@@ -472,6 +1199,8 @@ tasks:
     internal: true
     requires:
       vars: [CMD]
+    vars:
+      IMAGE: '{{.IMAGE | default "rust:1-bullseye"}}'
     cmds:
       - |
         set -eu
@@ -480,7 +1209,7 @@ tasks:
         else
           docker run --rm -e OMEGA_SS_DEVID -e OMEGA_SS_DEVPASSWORD \
             -v omega-zero-rustup:/usr/local/rustup -v omega-zero-cargo:/usr/local/cargo/registry \
-            -v "$PWD":/src -w /src rust:1-bullseye sh -c '{{.CMD}}'
+            -v "$PWD":/src -w /src {{.IMAGE}} sh -c '{{.CMD}}'
         fi
 
   build:device:
@@ -495,7 +1224,7 @@ tasks:
         vars:
           CMD: >-
             cargo build --profile {{.PROFILE}} --target-dir target-device
-            -p omega-zero --no-default-features --features device
+            -p omega-zero --no-default-features --features device,h700
       - file target-device/{{.PROFILE}}/omega-zero | grep -q aarch64
       - 'echo "built target-device/{{.PROFILE}}/omega-zero"'
 
@@ -512,7 +1241,7 @@ tasks:
 
   dist:device:
     desc: Build the SD2 tree for an H700 device, OUT defaults to ./dist-device
-    deps: [cores:device, build:device]
+    deps: [cores:h700, build:device]
     vars:
       OUT: '{{.OUT | default "dist-device"}}'
     cmds:
@@ -521,14 +1250,16 @@ tasks:
         vars:
           CMD: ./target-device/device/omega-zero --init-root {{.OUT}}
       - cp target-device/device/omega-zero {{.OUT}}/System/omega-zero
-      - cp card/System/* {{.OUT}}/System/
+      - cp -R card/System/. {{.OUT}}/System/
+      - rm -rf {{.OUT}}/System/hypseus {{.OUT}}/System/bigpemu
       - |
         set -eu
-        for lib in {{.DEVICE_CORES}}; do
+        for lib in {{.H700_DEVICE_CORES}}; do
           file "vendor/${lib}_libretro.so" | grep -q aarch64
           cp "vendor/${lib}_libretro.so" {{.OUT}}/System/
         done
       - cp -r licenses {{.OUT}}/System/licenses
+      - cp vendor/squirreljme-0.3.0-fast.jar {{.OUT}}/BIOS/
       - |
         set -euo pipefail
         sha="$(cat vendor/gpsp-src.sha)"
@@ -548,7 +1279,7 @@ tasks:
         set -euo pipefail
         # Supafaust and pcsx_rearmed are GPL-2.0 as gpSP is, and Snes9x holds the LGPL-2.1
         # snes_ntsc filter: each ships its source archive, build stamp and patches beside it
-        for core in {{.SOURCE_CORES}}; do
+        for core in {{.H700_SOURCE_CORES}}; do
           name="${core%%:*}" lib="${core#*:}"
           sha="$(cat "vendor/$name-src.sha")"
           cp "vendor/$name-src.tar.gz" "{{.OUT}}/System/licenses/$name-${sha}.tar.gz"
@@ -560,23 +1291,126 @@ tasks:
         done
       - 'echo "device tree ready at {{.OUT}}, copy its contents to SD2"'
 
+  bigpemu:install:
+    desc: >-
+      Install the unmodified official Linux ARM64 BigPEmu archive into an existing personal
+      device tree. ROOT defaults to dist-device; GL4ES may point to H700's libGL.so.1 bridge.
+    requires:
+      vars: [ARCHIVE]
+    vars:
+      ROOT: '{{.ROOT | default "dist-device"}}'
+    cmds:
+      - >-
+        sh scripts/install-bigpemu.sh "{{.ARCHIVE}}" "{{.ROOT}}"
+        {{if .GL4ES}}"{{.GL4ES}}"{{else}}vendor/bigpemu-libGL.so.1{{end}}
+        {{if .SDL2}}"{{.SDL2}}"{{else}}vendor/bigpemu-libSDL2-2.0.so.0{{end}}
+
+  bigpemu:gl4es:
+    desc: Build the pinned ARM64 GL4ES bridge used by BigPEmu on GLES-only devices
+    status:
+      - test -f vendor/bigpemu-libGL.so.1
+      - test "$(sed -n 's/^commit=//p' vendor/bigpemu-libGL.so.1.meta 2>/dev/null)" = "{{.GL4ES_COMMIT}}"
+      - test "$(sed -n 's/^options=//p' vendor/bigpemu-libGL.so.1.meta 2>/dev/null)" = "ODROID,NOX11,NOEGL"
+    cmds:
+      - |
+        set -eu
+        mkdir -p vendor
+        if [ ! -f vendor/gl4es-src.tar.gz ] || [ "$(cat vendor/gl4es-src.sha 2>/dev/null)" != "{{.GL4ES_COMMIT}}" ]; then
+          curl -fsSL -o vendor/gl4es-src.tar.gz \
+            "https://github.com/ptitSeb/gl4es/archive/{{.GL4ES_COMMIT}}.tar.gz"
+          echo "{{.GL4ES_COMMIT}}" > vendor/gl4es-src.sha
+        fi
+      - task: device:sh
+        vars:
+          IMAGE: rust:1-bookworm
+          CMD: >-
+            command -v cmake >/dev/null 2>&1 ||
+            (apt-get update && apt-get install -y --no-install-recommends cmake);
+            sh standalone/bigpemu/build-gl4es.sh {{.GL4ES_COMMIT}}
+            vendor/gl4es-src.tar.gz target-device/gl4es vendor/bigpemu-libGL.so.1
+      - file vendor/bigpemu-libGL.so.1 | grep -q aarch64
+
+  bigpemu:sdl2:
+    desc: Build the SDL2 mali-fbdev runtime required by BigPEmu on BaseOS/H700
+    status:
+      - test -f vendor/bigpemu-libSDL2-2.0.so.0
+      - test "$(sed -n 's/^version=//p' vendor/bigpemu-libSDL2-2.0.so.0.meta 2>/dev/null)" = "{{.BIGPEMU_SDL2_VERSION}}"
+      - test "$(sed -n 's/^backend=//p' vendor/bigpemu-libSDL2-2.0.so.0.meta 2>/dev/null)" = "mali-fbdev"
+    cmds:
+      - |
+        set -eu
+        mkdir -p vendor
+        if [ ! -f vendor/SDL2-{{.BIGPEMU_SDL2_VERSION}}.tar.gz ] || \
+           ! echo "{{.BIGPEMU_SDL2_SHA256}}  vendor/SDL2-{{.BIGPEMU_SDL2_VERSION}}.tar.gz" | sha256sum -c - >/dev/null 2>&1; then
+          curl -fsSL -o vendor/SDL2-{{.BIGPEMU_SDL2_VERSION}}.tar.gz \
+            "https://www.libsdl.org/release/SDL2-{{.BIGPEMU_SDL2_VERSION}}.tar.gz"
+        fi
+        echo "{{.BIGPEMU_SDL2_SHA256}}  vendor/SDL2-{{.BIGPEMU_SDL2_VERSION}}.tar.gz" | sha256sum -c -
+      - >-
+        docker run --rm --platform linux/arm64 -v "$PWD":/src -w /src ubuntu:22.04 sh -euc '
+        export DEBIAN_FRONTEND=noninteractive;
+        apt-get update >/dev/null;
+        apt-get install -y --no-install-recommends build-essential cmake ninja-build
+        libasound2-dev libudev-dev libegl-dev libgles-dev patch binutils >/dev/null;
+        sh standalone/bigpemu/build-sdl2.sh {{.BIGPEMU_SDL2_VERSION}}
+        vendor/SDL2-{{.BIGPEMU_SDL2_VERSION}}.tar.gz standalone/bigpemu/sdl2-patches
+        target-device/bigpemu-sdl2 vendor/bigpemu-libSDL2-2.0.so.0'
+      - file vendor/bigpemu-libSDL2-2.0.so.0 | grep -q aarch64
+
+  hypseus:
+    desc: Build and package Hypseus Singe for the H700
+    deps: [bigpemu:sdl2]
+    status:
+      - test -x vendor/hypseus/hypseus
+      - test "$(cat vendor/hypseus-src.sha 2>/dev/null)" = "{{.HYPSEUS_COMMIT}}"
+      - test "$(cat vendor/hypseus/hypseus.meta 2>/dev/null)" = "$(sh standalone/hypseus/build.sh stamp {{.HYPSEUS_COMMIT}})"
+    cmds:
+      - |
+        set -euo pipefail
+        mkdir -p vendor
+        curl -fsSL -o vendor/hypseus-src.tar.gz \
+          "https://github.com/DirtBagXon/hypseus-singe/archive/{{.HYPSEUS_COMMIT}}.tar.gz"
+        tar -tzf vendor/hypseus-src.tar.gz | \
+          grep -q '^hypseus-singe-{{.HYPSEUS_COMMIT}}/src/CMakeLists.txt$'
+        echo "{{.HYPSEUS_COMMIT}}" > vendor/hypseus-src.sha
+      - task: device:sh
+        vars:
+          IMAGE: rust:1-bookworm
+          CMD: >-
+            apt-get update && apt-get install -y --no-install-recommends
+            cmake pkg-config pax-utils libsdl2-dev libsdl2-ttf-dev libsdl2-image-dev
+            libsdl2-mixer-dev libzip-dev libvorbis-dev;
+            sh standalone/hypseus/build.sh build {{.HYPSEUS_COMMIT}}
+            vendor/hypseus-src.tar.gz target-device/hypseus vendor/hypseus
+            vendor/bigpemu-libSDL2-2.0.so.0
+      - file vendor/hypseus/hypseus | grep -q aarch64
+
+  hypseus:update:
+    desc: Refetch and rebuild Hypseus Singe for H700
+    cmds:
+      - rm -rf vendor/hypseus vendor/hypseus-src.tar.gz vendor/hypseus-src.sha
+      - task: hypseus
+
   deploy:device:
     desc: Build and push onto a device over adb, then restart it. SD defaults to /mnt/sdcard
-    deps: [cores:device, build:device]
+    deps: [cores:h700, build:device]
     vars:
       SD: '{{.SD | default "/mnt/sdcard"}}'
     cmds:
       - adb wait-for-device
       - |
         set -eu
-        for lib in {{.DEVICE_CORES}}; do
+        for lib in {{.H700_DEVICE_CORES}}; do
           file "vendor/${lib}_libretro.so" | grep -q aarch64
         done
       - adb push target-device/device/omega-zero '{{.SD}}/System/omega-zero'
-      - for f in card/System/*; do adb push "$f" '{{.SD}}/System/'; done
+      - adb push card/System/. '{{.SD}}/System/'
+      - |
+        adb shell 'rm -rf {{.SD}}/System/hypseus {{.SD}}/System/bigpemu {{.SD}}/System/source/hypseus'
+        adb shell 'find {{.SD}}/System/licenses -maxdepth 1 -name "hypseus-*" -delete 2>/dev/null || true'
       - |
         set -euo pipefail
-        for lib in {{.DEVICE_CORES}}; do
+        for lib in {{.H700_DEVICE_CORES}}; do
           adb push "vendor/${lib}_libretro.so" "{{.SD}}/System/${lib}_libretro.so"
         done
       - adb push licenses '{{.SD}}/System/'
@@ -597,7 +1431,7 @@ tasks:
         done
       - |
         set -euo pipefail
-        for core in {{.SOURCE_CORES}}; do
+        for core in {{.H700_SOURCE_CORES}}; do
           name="${core%%:*}" lib="${core#*:}"
           sha="$(cat "vendor/$name-src.sha")"
           adb push "vendor/$name-src.tar.gz" "{{.SD}}/System/licenses/$name-${sha}.tar.gz"
@@ -627,7 +1461,7 @@ tasks:
       repo's root (git ignores it), else root; the console shows its password under Settings >
       Network, Y on SSH. PROFILE defaults to device-dev, quick to build; PROFILE=device
       copies the shipping build. SCRIPTS=1 copies card/System's scripts too. CORES=1 builds
-      the five cores the bundle ships and copies them into System/ too. A game still running
+      the six cores the bundle ships and copies them into System/ too. A game still running
       loses whatever it has not saved
     vars:
       PROFILE: '{{.PROFILE | default "device-dev"}}'
@@ -636,9 +1470,9 @@ tasks:
       SD: '{{.SD}}'
       CONSOLE_PASSWORD: '{{.CONSOLE_PASSWORD}}'
       CORES: '{{.CORES}}'
-      DEVICE_CORES: '{{.DEVICE_CORES}}'
+      DEVICE_CORES: '{{.H700_DEVICE_CORES}}'
     cmds:
-      - task: cores:device
+      - task: cores:h700
         if: '[ -n "{{.CORES}}" ]'
       - task: build:device
         vars:

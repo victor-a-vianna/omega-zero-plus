@@ -1,23 +1,73 @@
-/target
-**/*.rs.bk
-*.pdb
+# Rust and cross-device build outputs.
+/target/
+/target-device/
+/target-verify/
 
+# Downloaded core sources, compiled cores and generated distributions.
+/vendor/
+/dist/
+/dist-device/
+/sdcard/
+/release/
+/artifacts/
+
+# Native compiler outputs and profiling data.
+*.dylib
+*.so
+*.dll
+*.pdb
+*.dSYM/
+*.profraw
+*.profdata
+
+# Temporary files, logs and local packages.
+/tmp/
+*.log
+*.tmp
+*.temp
+*.bak
+*.orig
+*.rej
+*.rs.bk
+*~
+*.zip
+*.tar
+*.tar.gz
+*.tgz
+
+# Local configuration and credentials. Keep documented examples versioned.
+.env
+.env.*
+!.env.example
+!.env.*.example
+*.pem
+*.key
+*.p12
+*.keystore
+credentials.json
+secrets.json
+
+# Local caches and test output.
+.cache/
+.pytest_cache/
+__pycache__/
+coverage/
+.coverage
+lcov.info
+
+# Editor and operating-system metadata.
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Local-only assistant and documentation workspaces.
 /docs/
 /CLAUDE.md
 /.ralph/
 /.superpowers/
-
-/vendor
-/sdcard
-/dist
-*.dylib
-*.so
-
-.DS_Store
-/.idea/
-/target-device
-/target-verify
-/dist-device
 
 # Parallel implementation worktrees, never content.
 /.worktrees
@@ -26,4 +76,4 @@
 /.console-password
 
 # Playwright MCP snapshots and console logs from browser checks.
-/.playwright-mcp
+/.playwright-mcp/

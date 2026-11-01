@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 350">
+  <path d="M 30 7 H 530 Q 550 7 553 29" fill="none" stroke="#fff" stroke-opacity="0.50" stroke-width="5"/>
+  <path d="M 553 29 V 296 Q 553 311 537 311 H 503 V 340 Q 503 343 499 343 H 61" fill="none" stroke="#000" stroke-opacity="0.30" stroke-width="6"/>
+  <path d="M 46 0 V 318 M 514 0 V 318" stroke="#000" stroke-opacity="0.20" stroke-width="4"/>
+  <!-- Large landscape label well. -->
+  <rect x="74" y="36" width="412" height="214" rx="7" fill="#000" fill-opacity="0.13"/>
+  <path d="M 82 36 H 478 Q 486 36 486 44 V 242" fill="none" stroke="#000" stroke-opacity="0.42" stroke-width="4"/>
+  <path d="M 478 250 H 82 Q 74 250 74 242 V 44" fill="none" stroke="#fff" stroke-opacity="0.45" stroke-width="3"/>
+  <path d="M 266 280 L 280 303 L 294 280 Z" fill="#000" fill-opacity="0.12" stroke="#000" stroke-opacity="0.25" stroke-width="3"/>
+  <rect x="58" y="318" width="444" height="25" rx="3" fill="#000" fill-opacity="0.28"/>
+</svg>

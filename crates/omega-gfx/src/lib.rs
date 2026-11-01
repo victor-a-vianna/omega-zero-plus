@@ -17,7 +17,7 @@ mod surface;
 
 pub use canvas::{canvas, out_h, out_w, set_canvas, Canvas, CANVAS_ENV};
 pub use draw::{spun_x, Draw, MeshId, MeshVertex, TexId, FOCAL};
-pub use fbdev::{egl_error, panel_mode, panel_size, FbdevSurface};
+pub use fbdev::{egl_error, panel_mode, panel_size, DrmSurface, FbdevSurface};
 pub use fbo::{Bezel, Compositor, BACKDROP};
 pub use grade::{blue_light_gain, BLUE_LIGHT_MAX};
 #[cfg(target_os = "macos")]

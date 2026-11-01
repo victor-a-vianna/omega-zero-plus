@@ -244,7 +244,10 @@ impl App {
 
     /// Whether SELECT + MENU opens the DISC screen rather than the link screen.
     pub(crate) fn swaps_discs(&self) -> bool {
-        self.platform == Platform::Ps1
+        matches!(
+            self.platform,
+            Platform::SegaCd | Platform::Tg16CdPceCd | Platform::NeoGeoCd | Platform::Ps1
+        )
     }
 
     pub fn set_disc_panel(&mut self, panel: Lone) {

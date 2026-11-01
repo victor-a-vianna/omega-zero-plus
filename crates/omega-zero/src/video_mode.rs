@@ -89,7 +89,31 @@ pub fn screen_for(platform: Platform, mode: VideoMode, frame: (u32, u32)) -> Scr
 /// Whether `platform` is a console played on a television, whose pictures come in every size
 /// and are laid out by their own, rather than a handheld drawn for the GBA's screen.
 fn is_console(platform: Platform) -> bool {
-    matches!(platform, Platform::Snes | Platform::Ps1)
+    matches!(
+        platform,
+        Platform::Genesis
+            | Platform::Sega32X
+            | Platform::SegaCd
+            | Platform::MasterSystem
+            | Platform::Sg1000
+            | Platform::Atari2600
+            | Platform::Atari800
+            | Platform::Atari5200
+            | Platform::Atari7800
+            | Platform::AtariJaguar
+            | Platform::Tg16Pce
+            | Platform::Tg16CdPceCd
+            | Platform::SuperGrafx
+            | Platform::NeoGeo
+            | Platform::NeoGeoCd
+            | Platform::Uzem
+            | Platform::Cd32
+            | Platform::Nes
+            | Platform::FamicomDiskSystem
+            | Platform::SufamiTurbo
+            | Platform::Snes
+            | Platform::Ps1
+    )
 }
 
 /// The GBA frame at three panel pixels to a game pixel, which every canvas but 640x480 holds.
@@ -115,6 +139,9 @@ pub fn screen_on_frame(
     if is_console(platform) {
         return console_screen(c, platform, mode, frame);
     }
+    if !matches!(platform, Platform::Gba | Platform::Gb | Platform::Gbc) {
+        return aspect_screen(c, platform, frame, platform.picture());
+    }
     let uv = source_rect(platform, mode);
     let actual = source_rect(platform, VideoMode::Actual);
     let (cw, ch) = (c.w as f32, c.h as f32);
@@ -133,7 +160,59 @@ pub fn screen_on_frame(
         };
     }
     match platform {
-        Platform::Gba | Platform::Snes | Platform::Ps1 => {
+        Platform::Gba
+        | Platform::GameGear
+        | Platform::MasterSystem
+        | Platform::Sg1000
+        | Platform::Genesis
+        | Platform::Sega32X
+        | Platform::SegaCd
+        | Platform::Nes
+        | Platform::FamicomDiskSystem
+        | Platform::Atari2600
+        | Platform::Atari800
+        | Platform::Atari5200
+        | Platform::Atari7800
+        | Platform::AtariLynx
+        | Platform::VirtualBoy
+        | Platform::PokemonMini
+        | Platform::GameAndWatch
+        | Platform::Arduboy
+        | Platform::WonderSwan
+        | Platform::WonderSwanColor
+        | Platform::MegaDuck
+        | Platform::Supervision
+        | Platform::Tic80
+        | Platform::Chip8
+        | Platform::Pico8
+        | Platform::Java
+        | Platform::Vircon32
+        | Platform::Uzem
+        | Platform::Daphne
+        | Platform::NeoGeoPocket
+        | Platform::NeoGeoPocketColor
+        | Platform::AtariJaguar
+        | Platform::AtariJaguarCd
+        | Platform::AtariSt
+        | Platform::Pc8800
+        | Platform::Pc9800
+        | Platform::Tg16Pce
+        | Platform::Tg16CdPceCd
+        | Platform::SuperGrafx
+        | Platform::PcFx
+        | Platform::NeoGeo
+        | Platform::NeoGeoCd
+        | Platform::Cps1
+        | Platform::Cps2
+        | Platform::Cps3
+        | Platform::FbNeo
+        | Platform::Mame
+        | Platform::Gp32
+        | Platform::Vectrex
+        | Platform::Cd32
+        | Platform::SufamiTurbo
+        | Platform::Snes
+        | Platform::Ps1 => {
             let h = (cw * SRC_H as f32 / SRC_W as f32).round();
             let view = GameView {
                 rect: [0.0, 0.0, cw, h],
@@ -158,6 +237,36 @@ pub fn screen_on_frame(
                 bands: around(c, view.rect),
             }
         }
+    }
+}
+
+/// A handheld whose native picture is not the GBA/GB framed layout fills whichever canvas
+/// dimension its own aspect ratio reaches first, and is centred on the other one.
+fn aspect_screen(c: Canvas, platform: Platform, frame: (u32, u32), picture: (u32, u32)) -> Screen {
+    let (cw, ch) = (c.w as f32, c.h as f32);
+    let (pw, ph) = if matches!(platform, Platform::WonderSwan | Platform::WonderSwanColor) {
+        frame
+    } else {
+        (picture.0.min(frame.0), picture.1.min(frame.1))
+    };
+    let aspect = pw.max(1) as f32 / ph.max(1) as f32;
+    let (w, h) = fit_aspect(cw, ch, aspect);
+    let rect = [((cw - w) / 2.0).round(), ((ch - h) / 2.0).round(), w, h];
+    let uv = [
+        (frame.0 - pw) as f32 / 2.0 / frame.0.max(1) as f32,
+        (frame.1 - ph) as f32 / 2.0 / frame.1.max(1) as f32,
+        pw as f32 / frame.0.max(1) as f32,
+        ph as f32 / frame.1.max(1) as f32,
+    ];
+    let view = GameView {
+        rect,
+        uv,
+        filter: Filter::Sharp,
+    };
+    Screen {
+        view,
+        still: view,
+        bands: around(c, rect),
     }
 }
 
@@ -222,10 +331,15 @@ fn snes_whole(cw: f32, ch: f32, lines: u32) -> (f32, f32) {
 
 /// The largest 4:3 rect the canvas holds.
 fn four_three(cw: f32, ch: f32) -> (f32, f32) {
-    if cw * 3.0 > ch * 4.0 {
-        ((ch * 4.0 / 3.0).round(), ch)
+    fit_aspect(cw, ch, 4.0 / 3.0)
+}
+
+/// The largest rect of `aspect` that fits the canvas.
+fn fit_aspect(cw: f32, ch: f32, aspect: f32) -> (f32, f32) {
+    if cw > ch * aspect {
+        ((ch * aspect).round(), ch)
     } else {
-        (cw, (cw * 3.0 / 4.0).round())
+        (cw, (cw / aspect).round())
     }
 }
 

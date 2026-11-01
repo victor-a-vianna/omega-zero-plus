@@ -1,0 +1,65 @@
+--- a/Libretro/libretro.cpp
++++ b/Libretro/libretro.cpp
+@@ -55,7 +55,11 @@
+ 
+ static std::shared_ptr<Console> _console;
+ static std::unique_ptr<LibretroKeyManager> _keyManager;
+ static std::unique_ptr<LibretroMessageManager> _messageManager;
++static retro_video_refresh_t _videoCallback = nullptr;
++static retro_audio_sample_batch_t _audioCallback = nullptr;
++static retro_input_poll_t _inputPollCallback = nullptr;
++static retro_input_state_t _inputStateCallback = nullptr;
+ 
+ static constexpr const char* MesenNtscFilter = "mesen_ntsc_filter";
+ static constexpr const char* MesenPalette = "mesen_palette";
+@@ -118,6 +122,10 @@
+ 
+ 		_keyManager.reset(new LibretroKeyManager(_console));
+ 		_messageManager.reset(new LibretroMessageManager(logCallback, env_cb));
++		_console->GetVideoRenderer()->SetVideoCallback(_videoCallback);
++		_console->GetSoundMixer()->SetSendAudioSample(_audioCallback);
++		_keyManager->SetPollInput(_inputPollCallback);
++		_keyManager->SetGetInputState(_inputStateCallback);
+ 
+ 		std::stringstream databaseData;
+ 		databaseData.write((const char*)MesenDatabase, sizeof(MesenDatabase));
+@@ -228,6 +236,9 @@
+ 	RETRO_API void retro_set_video_refresh(retro_video_refresh_t sendFrame)
+ 	{
+-		_console->GetVideoRenderer()->SetVideoCallback(sendFrame);
++		_videoCallback = sendFrame;
++		if(_console) {
++			_console->GetVideoRenderer()->SetVideoCallback(sendFrame);
++		}
+ 	}
+ 
+ 	RETRO_API void retro_set_audio_sample(retro_audio_sample_t sendAudioSample)
+@@ -237,15 +248,24 @@
+ 	RETRO_API void retro_set_audio_sample_batch(retro_audio_sample_batch_t audioSampleBatch)
+ 	{
+-		_console->GetSoundMixer()->SetSendAudioSample(audioSampleBatch);
++		_audioCallback = audioSampleBatch;
++		if(_console) {
++			_console->GetSoundMixer()->SetSendAudioSample(audioSampleBatch);
++		}
+ 	}
+ 
+ 	RETRO_API void retro_set_input_poll(retro_input_poll_t pollInput)
+ 	{	
+-		_keyManager->SetPollInput(pollInput);
++		_inputPollCallback = pollInput;
++		if(_keyManager) {
++			_keyManager->SetPollInput(pollInput);
++		}
+ 	}
+ 
+ 	RETRO_API void retro_set_input_state(retro_input_state_t getInputState)
+ 	{
+-		_keyManager->SetGetInputState(getInputState);
++		_inputStateCallback = getInputState;
++		if(_keyManager) {
++			_keyManager->SetGetInputState(getInputState);
++		}
+ 	}
+ 
+ 	RETRO_API void retro_reset()

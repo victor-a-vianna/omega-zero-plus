@@ -114,6 +114,8 @@ fn a_scan_is_fetched_half_as_wide_again_as_its_widest_face() {
         (Platform::Gba, 399),
         (Platform::Gb, 330),
         (Platform::Gbc, 330),
+        (Platform::SegaCd, 432),
+        (Platform::Nes, 459),
         (Platform::Snes, 420),
         (Platform::Ps1, 432),
     ] {
@@ -210,6 +212,7 @@ fn an_account_is_kept_in_config_and_can_be_forgotten() {
 fn a_title_drops_the_tags() {
     assert_eq!(title("Metroid Fusion (USA)"), "Metroid Fusion");
     assert_eq!(title("Mother 3 v1.2"), "Mother 3 v1.2");
+    assert_eq!(title("Sonic_The_Hedgehog (USA)"), "Sonic The Hedgehog");
 }
 
 fn png(w: u32, h: u32) -> Vec<u8> {

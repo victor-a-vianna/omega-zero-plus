@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 316">
+  <!-- Long horizontal label recessed into the raised upper panel. -->
+  <rect x="72" y="22" width="356" height="145" rx="10" fill="#000" fill-opacity="0.25"/>
+  <path d="M 83 22 H 417" stroke="#000" stroke-width="6" fill="none"/>
+  <path d="M 72 33 V 156" stroke="#000" stroke-width="6" fill="none"/>
+  <path d="M 83 167 H 417" stroke="#fff" stroke-opacity="0.44" stroke-width="5" fill="none"/>
+  <path d="M 428 33 V 156" stroke="#fff" stroke-opacity="0.38" stroke-width="5" fill="none"/>
+  <!-- The upper panel rolls down in a broad U over a deeply recessed lower centre. -->
+  <path d="M 66 10 L 62 174 Q 63 219 100 239 Q 145 261 250 263 Q 355 261 400 239 Q 437 219 438 174 L 434 10"
+        stroke="#000" stroke-opacity="0.48" stroke-width="8" fill="none"/>
+  <path d="M 73 174 Q 77 208 108 225 Q 151 247 250 249 Q 349 247 392 225 Q 423 208 427 174"
+        stroke="#fff" stroke-opacity="0.18" stroke-width="4" fill="none"/>
+  <!-- Three horizontal moulded ribs on each exposed grip. -->
+  <g stroke="#000" stroke-width="7" stroke-linecap="round">
+    <path d="M 0 70 H 29"/><path d="M 0 91 H 29"/><path d="M 0 112 H 29"/>
+    <path d="M 471 70 H 500"/><path d="M 471 91 H 500"/><path d="M 471 112 H 500"/>
+  </g>
+  <g stroke="#fff" stroke-opacity="0.16" stroke-width="2">
+    <path d="M 0 66 H 30"/><path d="M 0 87 H 30"/><path d="M 0 108 H 30"/>
+    <path d="M 470 66 H 500"/><path d="M 470 87 H 500"/><path d="M 470 108 H 500"/>
+  </g>
+</svg>

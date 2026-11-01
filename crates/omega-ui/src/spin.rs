@@ -1,7 +1,12 @@
 use omega_gfx::{out_h, spun_x, Draw, MeshId, MeshVertex, TexId};
 
 use crate::models::disc::StackMeshes;
-use crate::models::{disc, snes, snes::SnesShell};
+use crate::models::{
+    atari_800, atari_console, atari_console::AtariShell, atari_jaguar, atari_lynx, disc,
+    famicom_disk_system, generic_chip, generic_floppy, genesis, genesis_32x, megaduck, neo_geo_aes,
+    neo_geo_pocket, nes, nes::NesShell, pokemon_mini, sega_8bit, sega_8bit::Sega8Shell, snes,
+    snes::SnesShell, sufami_turbo, supervision, tg16_pce, vectrex, virtual_boy, wonderswan,
+};
 use crate::silhouette::GbShell;
 
 /// How thick a cart is, as a share of its width: a Game Pak is about 8 mm thick and 57 wide.
@@ -51,17 +56,68 @@ impl Pose {
 pub enum CartModel {
     Gba,
     Gb(GbShell),
+    Nes(NesShell),
     Snes(SnesShell),
+    /// The North American Sega Genesis cartridge shell.
+    Genesis,
+    /// The larger, sculpted Sega 32X cartridge shell.
+    Genesis32X,
+    Sega8(Sega8Shell),
+    Atari(AtariShell),
+    FamicomDiskSystem,
+    Atari800,
+    AtariLynx,
+    VirtualBoy,
+    PokemonMini,
+    NeoGeoPocket,
+    WonderSwan,
+    MegaDuck,
+    Supervision,
+    Vectrex,
+    AtariJaguar,
+    GenericFloppy,
+    GenericChip,
+    TfCard,
+    Tg16Pce,
+    NeoGeoAes,
+    SufamiTurbo,
     Disc,
 }
 
 impl CartModel {
-    pub const ALL: [CartModel; 6] = [
+    pub const ALL: [CartModel; 33] = [
         CartModel::Gba,
         CartModel::Gb(GbShell::Notched),
         CartModel::Gb(GbShell::Rounded),
+        CartModel::Nes(NesShell::Nes),
+        CartModel::Nes(NesShell::Famicom),
         CartModel::Snes(SnesShell::Ntsc),
         CartModel::Snes(SnesShell::Famicom),
+        CartModel::Genesis,
+        CartModel::Genesis32X,
+        CartModel::Sega8(Sega8Shell::GameGear),
+        CartModel::Sega8(Sega8Shell::MasterSystem),
+        CartModel::Sega8(Sega8Shell::Sg1000),
+        CartModel::Atari(AtariShell::Atari2600),
+        CartModel::Atari(AtariShell::Atari5200),
+        CartModel::Atari(AtariShell::Atari7800),
+        CartModel::FamicomDiskSystem,
+        CartModel::Atari800,
+        CartModel::AtariLynx,
+        CartModel::VirtualBoy,
+        CartModel::PokemonMini,
+        CartModel::NeoGeoPocket,
+        CartModel::WonderSwan,
+        CartModel::MegaDuck,
+        CartModel::Supervision,
+        CartModel::Vectrex,
+        CartModel::AtariJaguar,
+        CartModel::GenericFloppy,
+        CartModel::GenericChip,
+        CartModel::TfCard,
+        CartModel::Tg16Pce,
+        CartModel::NeoGeoAes,
+        CartModel::SufamiTurbo,
         CartModel::Disc,
     ];
 
@@ -71,9 +127,36 @@ impl CartModel {
             CartModel::Gba => 0,
             CartModel::Gb(GbShell::Notched) => 1,
             CartModel::Gb(GbShell::Rounded) => 2,
-            CartModel::Snes(SnesShell::Ntsc) => 3,
-            CartModel::Snes(SnesShell::Famicom) => 4,
-            CartModel::Disc => 5,
+            CartModel::Nes(NesShell::Nes) => 3,
+            CartModel::Nes(NesShell::Famicom) => 4,
+            CartModel::Snes(SnesShell::Ntsc) => 5,
+            CartModel::Snes(SnesShell::Famicom) => 6,
+            CartModel::Genesis => 7,
+            CartModel::Genesis32X => 8,
+            CartModel::Sega8(Sega8Shell::GameGear) => 9,
+            CartModel::Sega8(Sega8Shell::MasterSystem) => 10,
+            CartModel::Sega8(Sega8Shell::Sg1000) => 11,
+            CartModel::Atari(AtariShell::Atari2600) => 12,
+            CartModel::Atari(AtariShell::Atari5200) => 13,
+            CartModel::Atari(AtariShell::Atari7800) => 14,
+            CartModel::FamicomDiskSystem => 15,
+            CartModel::Atari800 => 16,
+            CartModel::AtariLynx => 17,
+            CartModel::VirtualBoy => 18,
+            CartModel::PokemonMini => 19,
+            CartModel::NeoGeoPocket => 20,
+            CartModel::WonderSwan => 21,
+            CartModel::MegaDuck => 22,
+            CartModel::Supervision => 23,
+            CartModel::Vectrex => 24,
+            CartModel::AtariJaguar => 25,
+            CartModel::GenericFloppy => 26,
+            CartModel::GenericChip => 27,
+            CartModel::Tg16Pce => 28,
+            CartModel::NeoGeoAes => 29,
+            CartModel::SufamiTurbo => 30,
+            CartModel::TfCard => 31,
+            CartModel::Disc => 32,
         }
     }
 
@@ -81,7 +164,29 @@ impl CartModel {
     pub fn thick(self) -> f32 {
         match self {
             CartModel::Gba | CartModel::Gb(_) => THICK,
+            CartModel::Nes(_) => nes::THICK,
             CartModel::Snes(_) => snes::THICK,
+            CartModel::Genesis => genesis::THICK,
+            CartModel::Genesis32X => genesis_32x::THICK,
+            CartModel::Sega8(_) => sega_8bit::THICK,
+            CartModel::Atari(_) => atari_console::THICK,
+            CartModel::FamicomDiskSystem => famicom_disk_system::THICK,
+            CartModel::Atari800 => atari_800::THICK,
+            CartModel::AtariLynx => atari_lynx::THICK,
+            CartModel::VirtualBoy => virtual_boy::THICK,
+            CartModel::PokemonMini => pokemon_mini::THICK,
+            CartModel::NeoGeoPocket => neo_geo_pocket::THICK,
+            CartModel::WonderSwan => crate::models::wonderswan::THICK,
+            CartModel::MegaDuck => megaduck::THICK,
+            CartModel::Supervision => supervision::THICK,
+            CartModel::Vectrex => vectrex::THICK,
+            CartModel::AtariJaguar => atari_jaguar::THICK,
+            CartModel::GenericFloppy => generic_floppy::THICK,
+            CartModel::GenericChip => generic_chip::THICK,
+            CartModel::TfCard => crate::models::tf_card::THICK,
+            CartModel::Tg16Pce => tg16_pce::THICK,
+            CartModel::NeoGeoAes => neo_geo_aes::THICK,
+            CartModel::SufamiTurbo => sufami_turbo::THICK,
             CartModel::Disc => disc::THICK,
         }
     }
@@ -209,7 +314,29 @@ pub fn outline(model: CartModel) -> (Vec<(f32, f32)>, (f32, f32)) {
         CartModel::Gba => gba_outline(),
         CartModel::Gb(GbShell::Notched) => (GB_OUTLINE.to_vec(), (240.0, 259.0)),
         CartModel::Gb(GbShell::Rounded) => (GBC_OUTLINE.to_vec(), (240.0, 259.0)),
+        CartModel::Nes(shell) => nes::outline(shell),
         CartModel::Snes(shell) => snes::outline(shell),
+        CartModel::Genesis => genesis::outline(),
+        CartModel::Genesis32X => genesis_32x::outline(),
+        CartModel::Sega8(shell) => sega_8bit::outline(shell),
+        CartModel::Atari(shell) => atari_console::outline(shell),
+        CartModel::FamicomDiskSystem => famicom_disk_system::outline(),
+        CartModel::Atari800 => atari_800::outline(),
+        CartModel::AtariLynx => atari_lynx::outline(),
+        CartModel::VirtualBoy => virtual_boy::outline(),
+        CartModel::PokemonMini => pokemon_mini::outline(),
+        CartModel::NeoGeoPocket => neo_geo_pocket::outline(),
+        CartModel::WonderSwan => wonderswan::outline(),
+        CartModel::MegaDuck => megaduck::outline(),
+        CartModel::Supervision => supervision::outline(),
+        CartModel::Vectrex => vectrex::outline(),
+        CartModel::AtariJaguar => atari_jaguar::outline(),
+        CartModel::GenericFloppy => generic_floppy::outline(),
+        CartModel::GenericChip => generic_chip::outline(),
+        CartModel::TfCard => crate::models::tf_card::outline(),
+        CartModel::Tg16Pce => tg16_pce::outline(),
+        CartModel::NeoGeoAes => neo_geo_aes::outline(),
+        CartModel::SufamiTurbo => sufami_turbo::outline(),
         CartModel::Disc => disc::outline(),
     }
 }
@@ -456,14 +583,28 @@ mod tests {
         );
     }
 
-    /// Only the Super Famicom cart's label is round at its corners: every other shape's goes
-    /// through the square label's drawing untouched.
+    /// Only shells with physically rounded label wells clip the label at their corners.
     #[test]
-    fn only_the_super_famicom_label_is_round() {
+    fn only_shells_with_rounded_label_wells_clip_the_label_round() {
         for model in CartModel::ALL {
             let round = crate::cart::spec(model).label_round;
             match model {
-                CartModel::Snes(SnesShell::Famicom) => assert!(round > 0),
+                CartModel::Snes(SnesShell::Famicom)
+                | CartModel::Nes(NesShell::Famicom)
+                | CartModel::Genesis
+                | CartModel::Genesis32X
+                | CartModel::Sega8(_)
+                | CartModel::Atari(_)
+                | CartModel::FamicomDiskSystem
+                | CartModel::Atari800
+                | CartModel::AtariLynx
+                | CartModel::VirtualBoy
+                | CartModel::GenericFloppy => assert!(round > 0),
+                CartModel::PokemonMini => assert!(round > 0),
+                CartModel::NeoGeoPocket => assert!(round > 0),
+                CartModel::WonderSwan => assert!(round > 0),
+                CartModel::MegaDuck => assert!(round > 0),
+                CartModel::Supervision => assert!(round > 0),
                 _ => assert_eq!(round, 0, "the {model:?} label is round"),
             }
         }

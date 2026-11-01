@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 340 500">
+  <path d="M 23 7 H 317 Q 331 7 333 23" fill="none" stroke="#fff" stroke-opacity="0.52" stroke-width="5"/>
+  <path d="M 333 23 V 469 Q 333 493 309 493 H 31" fill="none" stroke="#000" stroke-opacity="0.25" stroke-width="5"/>
+  <!-- Exposed contact block and gold fingers. -->
+  <path d="M 10 13 H 330 V 164 Q 330 181 313 181 H 27 Q 10 181 10 164 Z" fill="#000" fill-opacity="0.28"/>
+  <g fill="#000" fill-opacity="0.52">
+    <rect x="23" y="18" width="8" height="38"/><rect x="36" y="18" width="8" height="38"/><rect x="49" y="18" width="8" height="38"/>
+    <rect x="62" y="18" width="8" height="38"/><rect x="75" y="18" width="8" height="38"/><rect x="88" y="18" width="8" height="38"/>
+    <rect x="101" y="18" width="8" height="38"/><rect x="114" y="18" width="8" height="38"/><rect x="127" y="18" width="8" height="38"/>
+    <rect x="140" y="18" width="8" height="38"/><rect x="153" y="18" width="8" height="38"/><rect x="166" y="18" width="8" height="38"/>
+    <rect x="179" y="18" width="8" height="38"/><rect x="192" y="18" width="8" height="38"/><rect x="205" y="18" width="8" height="38"/>
+    <rect x="218" y="18" width="8" height="38"/><rect x="231" y="18" width="8" height="38"/><rect x="244" y="18" width="8" height="38"/>
+    <rect x="257" y="18" width="8" height="38"/><rect x="270" y="18" width="8" height="38"/><rect x="283" y="18" width="8" height="38"/>
+    <rect x="296" y="18" width="8" height="38"/><rect x="309" y="18" width="8" height="38"/>
+  </g>
+  <!-- Large artwork label. -->
+  <rect x="20" y="196" width="300" height="244" rx="15" fill="#000" fill-opacity="0.12"/>
+  <path d="M 35 196 H 305 Q 320 196 320 211 V 425" fill="none" stroke="#000" stroke-opacity="0.37" stroke-width="4"/>
+  <path d="M 305 440 H 35 Q 20 440 20 425 V 211" fill="none" stroke="#fff" stroke-opacity="0.46" stroke-width="3"/>
+  <path d="M 135 466 L 170 446 L 205 466 V 484 H 135 Z" fill="#000" fill-opacity="0.12"/>
+  <g stroke="#000" stroke-opacity="0.20" stroke-width="2">
+    <path d="M 140 468 H 200"/><path d="M 140 474 H 200"/><path d="M 140 480 H 200"/>
+  </g>
+</svg>

@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 420">
+  <!-- Generic square integrated circuit. The pins are part of the silhouette so the model works
+       for any chip-based platform without carrying a label or a vendor-specific mark. -->
+  <path d="M 74 46 H 346 Q 374 46 374 74 V 346 Q 374 374 346 374 H 74 Q 46 374 46 346 V 74 Q 46 46 74 46 Z
+           M 72 0 H 88 V 46 H 72 Z M 112 0 H 128 V 46 H 112 Z M 152 0 H 168 V 46 H 152 Z
+           M 192 0 H 208 V 46 H 192 Z M 232 0 H 248 V 46 H 232 Z M 272 0 H 288 V 46 H 272 Z
+           M 312 0 H 328 V 46 H 312 Z
+           M 72 374 H 88 V 420 H 72 Z M 112 374 H 128 V 420 H 112 Z M 152 374 H 168 V 420 H 152 Z
+           M 192 374 H 208 V 420 H 192 Z M 232 374 H 248 V 420 H 232 Z M 272 374 H 288 V 420 H 272 Z
+           M 312 374 H 328 V 420 H 312 Z
+           M 0 72 H 46 V 88 H 0 Z M 0 112 H 46 V 128 H 0 Z M 0 152 H 46 V 168 H 0 Z
+           M 0 192 H 46 V 208 H 0 Z M 0 232 H 46 V 248 H 0 Z M 0 272 H 46 V 288 H 0 Z
+           M 0 312 H 46 V 328 H 0 Z
+           M 374 72 H 420 V 88 H 374 Z M 374 112 H 420 V 128 H 374 Z M 374 152 H 420 V 168 H 374 Z
+           M 374 192 H 420 V 208 H 374 Z M 374 232 H 420 V 248 H 374 Z M 374 272 H 420 V 288 H 374 Z
+           M 374 312 H 420 V 328 H 374 Z" fill="#fff" fill-rule="evenodd"/>
+</svg>

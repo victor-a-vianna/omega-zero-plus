@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 340">
+  <!-- Raised ribbed grip along the left side. -->
+  <path d="M 55 13 H 115 V 327 H 55 Z" fill="#000" fill-opacity="0.10"/>
+  <path d="M 55 13 V 327 M 115 13 V 327" stroke="#000" stroke-opacity="0.42" stroke-width="2"/>
+  <g stroke="#000" stroke-opacity="0.42" stroke-width="2">
+    <path d="M 59 22 H 111 M 59 32 H 111 M 59 42 H 111 M 59 52 H 111 M 59 62 H 111"/>
+    <path d="M 59 72 H 111 M 59 82 H 111 M 59 92 H 111 M 59 102 H 111 M 59 112 H 111"/>
+    <path d="M 59 122 H 111 M 59 132 H 111 M 59 142 H 111 M 59 152 H 111 M 59 162 H 111"/>
+    <path d="M 59 172 H 111 M 59 182 H 111 M 59 192 H 111 M 59 202 H 111 M 59 212 H 111"/>
+    <path d="M 59 222 H 111 M 59 232 H 111 M 59 242 H 111 M 59 252 H 111 M 59 262 H 111"/>
+    <path d="M 59 272 H 111 M 59 282 H 111 M 59 292 H 111 M 59 302 H 111"/>
+  </g>
+  <!-- Label recess. The game artwork is composited into this open panel by the UI. -->
+  <rect x="123" y="14" width="131" height="215" rx="2" fill="#000" fill-opacity="0.16"/>
+  <path d="M 123 229 V 14 H 254" fill="none" stroke="#000" stroke-opacity="0.55" stroke-width="3"/>
+  <path d="M 126 229 H 254 V 17" fill="none" stroke="#fff" stroke-opacity="0.42" stroke-width="2"/>
+  <!-- Moulding, grip shoulders and the familiar lower triangular mark. -->
+  <path d="M 15 270 H 31 V 327 H 269 V 270 H 285" fill="none" stroke="#000" stroke-opacity="0.30" stroke-width="2"/>
+  <path d="M 129 247 H 155 L 142 272 Z" fill="#000" fill-opacity="0.28"/>
+  <circle cx="142" cy="286" r="4" fill="#000" fill-opacity="0.34"/>
+  <circle cx="252" cy="286" r="4" fill="#000" fill-opacity="0.34"/>
+</svg>

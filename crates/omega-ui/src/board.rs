@@ -615,16 +615,102 @@ pub const SNES_SOCKETS: Sockets = Sockets {
 /// The sockets on the board of a `platform` cart.
 pub fn sockets_for(platform: Platform) -> Sockets {
     match platform {
-        Platform::Snes => SNES_SOCKETS,
-        Platform::Gba | Platform::Gb | Platform::Gbc | Platform::Ps1 => GBA_SOCKETS,
+        Platform::Nes | Platform::FamicomDiskSystem | Platform::SufamiTurbo | Platform::Snes => {
+            SNES_SOCKETS
+        }
+        Platform::Gba
+        | Platform::Gb
+        | Platform::Gbc
+        | Platform::Genesis
+        | Platform::GameGear
+        | Platform::MasterSystem
+        | Platform::Sg1000
+        | Platform::Sega32X
+        | Platform::SegaCd
+        | Platform::Cd32
+        | Platform::Atari2600
+        | Platform::Atari800
+        | Platform::Atari5200
+        | Platform::Atari7800
+        | Platform::AtariLynx
+        | Platform::VirtualBoy
+        | Platform::PokemonMini
+        | Platform::GameAndWatch
+        | Platform::Arduboy
+        | Platform::WonderSwan
+        | Platform::WonderSwanColor
+        | Platform::MegaDuck
+        | Platform::Supervision
+        | Platform::Tic80
+        | Platform::Chip8
+        | Platform::Pico8
+        | Platform::Java
+        | Platform::Vircon32
+        | Platform::Uzem
+        | Platform::Daphne
+        | Platform::NeoGeoPocket
+        | Platform::NeoGeoPocketColor
+        | Platform::Ps1
+        | Platform::AtariJaguar
+        | Platform::AtariJaguarCd
+        | Platform::Tg16Pce
+        | Platform::Tg16CdPceCd
+        | Platform::SuperGrafx => GBA_SOCKETS,
+        Platform::PcFx => GBA_SOCKETS,
+        Platform::NeoGeo
+        | Platform::NeoGeoCd
+        | Platform::Cps1
+        | Platform::Cps2
+        | Platform::Cps3
+        | Platform::FbNeo
+        | Platform::Mame
+        | Platform::Gp32
+        | Platform::Vectrex
+        | Platform::AtariSt
+        | Platform::Pc8800
+        | Platform::Pc9800 => GBA_SOCKETS,
     }
 }
 
 /// The sockets `core` is seated among: those of the first system it runs.
 pub fn sockets_of(core: Core) -> Sockets {
     match core {
-        Core::Snes9x | Core::Supafaust => SNES_SOCKETS,
-        Core::Mgba | Core::Gpsp | Core::PcsxRearmed => GBA_SOCKETS,
+        Core::Mesen | Core::Snes9x | Core::Supafaust => SNES_SOCKETS,
+        Core::Mgba
+        | Core::Gpsp
+        | Core::Picodrive
+        | Core::Stella2023
+        | Core::Atari800
+        | Core::Prosystem
+        | Core::Handy
+        | Core::BeetleVb
+        | Core::PokeMini
+        | Core::BeetleNgp
+        | Core::BeetleWswan
+        | Core::SameDuck
+        | Core::Potator
+        | Core::Tic80
+        | Core::Jaxe
+        | Core::Retro8
+        | Core::SquirrelJme
+        | Core::Vircon32
+        | Core::Uzem
+        | Core::Hypseus
+        | Core::PcsxRearmed
+        | Core::BigPemu
+        | Core::BeetlePceFast
+        | Core::BeetleSuperGrafx => GBA_SOCKETS,
+        Core::BeetlePcFx => GBA_SOCKETS,
+        Core::Gw
+        | Core::Arduous
+        | Core::FbNeo
+        | Core::Mame2003Plus
+        | Core::Gp32Emu
+        | Core::Vecx
+        | Core::Puae
+        | Core::Hatari
+        | Core::Quasi88
+        | Core::Np2Kai => GBA_SOCKETS,
     }
 }
 

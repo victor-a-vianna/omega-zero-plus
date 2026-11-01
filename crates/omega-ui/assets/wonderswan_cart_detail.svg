@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="640" height="400" viewBox="0 0 640 400">
+  <!-- Monochrome relief mask: transparent shell, white highlights and black recesses. -->
+  <rect x="25" y="61" width="590" height="239" rx="17" fill="none" stroke="#fff" stroke-width="3" opacity=".22"/>
+  <rect x="29" y="65" width="582" height="231" rx="15" fill="none" stroke="#000" stroke-width="6" opacity=".72"/>
+  <path fill="#fff" opacity=".20" d="M38 24h564l9 7v19l-9 7H38l-9-7V31z"/>
+  <path fill="#000" opacity=".84" d="M41 28h558l7 6v13l-7 6H41l-7-6V34z"/>
+  <path d="M43 30h554" stroke="#fff" stroke-width="2" opacity=".16"/>
+  <path fill="none" stroke="#000" stroke-width="5" opacity=".58" d="M35 311h570v65H35z"/>
+  <path fill="none" stroke="#fff" stroke-width="3" opacity=".22" d="M39 313h562"/>
+  <g fill="#000" opacity=".58">
+    <path d="M61 339h10v35H61zm19 0h10v35H80zm19 0h10v35H99zm19 0h10v35h-10zm19 0h10v35h-10zm19 0h10v35h-10zm19 0h10v35h-10zm19 0h10v35h-10zm19 0h10v35h-10zm19 0h10v35h-10zm19 0h10v35h-10zm19 0h10v35h-10zm19 0h10v35h-10zm19 0h10v35h-10zm19 0h10v35h-10zm19 0h10v35h-10zm19 0h10v35h-10zm19 0h10v35h-10zm19 0h10v35h-10zm19 0h10v35h-10zm19 0h10v35h-10zm19 0h10v35h-10zm19 0h10v35h-10zm19 0h10v35h-10zm19 0h10v35h-10zm19 0h10v35h-10zm19 0h10v35h-10zm19 0h10v35h-10;"/>
+  </g>
+  <g fill="#000" opacity=".62"><circle cx="72" cy="321" r="4"/><circle cx="108" cy="326" r="5"/><circle cx="485" cy="321" r="4"/><circle cx="535" cy="325" r="5"/></g>
+</svg>

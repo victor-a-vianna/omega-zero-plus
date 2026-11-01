@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 500">
+  <!-- Proud top cap. -->
+  <path d="M 16 0 H 544 L 557 16 V 32 H 3 V 16 Z" fill="#000" fill-opacity="0.18"/>
+  <path d="M 4 32 H 556" stroke="#000" stroke-opacity="0.55" stroke-width="4"/>
+  <!-- Repeated side grip slots distinctive to the 5200 cartridge. -->
+  <g fill="#000" fill-opacity="0.48">
+    <path d="M 0 42 H 30 V 56 H 0 Z M 530 42 H 560 V 56 H 530 Z"/>
+    <path d="M 0 70 H 30 V 84 H 0 Z M 530 70 H 560 V 84 H 530 Z"/>
+    <path d="M 0 98 H 30 V 112 H 0 Z M 530 98 H 560 V 112 H 530 Z"/>
+    <path d="M 0 126 H 30 V 140 H 0 Z M 530 126 H 560 V 140 H 530 Z"/>
+    <path d="M 0 154 H 30 V 168 H 0 Z M 530 154 H 560 V 168 H 530 Z"/>
+    <path d="M 0 182 H 30 V 196 H 0 Z M 530 182 H 560 V 196 H 530 Z"/>
+    <path d="M 0 210 H 30 V 224 H 0 Z M 530 210 H 560 V 224 H 530 Z"/>
+    <path d="M 0 238 H 30 V 252 H 0 Z M 530 238 H 560 V 252 H 530 Z"/>
+    <path d="M 0 266 H 30 V 280 H 0 Z M 530 266 H 560 V 280 H 530 Z"/>
+    <path d="M 0 294 H 30 V 308 H 0 Z M 530 294 H 560 V 308 H 530 Z"/>
+    <path d="M 0 322 H 30 V 336 H 0 Z M 530 322 H 560 V 336 H 530 Z"/>
+    <path d="M 0 350 H 30 V 364 H 0 Z M 530 350 H 560 V 364 H 530 Z"/>
+    <path d="M 0 378 H 30 V 392 H 0 Z M 530 378 H 560 V 392 H 530 Z"/>
+    <path d="M 0 406 H 30 V 420 H 0 Z M 530 406 H 560 V 420 H 530 Z"/>
+  </g>
+  <!-- Landscape label well. -->
+  <rect x="54" y="45" width="452" height="340" rx="8" fill="#000" fill-opacity="0.14"/>
+  <path d="M 63 45 H 497 Q 506 45 506 54 V 376" fill="none" stroke="#000" stroke-opacity="0.58" stroke-width="5"/>
+  <path d="M 497 385 H 63 Q 54 385 54 376 V 54" fill="none" stroke="#fff" stroke-opacity="0.30" stroke-width="3"/>
+  <!-- Lower moulded Atari-style trident, kept abstract and unbranded. -->
+  <path d="M 280 398 V 458 M 280 420 Q 264 445 252 447 M 280 420 Q 296 445 308 447" fill="none" stroke="#000" stroke-opacity="0.34" stroke-width="7" stroke-linecap="round"/>
+</svg>

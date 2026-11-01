@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 350">
+  <!-- Broad bevel around the translucent coloured shell. -->
+  <path d="M 25 7 H 535 Q 551 7 553 26" fill="none" stroke="#fff" stroke-opacity="0.55" stroke-width="5"/>
+  <path d="M 553 26 V 298 Q 553 307 543 307 H 513 V 337 Q 513 343 506 343 H 53" fill="none" stroke="#000" stroke-opacity="0.30" stroke-width="6"/>
+  <path d="M 7 298 V 27 Q 7 8 26 7" fill="none" stroke="#000" stroke-opacity="0.17" stroke-width="5"/>
+  <!-- Large recessed label panel, matching the landscape Famicom artwork format. -->
+  <rect x="42" y="54" width="476" height="216" rx="10" fill="#000" fill-opacity="0.12"/>
+  <path d="M 52 54 H 508 Q 518 54 518 64 V 260" fill="none" stroke="#000" stroke-opacity="0.38" stroke-width="4"/>
+  <path d="M 508 270 H 52 Q 42 270 42 260 V 64" fill="none" stroke="#fff" stroke-opacity="0.48" stroke-width="3"/>
+  <!-- Lower shoulder seams and small mould marks. -->
+  <path d="M 0 307 H 40 V 340 Q 40 350 50 350 M 560 307 H 520 V 340 Q 520 350 510 350" fill="none" stroke="#000" stroke-opacity="0.34" stroke-width="3"/>
+  <circle cx="67" cy="321" r="5" fill="#000" fill-opacity="0.24"/>
+  <circle cx="493" cy="321" r="5" fill="#000" fill-opacity="0.24"/>
+</svg>

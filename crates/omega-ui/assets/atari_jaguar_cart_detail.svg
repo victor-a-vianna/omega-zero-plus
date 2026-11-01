@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 620 500">
+  <!-- Cylindrical top grip and the narrow neck beneath it. -->
+  <path d="M 22 3 H 598 Q 616 3 617 70 Q 617 96 599 101 H 21 Q 3 96 3 70 Q 4 3 22 3 Z" fill="#000" fill-opacity="0.12"/>
+  <path d="M 20 101 H 600" stroke="#000" stroke-opacity="0.52" stroke-width="5"/>
+  <path d="M 28 8 H 592" stroke="#fff" stroke-opacity="0.20" stroke-width="4"/>
+  <rect x="42" y="94" width="536" height="19" rx="2" fill="#000" fill-opacity="0.18"/>
+  <!-- Wide landscape label panel. -->
+  <rect x="39" y="124" width="542" height="244" rx="9" fill="#000" fill-opacity="0.15"/>
+  <path d="M 49 124 H 571 Q 581 124 581 134 V 358" fill="none" stroke="#000" stroke-opacity="0.60" stroke-width="5"/>
+  <path d="M 571 368 H 49 Q 39 368 39 358 V 134" fill="none" stroke="#fff" stroke-opacity="0.28" stroke-width="3"/>
+  <!-- Deep horizontal grip ribs across the lower third. -->
+  <g stroke="#000" stroke-opacity="0.48" stroke-width="5">
+    <path d="M 39 376 H 581"/><path d="M 39 387 H 581"/><path d="M 39 398 H 581"/>
+    <path d="M 39 409 H 581"/><path d="M 39 420 H 581"/><path d="M 39 431 H 581"/>
+    <path d="M 39 442 H 581"/><path d="M 39 453 H 581"/><path d="M 39 464 H 581"/>
+    <path d="M 39 475 H 581"/><path d="M 39 486 H 581"/>
+  </g>
+  <path d="M 22 112 V 486 Q 22 495 31 495 M 598 112 V 486 Q 598 495 589 495" fill="none" stroke="#000" stroke-opacity="0.32" stroke-width="4"/>
+</svg>

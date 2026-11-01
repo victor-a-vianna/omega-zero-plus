@@ -2,7 +2,7 @@ use std::path::PathBuf;
 use std::time::Duration;
 
 use omega_input::{Action, Gestures, Millis, RawEvent};
-use omega_retro::Rumble;
+use omega_retro::{ButtonMask, ComputerInput, Rumble};
 use omega_store::Platform;
 use omega_ui::FfState;
 
@@ -18,6 +18,14 @@ use crate::persist;
 /// past the first frame, where a core that cannot take its options gives up.
 const SETTLED_FRAMES: u64 = 120;
 
+#[derive(Copy, Clone, PartialEq, Eq, Debug, Default)]
+enum ComputerMode {
+    #[default]
+    Game,
+    Keyboard,
+    Mouse,
+}
+
 pub struct Session {
     root: PathBuf,
     app: App,
@@ -25,6 +33,8 @@ pub struct Session {
     sink: Box<dyn AudioSink>,
     gestures: Gestures,
     pad: Pad,
+    computer_mode: ComputerMode,
+    computer_chord: bool,
     rewinding: bool,
     fast: bool,
     motor: u16,
@@ -34,6 +44,8 @@ pub struct Session {
     running: Option<(Platform, String)>,
     /// The card notes the core as opening, until it has run a moment.
     starting: bool,
+    /// A standalone emulator has been requested and the device frontend must release EGL.
+    standalone: bool,
 }
 
 impl Drop for Session {
@@ -59,6 +71,8 @@ impl Session {
             sink,
             gestures: Gestures::new(),
             pad: Pad::default(),
+            computer_mode: ComputerMode::Game,
+            computer_chord: false,
             rewinding: false,
             fast: false,
             motor: 0,
@@ -66,6 +80,7 @@ impl Session {
             driven: false,
             running: None,
             starting: false,
+            standalone: false,
         }
     }
 
@@ -140,6 +155,10 @@ impl Session {
         self.emu.is_some()
     }
 
+    pub fn standalone_requested(&self) -> bool {
+        self.standalone
+    }
+
     pub fn frame_ready(&self) -> bool {
         self.emu.as_ref().is_some_and(EmuHandle::frame_ready)
     }
@@ -179,7 +198,102 @@ impl Session {
             self.pad.apply(Action::GbaUp(*btn));
         }
         if let Some(emu) = &self.emu {
-            emu.set_input(self.pad.mask());
+            let raw = self.pad.mask();
+            let platform = self.app.platform();
+            let computer = matches!(platform, Platform::Pc8800 | Platform::Pc9800);
+            let keyboard_chord =
+                raw.0 & (ButtonMask::SELECT | ButtonMask::Y) == ButtonMask::SELECT | ButtonMask::Y;
+            let mouse_chord = platform == Platform::Pc9800
+                && raw.0 & (ButtonMask::SELECT | ButtonMask::X)
+                    == ButtonMask::SELECT | ButtonMask::X;
+            let chord = keyboard_chord || mouse_chord;
+            if computer && chord && !self.computer_chord {
+                let requested = if keyboard_chord {
+                    ComputerMode::Keyboard
+                } else {
+                    ComputerMode::Mouse
+                };
+                self.computer_mode = if self.computer_mode == requested {
+                    ComputerMode::Game
+                } else {
+                    requested
+                };
+                eprintln!(
+                    "omega-zero: {} input mode: {:?}",
+                    platform.dir_name(),
+                    self.computer_mode
+                );
+            }
+            self.computer_chord = chord;
+            if !computer {
+                self.computer_mode = ComputerMode::Game;
+                self.computer_chord = false;
+            }
+
+            let mut aux = ComputerInput::default();
+            let game = match self.computer_mode {
+                ComputerMode::Game => raw,
+                ComputerMode::Keyboard => {
+                    if raw.0 & ButtonMask::UP != 0 {
+                        aux.keys |= ComputerInput::UP;
+                    }
+                    if raw.0 & ButtonMask::DOWN != 0 {
+                        aux.keys |= ComputerInput::DOWN;
+                    }
+                    if raw.0 & ButtonMask::LEFT != 0 {
+                        aux.keys |= ComputerInput::LEFT;
+                    }
+                    if raw.0 & ButtonMask::RIGHT != 0 {
+                        aux.keys |= ComputerInput::RIGHT;
+                    }
+                    if raw.0 & ButtonMask::A != 0 {
+                        aux.keys |= ComputerInput::ENTER;
+                    }
+                    if raw.0 & ButtonMask::B != 0 {
+                        aux.keys |= ComputerInput::SPACE;
+                    }
+                    if raw.0 & ButtonMask::X != 0 {
+                        aux.keys |= ComputerInput::ESCAPE;
+                    }
+                    if raw.0 & ButtonMask::Y != 0 {
+                        aux.keys |= ComputerInput::TAB;
+                    }
+                    if raw.0 & ButtonMask::L != 0 {
+                        aux.keys |= ComputerInput::SHIFT;
+                    }
+                    if raw.0 & ButtonMask::R != 0 {
+                        aux.keys |= ComputerInput::CONTROL;
+                    }
+                    if raw.0 & ButtonMask::START != 0 {
+                        aux.keys |= ComputerInput::BACKSPACE;
+                    }
+                    ButtonMask(0)
+                }
+                ComputerMode::Mouse => {
+                    const STEP: i16 = 6;
+                    if raw.0 & ButtonMask::LEFT != 0 {
+                        aux.mouse_x -= STEP;
+                    }
+                    if raw.0 & ButtonMask::RIGHT != 0 {
+                        aux.mouse_x += STEP;
+                    }
+                    if raw.0 & ButtonMask::UP != 0 {
+                        aux.mouse_y -= STEP;
+                    }
+                    if raw.0 & ButtonMask::DOWN != 0 {
+                        aux.mouse_y += STEP;
+                    }
+                    if raw.0 & ButtonMask::A != 0 {
+                        aux.mouse_buttons |= ComputerInput::MOUSE_LEFT;
+                    }
+                    if raw.0 & ButtonMask::B != 0 {
+                        aux.mouse_buttons |= ComputerInput::MOUSE_RIGHT;
+                    }
+                    ButtonMask(0)
+                }
+            };
+            emu.set_computer_input(aux);
+            emu.set_input(if chord { ButtonMask(0) } else { game });
         }
     }
 
@@ -387,9 +501,30 @@ impl Session {
             Phase::Inserting { cart, .. } => cart.clone(),
             _ => return,
         };
+        if self.app.seated_cart().is_some_and(|cart| {
+            matches!(
+                cart.platform,
+                Platform::NeoGeo
+                    | Platform::NeoGeoCd
+                    | Platform::AtariJaguar
+                    | Platform::AtariJaguarCd
+                    | Platform::Daphne
+                    | Platform::Pc9800
+                    | Platform::Cps1
+                    | Platform::Cps2
+                    | Platform::Cps3
+                    | Platform::FbNeo
+                    | Platform::Mame
+            ) && !self.app.cart_load_ready()
+        }) {
+            return;
+        }
         if self.emu.is_none() {
             let (_, serial) = self.app.link_mode(&stem);
             self.spawn_core(&stem, serial);
+        }
+        if self.standalone {
+            return;
         }
         match self.emu.as_ref().map(EmuHandle::state) {
             Some(CoreState::Loading) => {}
@@ -411,17 +546,161 @@ impl Session {
             return;
         };
         let core = omega_store::core_for_platform(&self.root, stem, platform);
+        if matches!(platform, Platform::AtariJaguar | Platform::AtariJaguarCd) {
+            self.app.set_core(core);
+            self.app.set_platform(platform);
+            self.app.set_link_loaded(serial);
+            let request = self.root.join("System/bigpemu.launch");
+            let temporary = request.with_extension("launch.tmp");
+            let result = std::fs::write(&temporary, format!("{}\n", rom.display()))
+                .and_then(|()| std::fs::rename(&temporary, &request));
+            match result {
+                Ok(()) => self.standalone = true,
+                Err(e) => {
+                    let _ = std::fs::remove_file(&temporary);
+                    eprintln!("omega-zero: BigPEmu launch request failed: {e}");
+                    self.app.on_core_failed();
+                }
+            }
+            return;
+        }
+        if platform == Platform::Daphne {
+            self.app.set_core(core);
+            self.app.set_platform(platform);
+            self.app.set_link_loaded(serial);
+            let request = self.root.join("System/hypseus.launch");
+            let temporary = request.with_extension("launch.tmp");
+            let result = std::fs::write(&temporary, format!("{}\n", rom.display()))
+                .and_then(|()| std::fs::rename(&temporary, &request));
+            match result {
+                Ok(()) => self.standalone = true,
+                Err(e) => {
+                    let _ = std::fs::remove_file(&temporary);
+                    eprintln!("omega-zero: Hypseus launch request failed: {e}");
+                    self.app.on_core_failed();
+                }
+            }
+            return;
+        }
+        if platform == Platform::SegaCd && !crate::root::has_segacd_bios(&self.root) {
+            eprintln!(
+                "omega-zero: Sega CD BIOS missing; add bios_CD_U.bin, bios_CD_E.bin or bios_CD_J.bin to BIOS/"
+            );
+        }
+        if platform == Platform::Cd32 && !crate::root::has_cd32_bios(&self.root) {
+            eprintln!(
+                "omega-zero: CD32 BIOS missing or invalid; add the 1 MiB kick40060.CD32, or the 512 KiB kick40060.CD32 plus kick40060.CD32.ext, to BIOS/"
+            );
+        }
+        if platform == Platform::FamicomDiskSystem && !crate::root::has_fds_bios(&self.root) {
+            eprintln!(
+                "omega-zero: Famicom Disk System BIOS missing or invalid; add the 8192-byte disksys.rom to BIOS/"
+            );
+        }
+        if platform == Platform::AtariSt && !crate::root::has_atari_st_bios(&self.root) {
+            eprintln!("omega-zero: Atari ST BIOS missing; add tos.img to BIOS/");
+        }
+        if platform == Platform::Pc9800 && !crate::root::has_np2kai_bios(&self.root) {
+            eprintln!(
+                "omega-zero: PC-9800 BIOS missing; add bios.rom and font.rom (or font.bmp) to BIOS/np2kai/"
+            );
+        }
+        if platform == Platform::Pc8800 && !crate::root::has_quasi88_bios(&self.root) {
+            eprintln!(
+                "omega-zero: PC-8800 BIOS set missing; QUASI88 will use its fallback BIOS. Add N88.ROM and N88SUB.ROM (or DISK.ROM) to BIOS/quasi88/ for full compatibility"
+            );
+        }
+        if platform == Platform::SufamiTurbo && !crate::root::has_sufami_turbo_bios(&self.root) {
+            eprintln!(
+                "omega-zero: SuFami Turbo BIOS missing or invalid; add the 262144-byte STBIOS.bin to BIOS/"
+            );
+        }
+        if platform == Platform::Tg16CdPceCd && !crate::root::has_pce_cd_bios(&self.root) {
+            eprintln!("omega-zero: PC Engine CD BIOS missing; add syscard3.pce to BIOS/");
+        }
+        if platform == Platform::PcFx && !crate::root::has_pcfx_bios(&self.root) {
+            eprintln!("omega-zero: PC-FX BIOS missing or invalid; add the 1 MiB pcfx.rom to BIOS/");
+        }
+        if platform == Platform::NeoGeo && !crate::root::has_neogeo_bios(&self.root) {
+            eprintln!("omega-zero: Neo Geo BIOS missing; add neogeo.zip to BIOS/fbneo/");
+        }
+        if platform == Platform::NeoGeoCd && !crate::root::has_neogeo_cd_bios(&self.root) {
+            eprintln!(
+                "omega-zero: Neo Geo CD BIOS missing; add neogeo.zip and neocdz.zip to BIOS/fbneo/"
+            );
+        }
+        if platform == Platform::Atari5200 && !crate::root::has_atari5200_bios(&self.root) {
+            eprintln!("omega-zero: Atari 5200 BIOS missing or invalid; add the 2048-byte 5200.rom to BIOS/");
+        }
         self.app.set_core(core);
         self.app.set_platform(platform);
         self.app
             .set_video_mode(crate::video_mode::video_mode_for(&self.root, stem));
         self.app.set_link_loaded(serial);
-        let resume = (!self.app.starting_clean())
+        // NP2Kai 1ea561c can crash inside retro_unserialize while restoring its OPNA
+        // state (FM::Timer::DataLoad with a null destination). Start PC-98 content clean
+        // until the core can reject incompatible states without taking down the frontend.
+        let resume = (core != omega_store::Core::Np2Kai && !self.app.starting_clean())
             .then(|| persist::read_resume(&self.root, platform, core, stem))
             .flatten();
         let player = self.app.link_player();
         let setup = match platform {
-            Platform::Snes | Platform::Ps1 => Setup::Console,
+            Platform::Genesis
+            | Platform::GameGear
+            | Platform::MasterSystem
+            | Platform::Sg1000
+            | Platform::Sega32X
+            | Platform::SegaCd
+            | Platform::Nes
+            | Platform::FamicomDiskSystem
+            | Platform::Atari2600
+            | Platform::Atari800
+            | Platform::Atari7800
+            | Platform::AtariLynx
+            | Platform::VirtualBoy
+            | Platform::PokemonMini
+            | Platform::GameAndWatch
+            | Platform::Arduboy
+            | Platform::WonderSwan
+            | Platform::WonderSwanColor
+            | Platform::MegaDuck
+            | Platform::Supervision
+            | Platform::Tic80
+            | Platform::Chip8
+            | Platform::Pico8
+            | Platform::Java
+            | Platform::Vircon32
+            | Platform::Uzem
+            | Platform::Daphne
+            | Platform::NeoGeoPocket
+            | Platform::NeoGeoPocketColor
+            | Platform::AtariJaguar
+            | Platform::AtariJaguarCd
+            | Platform::AtariSt
+            | Platform::Pc8800
+            | Platform::Pc9800
+            | Platform::Tg16Pce
+            | Platform::Tg16CdPceCd
+            | Platform::SuperGrafx
+            | Platform::PcFx
+            | Platform::NeoGeo
+            | Platform::NeoGeoCd
+            | Platform::Cps1
+            | Platform::Cps2
+            | Platform::Cps3
+            | Platform::FbNeo
+            | Platform::Mame
+            | Platform::Gp32
+            | Platform::Vectrex
+            | Platform::Cd32
+            | Platform::SufamiTurbo
+            | Platform::Snes
+            | Platform::Ps1 => Setup::Console,
+            Platform::Atari5200 => Setup::Handheld {
+                serial: "5200",
+                colour: false,
+                link: None,
+            },
             Platform::Gba | Platform::Gb | Platform::Gbc => Setup::Handheld {
                 serial,
                 colour: self.app.colour_correction(),

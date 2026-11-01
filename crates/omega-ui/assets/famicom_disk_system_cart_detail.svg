@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 430 500">
+  <path d="M 7 6 H 51 L 63 24 H 171 L 183 6 H 247 L 259 24 H 367 L 379 6 H 421" fill="none" stroke="#fff" stroke-opacity="0.55" stroke-width="4"/>
+  <path d="M 424 8 V 490 Q 424 494 418 494 H 12" fill="none" stroke="#000" stroke-opacity="0.28" stroke-width="5"/>
+  <!-- Shutter channel and exposed hub. -->
+  <rect x="194" y="22" width="42" height="152" rx="5" fill="#000" fill-opacity="0.50"/>
+  <path d="M 215 181 A 51 51 0 1 0 215 283 A 51 51 0 1 0 215 181" fill="#000" fill-opacity="0.16" stroke="#000" stroke-opacity="0.35" stroke-width="4"/>
+  <circle cx="215" cy="232" r="39" fill="#fff" fill-opacity="0.65" stroke="#000" stroke-opacity="0.28" stroke-width="3"/>
+  <circle cx="215" cy="232" r="16" fill="#000" fill-opacity="0.72"/>
+  <!-- Wide writable label. -->
+  <rect x="61" y="302" width="308" height="122" rx="8" fill="#000" fill-opacity="0.12"/>
+  <path d="M 69 302 H 361 Q 369 302 369 310 V 416" fill="none" stroke="#000" stroke-opacity="0.38" stroke-width="4"/>
+  <path d="M 361 424 H 69 Q 61 424 61 416 V 310" fill="none" stroke="#fff" stroke-opacity="0.48" stroke-width="3"/>
+</svg>

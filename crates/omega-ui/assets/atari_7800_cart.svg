@@ -1,0 +1,4 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 450 500">
+  <!-- Rounded, portrait-oriented Atari 7800 cartridge. -->
+  <path d="M 18 0 H 432 Q 450 0 450 18 V 482 Q 450 500 432 500 H 18 Q 0 500 0 482 V 18 Q 0 0 18 0 Z" fill="#fff"/>
+</svg>

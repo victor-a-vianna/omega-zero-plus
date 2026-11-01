@@ -19,6 +19,17 @@ use omega_store::{ps1, Cart, Platform, Region};
 
 use crate::json::Json;
 
+fn is_disc_platform(platform: Platform) -> bool {
+    matches!(
+        platform,
+        Platform::SegaCd
+            | Platform::Tg16CdPceCd
+            | Platform::NeoGeoCd
+            | Platform::PcFx
+            | Platform::Ps1
+    )
+}
+
 const API: &str = "https://api.screenscraper.fr/api2";
 pub const SOFTNAME: &str = "omega-zero";
 pub const ACCOUNT_FILE: &str = "Config/screenscraper.conf";
@@ -132,10 +143,10 @@ impl Want {
     /// disc's being its game's as well.
     pub fn label_paths(&self, root: &Path) -> Vec<PathBuf> {
         let own = label_path(root, self.platform, &self.stem);
-        if self.platform != Platform::Ps1 {
+        if !is_disc_platform(self.platform) {
             return vec![own];
         }
-        let mut paths = vec![ps1::disc_label(root, &self.rom)];
+        let mut paths = vec![ps1::disc_label_for(root, self.platform, &self.rom)];
         if self.disc == 0 && !paths.contains(&own) {
             paths.push(own);
         }
@@ -159,7 +170,7 @@ impl Want {
 pub fn wants<'a>(root: Option<&Path>, carts: impl IntoIterator<Item = &'a Cart>) -> Vec<Want> {
     let mut out = Vec::new();
     for cart in carts {
-        if cart.platform != Platform::Ps1 {
+        if !is_disc_platform(cart.platform) {
             if cart.label.is_none() {
                 out.push(Want::cart(cart));
             }
@@ -168,7 +179,7 @@ pub fn wants<'a>(root: Option<&Path>, carts: impl IntoIterator<Item = &'a Cart>)
         let discs = ps1::discs(&cart.rom);
         for (i, disc) in discs.iter().enumerate() {
             let own = match root {
-                Some(root) => ps1::disc_label(root, disc).is_file(),
+                Some(root) => ps1::disc_label_for(root, cart.platform, disc).is_file(),
                 None => cart.label.is_some(),
             };
             if own && (i > 0 || cart.label.is_some()) {
@@ -202,7 +213,57 @@ pub fn system_id(platform: Platform) -> u32 {
         Platform::Gba => 12,
         Platform::Gb => 9,
         Platform::Gbc => 10,
-        Platform::Snes => 4,
+        Platform::Genesis => 1,
+        Platform::GameGear => 21,
+        Platform::MasterSystem => 2,
+        Platform::Sg1000 => 109,
+        Platform::Sega32X => 19,
+        Platform::SegaCd => 20,
+        Platform::Nes => 3,
+        Platform::FamicomDiskSystem => 106,
+        Platform::Atari2600 => 26,
+        Platform::Atari800 => 43,
+        Platform::Atari5200 => 40,
+        Platform::Atari7800 => 41,
+        Platform::AtariLynx => 28,
+        Platform::VirtualBoy => 11,
+        Platform::PokemonMini => 211,
+        Platform::GameAndWatch => 52,
+        Platform::Arduboy => 263,
+        Platform::WonderSwan => 45,
+        Platform::WonderSwanColor => 46,
+        Platform::MegaDuck => 90,
+        Platform::Supervision => 207,
+        Platform::Tic80 => 222,
+        Platform::Pico8 => 234,
+        // ScreenScraper has no dedicated CHIP-8 system in its public platform map.
+        Platform::Chip8 => 0,
+        Platform::Java => 302,
+        Platform::Vircon32 => 272,
+        Platform::Uzem => 216,
+        Platform::Daphne => 49,
+        Platform::NeoGeoPocket => 25,
+        Platform::NeoGeoPocketColor => 82,
+        Platform::AtariJaguar => 27,
+        Platform::AtariJaguarCd => 171,
+        Platform::AtariSt => 42,
+        Platform::Pc8800 => 221,
+        Platform::Pc9800 => 208,
+        Platform::Tg16Pce => 31,
+        Platform::Tg16CdPceCd => 114,
+        Platform::SuperGrafx => 105,
+        Platform::PcFx => 72,
+        Platform::NeoGeo => 142,
+        Platform::NeoGeoCd => 70,
+        Platform::Cps1 => 6,
+        Platform::Cps2 => 7,
+        Platform::Cps3 => 8,
+        Platform::FbNeo => 75,
+        Platform::Mame => 75,
+        Platform::Gp32 => 101,
+        Platform::Vectrex => 102,
+        Platform::Cd32 => 130,
+        Platform::SufamiTurbo | Platform::Snes => 4,
         Platform::Ps1 => 57,
     }
 }
@@ -312,6 +373,63 @@ pub fn label_regions(want: &Want) -> Vec<&'static str> {
     let mut out = tag_regions(&want.stem);
     match want.platform {
         Platform::Gba | Platform::Gb | Platform::Gbc => return regions(&want.stem, &want.code),
+        Platform::Genesis
+        | Platform::Sega32X
+        | Platform::SegaCd
+        | Platform::GameGear
+        | Platform::MasterSystem
+        | Platform::Sg1000 => {
+            out.extend(["wor", "us", "eu", "jp"]);
+        }
+        Platform::Atari2600
+        | Platform::Atari800
+        | Platform::Atari5200
+        | Platform::Atari7800
+        | Platform::AtariLynx => out.extend(["wor", "us", "eu", "jp"]),
+        Platform::AtariJaguar | Platform::AtariJaguarCd | Platform::AtariSt => {
+            out.extend(["wor", "eu", "us", "jp"])
+        }
+        Platform::Pc8800 | Platform::Pc9800 => out.extend(["jp", "wor", "us", "eu"]),
+        Platform::Tg16Pce | Platform::Tg16CdPceCd | Platform::SuperGrafx => {
+            out.extend(["jp", "us", "wor", "eu"])
+        }
+        Platform::PcFx => out.extend(["jp", "wor", "us", "eu"]),
+        Platform::NeoGeo
+        | Platform::NeoGeoCd
+        | Platform::Cps1
+        | Platform::Cps2
+        | Platform::Cps3
+        | Platform::FbNeo => out.extend(["jp", "us", "eu", "wor"]),
+        Platform::Mame => out.extend(["wor", "us", "eu", "jp"]),
+        Platform::Gp32 => out.extend(["wor", "eu", "us", "jp"]),
+        Platform::Vectrex => out.extend(["wor", "us", "eu", "jp"]),
+        Platform::Cd32 => out.extend(["eu", "wor", "us", "jp"]),
+        Platform::VirtualBoy => out.extend(["jp", "us", "wor", "eu"]),
+        Platform::PokemonMini => out.extend(["jp", "eu", "us", "wor"]),
+        Platform::GameAndWatch => out.extend(["wor", "us", "eu", "jp"]),
+        Platform::Arduboy => out.extend(["wor", "us", "eu", "jp"]),
+        Platform::WonderSwan | Platform::WonderSwanColor => out.extend(["jp", "wor", "us", "eu"]),
+        Platform::MegaDuck => out.extend(["wor", "eu", "us", "jp"]),
+        Platform::Supervision => out.extend(["wor", "eu", "us", "jp"]),
+        Platform::Tic80 => out.extend(["wor", "us", "eu", "jp"]),
+        Platform::Pico8 => out.extend(["wor", "us", "eu", "jp"]),
+        Platform::Chip8 => out.extend(["wor", "us", "eu", "jp"]),
+        Platform::Java => out.extend(["wor", "eu", "us", "jp"]),
+        Platform::Vircon32 => out.extend(["wor", "us", "eu", "jp"]),
+        Platform::Uzem => out.extend(["wor", "us", "eu", "jp"]),
+        Platform::Daphne => out.extend(["wor", "us", "eu", "jp"]),
+        Platform::NeoGeoPocket | Platform::NeoGeoPocketColor => {
+            out.extend(["jp", "us", "eu", "wor"])
+        }
+        Platform::Nes => {
+            if Region::from_tags(&want.stem) == Some(Region::Usa) {
+                out.extend(["us", "wor", "eu", "jp"]);
+            } else {
+                out.extend(["jp", "eu", "wor", "us"]);
+            }
+        }
+        Platform::FamicomDiskSystem => out.extend(["jp", "wor", "us", "eu"]),
+        Platform::SufamiTurbo => out.extend(["jp", "wor"]),
         Platform::Snes => {
             let region = omega_store::snes::region(&want.rom, &want.stem);
             out.extend(region.and_then(region_code));
@@ -414,9 +532,10 @@ pub fn lookups(want: &Want) -> Vec<Lookup> {
         .rom
         .file_name()
         .map(|n| n.to_string_lossy().into_owned())
-        .unwrap_or_default();
+        .unwrap_or_default()
+        .replace('_', " ");
     let system = system_id(want.platform);
-    if want.platform != Platform::Ps1 {
+    if !is_disc_platform(want.platform) {
         let Ok(bytes) = std::fs::read(&want.rom) else {
             return Vec::new();
         };
@@ -651,7 +770,12 @@ fn pick<'a>(
 /// is no scan.
 pub fn label_kinds(platform: Platform) -> &'static [&'static str] {
     match platform {
-        Platform::Ps1 => &["support-texture", "support-2D"],
+        Platform::SegaCd
+        | Platform::Tg16CdPceCd
+        | Platform::NeoGeoCd
+        | Platform::PcFx
+        | Platform::Ps1 => &["support-texture", "support-2D"],
+        Platform::Genesis | Platform::Sega32X => &["support-texture", "support-2D"],
         _ => &["support-texture"],
     }
 }
@@ -663,7 +787,7 @@ pub fn label_kinds(platform: Platform) -> &'static [&'static str] {
 pub fn pick_media<'a>(found: &'a Found, want: &Want) -> Option<&'a Media> {
     let regions = label_regions(want);
     let disc = found.disc.unwrap_or(want.disc as u64 + 1);
-    let own_disc = |m: &Media| want.platform != Platform::Ps1 || m.support.unwrap_or(1) == disc;
+    let own_disc = |m: &Media| !is_disc_platform(want.platform) || m.support.unwrap_or(1) == disc;
     label_kinds(want.platform)
         .iter()
         .find_map(|kind| pick(&found.medias, |m| m.kind == *kind && own_disc(m), &regions))
@@ -863,7 +987,13 @@ pub fn sync(
 
 /// A cart's name for showing while it is looked up: its file name without the tags.
 pub fn title(stem: &str) -> String {
-    stem.split(" (").next().unwrap_or(stem).trim().to_string()
+    stem.split(" (")
+        .next()
+        .unwrap_or(stem)
+        .replace('_', " ")
+        .split_whitespace()
+        .collect::<Vec<_>>()
+        .join(" ")
 }
 
 pub enum LabelJob {

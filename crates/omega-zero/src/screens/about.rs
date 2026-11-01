@@ -38,8 +38,8 @@ pub const AUTHOR: &str = "@OAURAMOS";
 /// stands between two small letters: Chrome sets one a pixel lower there than Rust can.
 pub const CREDITS: [&str; 8] = [
     "Emulation by mGBA (MPL-2.0), gpSP (GPL-2.0),",
-    "Snes9x (no commercial use), Mednafen's",
-    "Supafaust and PCSX-ReARMed (both GPL-2.0).",
+    "PicoDrive and Snes9x (non-commercial),",
+    "Supafaust and PCSX-ReARMed (GPL-2.0).",
     "Made on BaseOS by pvaibhav.",
     "Type is Pixel Code by Qwerasd.",
     "Panel mask from GigaHerz's LCD3x.",

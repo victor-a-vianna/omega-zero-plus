@@ -42,6 +42,46 @@ fn scan_ignores_non_gba_files() {
 }
 
 #[test]
+fn a_pico8_png_cart_drops_both_extensions_from_its_name() {
+    let d = tmp_root();
+    std::fs::write(d.path().join("Games/PICO8/Celeste.p8.png"), b"png cart").unwrap();
+
+    let cart = scan(d.path())
+        .unwrap()
+        .into_iter()
+        .find(|cart| cart.platform == Platform::Pico8)
+        .unwrap();
+
+    assert_eq!(cart.stem, "Celeste");
+    assert_eq!(cart.rom, d.path().join("Games/PICO8/Celeste.p8.png"));
+}
+
+#[test]
+fn daphne_shelves_a_game_directory_only_when_its_framefile_is_present() {
+    let d = tmp_root();
+    let game = d.path().join("Games/DAPHNE/lair.daphne");
+    let incomplete = d.path().join("Games/DAPHNE/ace.daphne");
+    std::fs::create_dir_all(&game).unwrap();
+    std::fs::create_dir_all(&incomplete).unwrap();
+    std::fs::write(game.join("lair.txt"), "0 lair.m2v\n").unwrap();
+
+    let carts = scan(d.path()).unwrap();
+    let cart = carts
+        .iter()
+        .find(|cart| cart.platform == Platform::Daphne)
+        .unwrap();
+    assert_eq!(cart.stem, "lair");
+    assert_eq!(cart.rom, game);
+    assert_eq!(
+        carts
+            .iter()
+            .filter(|cart| cart.platform == Platform::Daphne)
+            .count(),
+        1
+    );
+}
+
+#[test]
 fn an_appledouble_sidecar_is_not_shelved_as_a_cart() {
     let d = tmp_root();
     write_rom(&d, "GBA/Metroid Fusion.gba", "METROID");
@@ -79,6 +119,10 @@ fn a_cart_takes_the_platform_of_the_folder_it_is_in() {
     write_rom(&d, "GBA/Metroid Fusion.gba", "METROID");
     std::fs::write(d.path().join("Games/GB/Tetris.gb"), vec![0u8; 0x150]).unwrap();
     std::fs::write(d.path().join("Games/GBC/Chromatic.gbc"), vec![0u8; 0x150]).unwrap();
+    std::fs::write(d.path().join("Games/GENESIS/Sonic.md"), vec![0u8; 0x180]).unwrap();
+    std::fs::write(d.path().join("Games/32X/Chaotix.32x"), vec![0u8; 0x180]).unwrap();
+    std::fs::write(d.path().join("Games/SEGACD/Sonic CD.chd"), b"chd").unwrap();
+    std::fs::write(d.path().join("Games/NES/Super Mario Bros.nes"), b"nes").unwrap();
 
     let carts = scan(d.path()).unwrap();
 
@@ -86,6 +130,10 @@ fn a_cart_takes_the_platform_of_the_folder_it_is_in() {
     assert_eq!(by_stem("Metroid Fusion"), Platform::Gba);
     assert_eq!(by_stem("Tetris"), Platform::Gb);
     assert_eq!(by_stem("Chromatic"), Platform::Gbc);
+    assert_eq!(by_stem("Sonic"), Platform::Genesis);
+    assert_eq!(by_stem("Chaotix"), Platform::Sega32X);
+    assert_eq!(by_stem("Sonic CD"), Platform::SegaCd);
+    assert_eq!(by_stem("Super Mario Bros"), Platform::Nes);
 }
 
 #[test]
@@ -93,6 +141,24 @@ fn a_gba_rom_in_the_game_boy_folder_does_not_appear() {
     let d = tmp_root();
     std::fs::write(d.path().join("Games/GB/Wrong.gba"), vec![0u8; 0x150]).unwrap();
     assert!(scan(d.path()).unwrap().is_empty());
+}
+
+#[test]
+fn sega_cd_discs_share_one_game_and_a_platform_specific_playlist() {
+    let d = tmp_root();
+    let games = d.path().join("Games/SEGACD");
+    std::fs::write(games.join("Lunar (Disc 1).chd"), b"disc one").unwrap();
+    std::fs::write(games.join("Lunar (Disc 2).chd"), b"disc two").unwrap();
+
+    let carts = scan(d.path()).unwrap();
+    let lunar = carts.iter().find(|cart| cart.stem == "Lunar").unwrap();
+
+    assert_eq!(lunar.platform, Platform::SegaCd);
+    assert_eq!(
+        lunar.rom,
+        d.path().join("Config/playlists/SEGACD/Lunar.m3u")
+    );
+    assert_eq!(omega_store::ps1::discs(&lunar.rom).len(), 2);
 }
 
 #[test]

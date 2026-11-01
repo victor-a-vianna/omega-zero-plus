@@ -2,7 +2,7 @@ use std::path::{Path, PathBuf};
 use std::time::{Duration, Instant};
 
 use omega_gfx::{
-    canvas, set_canvas, Canvas, Compositor, FbdevSurface, Rotation, Surface, CANVAS_ENV,
+    canvas, set_canvas, Canvas, Compositor, DrmSurface, FbdevSurface, Rotation, Surface, CANVAS_ENV,
 };
 use omega_power::{baseos_release, trace_first_frame, DevicePlatform};
 use omega_ui::UndoFace;
@@ -115,24 +115,32 @@ fn read_boot_logo(root: &Path, panel: (u32, u32), rotation: Rotation) -> Option<
         .ok()
 }
 
-pub fn run() {
+pub fn run() -> i32 {
     let root = std::env::var_os("OMEGA_ROOT")
         .map(PathBuf::from)
         .unwrap_or_else(|| PathBuf::from(CARD));
-    let mut surface = match FbdevSurface::new() {
+    let surface: Result<Box<dyn Surface>, _> = match std::env::var("OMEGA_GFX_BACKEND").as_deref() {
+        Ok("drm") => DrmSurface::new().map(|s| Box::new(s) as Box<dyn Surface>),
+        _ => FbdevSurface::new().map(|s| Box::new(s) as Box<dyn Surface>),
+    };
+    let mut surface = match surface {
         Ok(s) => s,
         Err(e) => {
             eprintln!("omega-zero: {e}");
-            return;
+            return 1;
         }
     };
     let rotation = choose_canvas(surface.window_size());
-    let logo = read_boot_logo(&root, surface.window_size(), rotation);
-    let mut compositor = match Compositor::new(&surface) {
+    let returning_from_standalone =
+        std::env::var_os("OMEGA_RETURNING_FROM_STANDALONE").is_some_and(|value| value == "1");
+    let logo = (!returning_from_standalone)
+        .then(|| read_boot_logo(&root, surface.window_size(), rotation))
+        .flatten();
+    let mut compositor = match Compositor::new(&*surface) {
         Ok(c) => c,
         Err(e) => {
             eprintln!("omega-zero: {e}");
-            return;
+            return 1;
         }
     };
     // EGL has the framebuffer open now; the scripts and daemons started from here on get none
@@ -149,7 +157,9 @@ pub fn run() {
     if let Some(logo) = logo.and_then(|reading| reading.join().ok()).flatten() {
         frontend.show_boot_logo(&mut compositor, &logo);
     }
-    frontend.start_opening(&omega_zero::opening::Facts::read());
+    if !returning_from_standalone {
+        frontend.start_opening(&omega_zero::opening::Facts::read());
+    }
     let mut input = DeviceInput::open(&root);
     let card = root.clone();
     let _ = std::thread::Builder::new()
@@ -163,12 +173,15 @@ pub fn run() {
         pacer.wait();
         let began = Instant::now();
         frontend.advance(&mut input);
+        if frontend.standalone_requested() {
+            return 42;
+        }
         if frontend.restarting() {
             frontend.restart();
         }
         if frontend.powering_off() {
             frontend.poweroff();
-            return;
+            return 0;
         }
         frontend.step_emulator(pacer.period, STEP_TIMEOUT);
         frontend.render(&mut compositor, surface.window_size());
@@ -176,7 +189,7 @@ pub fn run() {
         let work = swap - began;
         if let Err(e) = surface.swap() {
             eprintln!("omega-zero: {e}");
-            return;
+            return 1;
         }
         let swap_took = swap.elapsed();
         omega_zero::latency::swapped(swap_took.as_secs_f64() * 1000.0);

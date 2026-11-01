@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="500" height="560" viewBox="0 0 500 560">
+  <!-- Monochrome relief mask: transparent shell, white highlights and black recesses. -->
+  <path fill="none" stroke="#fff" stroke-width="3" opacity=".22" d="M18 101h464"/>
+  <path fill="none" stroke="#000" stroke-width="4" opacity=".55" d="M18 105h464"/>
+  <rect x="48" y="130" width="404" height="326" rx="19" fill="none" stroke="#fff" stroke-width="3" opacity=".24"/>
+  <rect x="52" y="134" width="396" height="318" rx="16" fill="none" stroke="#000" stroke-width="6" opacity=".72"/>
+  <g>
+    <circle cx="58" cy="60" r="18" fill="#a7a7a7" stroke="#666" stroke-width="3"/>
+    <circle cx="58" cy="60" r="12" fill="#323232"/>
+    <path d="M51 58h5v-7h5v7h7v5h-7v7h-5v-7h-7z" fill="#a8a8a8"/>
+    <circle cx="442" cy="60" r="18" fill="#a7a7a7" stroke="#666" stroke-width="3"/>
+    <circle cx="442" cy="60" r="12" fill="#323232"/>
+    <path d="M435 58h5v-7h5v7h7v5h-7v7h-5v-7h-7z" fill="#a8a8a8"/>
+  </g>
+  <path fill="none" stroke="#000" stroke-width="5" opacity=".56" d="M61 478h378v70l-14 8H75l-14-8z"/>
+  <path fill="none" stroke="#fff" stroke-width="3" opacity=".22" d="M64 480h372"/>
+  <g fill="#000" opacity=".58">
+    <path d="M72 482h13v65H72zm19 0h13v65H91zm19 0h13v65h-13zm19 0h13v65h-13zm19 0h13v65h-13zm19 0h13v65h-13zm19 0h13v65h-13zm19 0h13v65h-13zm19 0h13v65h-13zm19 0h13v65h-13zm19 0h13v65h-13zm19 0h13v65h-13zm19 0h13v65h-13zm19 0h13v65h-13zm19 0h13v65h-13zm19 0h13v65h-13zm19 0h13v65h-13zm19 0h13v65h-13zm19 0h13v65h-13z"/>
+  </g>
+</svg>

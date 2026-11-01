@@ -26,6 +26,10 @@ use crate::Region;
 /// the content root: outside Games/, so the shelf never shows them twice.
 pub const PLAYLISTS_DIR: &str = "Config/playlists/PS1";
 
+fn playlists_dir(platform: Platform) -> String {
+    format!("Config/playlists/{}", platform.dir_name())
+}
+
 /// One game found in Games/PS1: the name it stands on the shelf under, which its saves, states
 /// and label are kept by, and the file a core is given.
 #[derive(Clone, PartialEq, Eq, Debug)]
@@ -55,17 +59,29 @@ pub fn discs(path: &Path) -> Vec<PathBuf> {
 /// Where the label of one disc is kept: `Labels/PS1/<disc's own name>.png`, the way a lone
 /// disc's label is kept under its own name.
 pub fn disc_label(root: &Path, disc: &Path) -> PathBuf {
+    disc_label_for(root, Platform::Ps1, disc)
+}
+
+/// Where one disc's label is kept for a disc-based `platform`.
+pub fn disc_label_for(root: &Path, platform: Platform, disc: &Path) -> PathBuf {
     let stem = disc
         .file_stem()
         .and_then(|s| s.to_str())
         .unwrap_or_default();
-    root.join("Labels").join("PS1").join(format!("{stem}.png"))
+    root.join("Labels")
+        .join(platform.dir_name())
+        .join(format!("{stem}.png"))
 }
 
 /// The games in `dir`, which is `root`'s Games/PS1, by the rules at the top of this file, in no
 /// particular order. Writes the playlists games on several discs need, and clears away those no
 /// game needs any more. Fails only when `dir` itself cannot be read.
 pub fn games(root: &Path, dir: &Path) -> std::io::Result<Vec<Game>> {
+    games_for(root, dir, Platform::Ps1)
+}
+
+/// Disc games for PS1 or Sega CD, sharing playlist and multi-disc handling.
+pub fn games_for(root: &Path, dir: &Path, platform: Platform) -> std::io::Result<Vec<Game>> {
     let (mut files, folders) = list(dir)?;
     for folder in folders {
         match list(&folder) {
@@ -73,7 +89,7 @@ pub fn games(root: &Path, dir: &Path) -> std::io::Result<Vec<Game>> {
             Err(e) => eprintln!("omega-zero: scan: {}: {e}", folder.display()),
         }
     }
-    files.retain(|f| Platform::Ps1.accepts(f));
+    files.retain(|f| platform.accepts(f));
     files.sort();
 
     let (playlists, discs_found): (Vec<PathBuf>, Vec<PathBuf>) =
@@ -111,7 +127,7 @@ pub fn games(root: &Path, dir: &Path) -> std::io::Result<Vec<Game>> {
         }
     }
 
-    let playlist_dir = root.join(PLAYLISTS_DIR);
+    let playlist_dir = root.join(playlists_dir(platform));
     let mut written = HashSet::new();
     for (_, (base, mut set)) in sets {
         set.sort();

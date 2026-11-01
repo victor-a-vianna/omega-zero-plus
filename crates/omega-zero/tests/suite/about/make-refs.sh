@@ -11,6 +11,7 @@ set -euo pipefail
 here="$(cd "$(dirname "$0")" && pwd)"
 flow="$(cd "$here/../../../../../assets/ui" && pwd)/flow.html"
 chrome="${CHROME:-/Applications/Google Chrome.app/Contents/MacOS/Google Chrome}"
+python="${PYTHON:-python3}"
 mkdir -p "$here/ref"
 shot="$(mktemp -d)"
 trap 'rm -rf "$shot"' EXIT
@@ -22,7 +23,7 @@ shoot() {
     --virtual-time-budget=3000 --window-size="$w,$h" --screenshot="$shot/$name.png" \
     "file://$flow#screen=about&size=$1&colour=$2&shot=1" 2>/dev/null
   # modal_rect(), in art pixels: 16 in at the sides, 14 from the top, 5 above the 15 pixel bar
-  python3 -I - "$shot/$name.png" "$here/ref/$name.png" "$w" "$h" <<'EOF'
+  "$python" -I - "$shot/$name.png" "$here/ref/$name.png" "$w" "$h" <<'EOF'
 import sys
 from PIL import Image
 src, out, w, h = sys.argv[1], sys.argv[2], int(sys.argv[3]), int(sys.argv[4])

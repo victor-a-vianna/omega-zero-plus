@@ -299,3 +299,88 @@ fn before_its_first_frame_a_console_game_is_laid_out_for_its_usual_picture() {
         }
     }
 }
+
+#[test]
+fn newly_added_tv_consoles_fill_a_four_three_panel() {
+    for platform in [
+        Platform::MasterSystem,
+        Platform::Sg1000,
+        Platform::Atari2600,
+        Platform::Atari800,
+        Platform::Atari5200,
+        Platform::Atari7800,
+        Platform::Nes,
+        Platform::FamicomDiskSystem,
+        Platform::SufamiTurbo,
+    ] {
+        let screen = screen_on(Canvas::FOUR_THREE, platform, VideoMode::Actual);
+        assert_eq!(screen.view.rect, [0.0, 0.0, 640.0, 480.0], "{platform:?}");
+        assert!(screen.bands.is_empty(), "{platform:?}: {:?}", screen.bands);
+    }
+}
+
+#[test]
+fn non_four_three_handhelds_reach_one_canvas_dimension_and_keep_their_aspect() {
+    let lynx = screen_on_frame(
+        Canvas::FOUR_THREE,
+        Platform::AtariLynx,
+        VideoMode::Actual,
+        (160, 102),
+    );
+    assert_eq!(lynx.view.rect, [0.0, 36.0, 640.0, 408.0]);
+
+    let ngp = screen_on_frame(
+        Canvas::FOUR_THREE,
+        Platform::NeoGeoPocket,
+        VideoMode::Actual,
+        (160, 152),
+    );
+    assert_eq!(ngp.view.rect, [68.0, 0.0, 505.0, 480.0]);
+}
+
+#[test]
+fn arduboy_fills_the_largest_native_two_to_one_picture_on_every_panel() {
+    for (canvas, expected) in [
+        (Canvas::FOUR_THREE, [0.0, 80.0, 640.0, 320.0]),
+        (Canvas::WIDE, [0.0, 60.0, 720.0, 360.0]),
+        (Canvas::SQUARE, [0.0, 180.0, 720.0, 360.0]),
+    ] {
+        let screen = screen_on_frame(canvas, Platform::Arduboy, VideoMode::Actual, (128, 64));
+        assert_eq!(screen.view.rect, expected, "{canvas:?}");
+        assert_eq!(screen.view.uv, [0.0, 0.0, 1.0, 1.0], "{canvas:?}");
+    }
+}
+
+#[test]
+fn wonderswan_follows_landscape_and_portrait_frames_without_cropping() {
+    let landscape = screen_on_frame(
+        Canvas::FOUR_THREE,
+        Platform::WonderSwan,
+        VideoMode::Actual,
+        (224, 144),
+    );
+    assert_eq!(landscape.view.rect, [0.0, 35.0, 640.0, 411.0]);
+    assert_eq!(landscape.view.uv, [0.0, 0.0, 1.0, 1.0]);
+
+    let portrait = screen_on_frame(
+        Canvas::FOUR_THREE,
+        Platform::WonderSwanColor,
+        VideoMode::Actual,
+        (144, 224),
+    );
+    assert_eq!(portrait.view.rect, [166.0, 0.0, 309.0, 480.0]);
+    assert_eq!(portrait.view.uv, [0.0, 0.0, 1.0, 1.0]);
+}
+
+#[test]
+fn megaduck_uses_the_largest_native_ten_to_nine_picture_on_every_panel() {
+    for (canvas, expected) in [
+        (Canvas::FOUR_THREE, [54.0, 0.0, 533.0, 480.0]),
+        (Canvas::WIDE, [94.0, 0.0, 533.0, 480.0]),
+        (Canvas::SQUARE, [0.0, 36.0, 720.0, 648.0]),
+    ] {
+        let screen = screen_on_frame(canvas, Platform::MegaDuck, VideoMode::Actual, (160, 144));
+        assert_eq!(screen.view.rect, expected, "{canvas:?}");
+        assert_eq!(screen.view.uv, [0.0, 0.0, 1.0, 1.0], "{canvas:?}");
+    }
+}

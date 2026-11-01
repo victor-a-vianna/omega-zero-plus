@@ -3,7 +3,7 @@ use std::path::Path;
 use omega_store::gb::Class;
 use omega_store::{Cart, Platform, ShellFinish};
 
-use crate::models::snes::SnesShell;
+use crate::models::{nes::NesShell, snes::SnesShell};
 
 #[derive(Copy, Clone, PartialEq, Eq, Debug)]
 pub enum Finish {
@@ -59,6 +59,8 @@ pub const SNES_SHELL: Shell = shell([0x8b, 0x8a, 0x91], Finish::Solid);
 
 /// The Super Famicom cart's light grey, which Europe's carts share.
 pub const SFC_SHELL: Shell = shell([0xb7, 0xb6, 0xbb], Finish::Solid);
+pub const NES_SHELL: Shell = shell([0x72, 0x71, 0x7d], Finish::Solid);
+pub const FAMICOM_SHELL: Shell = shell([0xe3, 0xb2, 0x18], Finish::Solid);
 
 const GB_CODES: &[(&str, Shell)] = &[
     ("AAU", shell([0xb3, 0x8b, 0x3a], Finish::Solid)),
@@ -96,11 +98,59 @@ pub fn shell_for(cart: &Cart) -> Shell {
     match cart.platform {
         Platform::Gba => gba_shell_for(&cart.code),
         Platform::Gb | Platform::Gbc => gb_shell_for(&cart.rom),
+        Platform::Genesis
+        | Platform::Sega32X
+        | Platform::GameGear
+        | Platform::MasterSystem
+        | Platform::Sg1000 => DEFAULT_SHELL,
+        Platform::Atari2600
+        | Platform::Atari800
+        | Platform::Atari5200
+        | Platform::Atari7800
+        | Platform::AtariLynx => DEFAULT_SHELL,
+        Platform::VirtualBoy => DEFAULT_SHELL,
+        Platform::PokemonMini => DEFAULT_SHELL,
+        Platform::GameAndWatch => DEFAULT_SHELL,
+        Platform::Arduboy => DEFAULT_SHELL,
+        Platform::WonderSwan | Platform::WonderSwanColor => DEFAULT_SHELL,
+        Platform::MegaDuck => DEFAULT_SHELL,
+        Platform::Supervision => DEFAULT_SHELL,
+        Platform::Tic80
+        | Platform::Chip8
+        | Platform::Pico8
+        | Platform::Java
+        | Platform::Vircon32
+        | Platform::Uzem
+        | Platform::Cps1
+        | Platform::Cps2
+        | Platform::Cps3
+        | Platform::FbNeo => DEFAULT_SHELL,
+        Platform::Mame | Platform::Gp32 | Platform::Vectrex => DEFAULT_SHELL,
+        Platform::NeoGeoPocket | Platform::NeoGeoPocketColor => DEFAULT_SHELL,
+        Platform::Nes => match crate::models::nes::shell_of(cart) {
+            NesShell::Nes => NES_SHELL,
+            NesShell::Famicom => FAMICOM_SHELL,
+        },
+        Platform::FamicomDiskSystem | Platform::SufamiTurbo => DEFAULT_SHELL,
         Platform::Snes => match crate::models::snes::shell_of(cart) {
             SnesShell::Ntsc => SNES_SHELL,
             SnesShell::Famicom => SFC_SHELL,
         },
-        Platform::Ps1 => DEFAULT_SHELL,
+        Platform::SegaCd
+        | Platform::Cd32
+        | Platform::Daphne
+        | Platform::Tg16Pce
+        | Platform::Tg16CdPceCd
+        | Platform::SuperGrafx
+        | Platform::PcFx
+        | Platform::AtariJaguar
+        | Platform::AtariJaguarCd
+        | Platform::AtariSt
+        | Platform::Pc8800
+        | Platform::Pc9800
+        | Platform::NeoGeo
+        | Platform::NeoGeoCd
+        | Platform::Ps1 => DEFAULT_SHELL,
     }
 }
 

@@ -10,6 +10,14 @@ fn tags_are_the_groups_clean_label_drops() {
 }
 
 #[test]
+fn underscores_are_spaces_in_a_clean_label() {
+    assert_eq!(
+        omega_ui::clean_label("Sonic_The_Hedgehog_(USA)"),
+        "Sonic The Hedgehog"
+    );
+}
+
+#[test]
 fn a_cart_with_no_tags_gets_none() {
     assert!(omega_ui::label_tags("Metroid Fusion").is_empty());
 }

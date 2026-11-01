@@ -12,12 +12,12 @@
 # baseos.conf sets no ssh_password; the console shows them under Settings > Network, Y on SSH.
 #
 # CORES set (task deploy:wifi CORES=1) has deploy copy the device cores into System/ as well:
-# vendor/<name>_libretro.so for each name in DEVICE_CORES, by default the five the bundle
+# vendor/<name>_libretro.so for each name in DEVICE_CORES, by default the six the bundle
 # ships. task cores:device builds them.
 set -eu
 
 repo="$(cd "$(dirname "$0")/.." && pwd)"
-cores="${DEVICE_CORES:-mgba gpsp snes9x mednafen_supafaust pcsx_rearmed}"
+cores="${DEVICE_CORES:-mgba gpsp picodrive snes9x mednafen_supafaust pcsx_rearmed}"
 console="${CONSOLE:-rg35xxsp.local}"
 port=22
 case "$console" in

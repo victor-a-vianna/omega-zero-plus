@@ -1,5 +1,7 @@
 use std::cell::Cell;
 use std::ffi::{c_char, c_int, c_uint, c_void, CString};
+use std::fs::{File, OpenOptions};
+use std::io::{Read, Seek, SeekFrom, Write};
 use std::marker::PhantomData;
 use std::path::Path;
 use std::ptr;
@@ -8,9 +10,10 @@ use std::sync::atomic::{AtomicBool, Ordering};
 use libloading::Library;
 
 use crate::core::{
-    AvInfo, ButtonMask, CoreError, RetroCore, GBA_H, GBA_W, MAX_FRAME_H, MAX_FRAME_W,
+    AvInfo, ButtonMask, ComputerInput, CoreError, RetroCore, GBA_H, GBA_W, MAX_FRAME_H, MAX_FRAME_W,
 };
 use crate::ffi::*;
+use crate::hw::HwContext;
 use crate::link::Link;
 use crate::rumble::Rumble;
 
@@ -35,6 +38,7 @@ struct Host {
     disk: Option<DiskControlExtCallback>,
     audio: Vec<i16>,
     inputs: [u16; 2],
+    computer: ComputerInput,
     system_dir: CString,
     save_dir: CString,
     rumble: Rumble,
@@ -43,6 +47,7 @@ struct Host {
     net: Link,
     net_peer: Option<u16>,
     audio_status: Option<AudioBufferStatusFn>,
+    frame_time: Option<FrameTimeCallback>,
     /// The frame about to run is skipped, for a core that asks whether to draw it.
     skip_video: bool,
     options: std::collections::HashMap<String, std::ffi::CString>,
@@ -52,6 +57,9 @@ struct Host {
     /// omega-zero leaves alone reads as, as in any frontend, so no core falls back on defaults
     /// of its own. Supafaust forgets its own once a game is loaded.
     defaults: std::collections::HashMap<String, std::ffi::CString>,
+    hw: Option<HwContext>,
+    hw_callback: Option<HwRenderCallback>,
+    hw_error: Option<String>,
 }
 
 impl Host {
@@ -68,6 +76,7 @@ impl Host {
             disk: None,
             audio: Vec::new(),
             inputs: [0; 2],
+            computer: ComputerInput::default(),
             system_dir,
             save_dir,
             rumble: Rumble::default(),
@@ -76,11 +85,15 @@ impl Host {
             net: Link::default(),
             net_peer: None,
             audio_status: None,
+            frame_time: None,
             skip_video: false,
             options: std::collections::HashMap::new(),
             options_dirty: false,
             declared: std::collections::HashMap::new(),
             defaults: std::collections::HashMap::new(),
+            hw: None,
+            hw_callback: None,
+            hw_error: None,
         }
     }
 
@@ -165,12 +178,183 @@ unsafe fn with_host<R>(f: impl FnOnce(&mut Host) -> R) -> Option<R> {
 
 unsafe extern "C" fn log_noop(_level: c_uint, _fmt: *const c_char) {}
 
+struct VfsFile {
+    file: File,
+    path: CString,
+}
+
+unsafe fn vfs_file<'a>(handle: *mut c_void) -> Option<&'a mut VfsFile> {
+    (handle as *mut VfsFile).as_mut()
+}
+
+unsafe extern "C" fn vfs_get_path(handle: *mut c_void) -> *const c_char {
+    vfs_file(handle).map_or(ptr::null(), |f| f.path.as_ptr())
+}
+
+unsafe extern "C" fn vfs_open(path: *const c_char, mode: c_uint, _hints: c_uint) -> *mut c_void {
+    if path.is_null() {
+        return ptr::null_mut();
+    }
+    let Ok(native_path) = std::ffi::CStr::from_ptr(path).to_str() else {
+        return ptr::null_mut();
+    };
+    let mut options = OpenOptions::new();
+    options.read(mode & 1 != 0).write(mode & 2 != 0);
+    if mode & 2 != 0 {
+        if mode & 4 != 0 {
+            options.create(true);
+        } else {
+            options.create(true).truncate(true);
+        }
+    }
+    let file = match options.open(native_path) {
+        Ok(file) => file,
+        Err(error) => {
+            eprintln!("omega-retro: vfs: cannot open {native_path}: {error}");
+            return ptr::null_mut();
+        }
+    };
+    Box::into_raw(Box::new(VfsFile {
+        file,
+        path: CString::new(native_path).unwrap_or_default(),
+    })) as *mut c_void
+}
+
+unsafe extern "C" fn vfs_close(handle: *mut c_void) -> c_int {
+    if handle.is_null() {
+        return -1;
+    }
+    drop(Box::from_raw(handle as *mut VfsFile));
+    0
+}
+
+unsafe extern "C" fn vfs_size(handle: *mut c_void) -> i64 {
+    vfs_file(handle)
+        .and_then(|f| f.file.metadata().ok())
+        .map_or(-1, |m| m.len() as i64)
+}
+
+unsafe extern "C" fn vfs_tell(handle: *mut c_void) -> i64 {
+    vfs_file(handle)
+        .and_then(|f| f.file.stream_position().ok())
+        .map_or(-1, |p| p as i64)
+}
+
+unsafe extern "C" fn vfs_seek(handle: *mut c_void, offset: i64, origin: c_int) -> i64 {
+    let from = match origin {
+        0 if offset >= 0 => SeekFrom::Start(offset as u64),
+        1 => SeekFrom::Current(offset),
+        2 => SeekFrom::End(offset),
+        _ => return -1,
+    };
+    vfs_file(handle)
+        .and_then(|f| f.file.seek(from).ok())
+        .map_or(-1, |p| p as i64)
+}
+
+unsafe extern "C" fn vfs_read(handle: *mut c_void, data: *mut c_void, len: u64) -> i64 {
+    if data.is_null() || len > usize::MAX as u64 {
+        return -1;
+    }
+    vfs_file(handle)
+        .and_then(|f| {
+            f.file
+                .read(std::slice::from_raw_parts_mut(
+                    data as *mut u8,
+                    len as usize,
+                ))
+                .ok()
+        })
+        .map_or(-1, |n| n as i64)
+}
+
+unsafe extern "C" fn vfs_write(handle: *mut c_void, data: *const c_void, len: u64) -> i64 {
+    if data.is_null() || len > usize::MAX as u64 {
+        return -1;
+    }
+    vfs_file(handle)
+        .and_then(|f| {
+            f.file
+                .write(std::slice::from_raw_parts(data as *const u8, len as usize))
+                .ok()
+        })
+        .map_or(-1, |n| n as i64)
+}
+
+unsafe extern "C" fn vfs_flush(handle: *mut c_void) -> c_int {
+    vfs_file(handle).map_or(-1, |f| if f.file.flush().is_ok() { 0 } else { -1 })
+}
+
+unsafe extern "C" fn vfs_remove(path: *const c_char) -> c_int {
+    if path.is_null() {
+        return -1;
+    }
+    std::ffi::CStr::from_ptr(path)
+        .to_str()
+        .ok()
+        .map_or(-1, |p| {
+            if std::fs::remove_file(p).is_ok() {
+                0
+            } else {
+                -1
+            }
+        })
+}
+
+unsafe extern "C" fn vfs_rename(old: *const c_char, new: *const c_char) -> c_int {
+    if old.is_null() || new.is_null() {
+        return -1;
+    }
+    match (
+        std::ffi::CStr::from_ptr(old).to_str(),
+        std::ffi::CStr::from_ptr(new).to_str(),
+    ) {
+        (Ok(a), Ok(b)) if std::fs::rename(a, b).is_ok() => 0,
+        _ => -1,
+    }
+}
+
+static VFS_INTERFACE: VfsInterface = VfsInterface {
+    get_path: vfs_get_path as *const c_void,
+    open: vfs_open as *const c_void,
+    close: vfs_close as *const c_void,
+    size: vfs_size as *const c_void,
+    tell: vfs_tell as *const c_void,
+    seek: vfs_seek as *const c_void,
+    read: vfs_read as *const c_void,
+    write: vfs_write as *const c_void,
+    flush: vfs_flush as *const c_void,
+    remove: vfs_remove as *const c_void,
+    rename: vfs_rename as *const c_void,
+    truncate: ptr::null(),
+    stat: ptr::null(),
+    mkdir: ptr::null(),
+    opendir: ptr::null(),
+    readdir: ptr::null(),
+    dirent_get_name: ptr::null(),
+    dirent_is_dir: ptr::null(),
+    closedir: ptr::null(),
+};
+
 unsafe extern "C" fn set_rumble_state(port: c_uint, effect: c_uint, strength: u16) -> bool {
     with_host(|h| h.rumble.set(port, effect, strength)).unwrap_or(false)
 }
 
 unsafe extern "C" fn environment(cmd: c_uint, data: *mut c_void) -> bool {
     match cmd {
+        SET_MESSAGE => {
+            if data.is_null() {
+                return false;
+            }
+            let message = &*(data as *const Message);
+            if !message.msg.is_null() {
+                eprintln!(
+                    "omega-zero: core message: {}",
+                    std::ffi::CStr::from_ptr(message.msg).to_string_lossy()
+                );
+            }
+            true
+        }
         GET_AUDIO_VIDEO_ENABLE => {
             if data.is_null() {
                 return false;
@@ -196,6 +380,51 @@ unsafe extern "C" fn environment(cmd: c_uint, data: *mut c_void) -> bool {
                 _ => return false,
             };
             with_host(|h| h.format = want).is_some()
+        }
+        SET_FRAME_TIME_CALLBACK => {
+            if data.is_null() {
+                return with_host(|h| h.frame_time = None).is_some();
+            }
+            let callback = std::ptr::read(data as *const FrameTimeCallback);
+            with_host(|h| h.frame_time = Some(callback)).is_some()
+        }
+        GET_VFS_INTERFACE => {
+            if data.is_null() {
+                return false;
+            }
+            let info = &mut *(data as *mut VfsInterfaceInfo);
+            if info.required_interface_version > 1 {
+                return false;
+            }
+            info.required_interface_version = 1;
+            info.iface = &VFS_INTERFACE;
+            true
+        }
+        SET_HW_RENDER => {
+            if data.is_null() {
+                return false;
+            }
+            let mut callback = std::ptr::read(data as *const HwRenderCallback);
+            if callback.context_type != HW_CONTEXT_OPENGLES2 {
+                return false;
+            }
+            let created = HwContext::new(640, 360);
+            with_host(|h| match created {
+                Ok(hw) => {
+                    callback.get_current_framebuffer = Some(hw_current_framebuffer);
+                    callback.get_proc_address = Some(hw_proc_address);
+                    *(data as *mut HwRenderCallback) = callback;
+                    h.hw = Some(hw);
+                    h.hw_callback = Some(callback);
+                    h.hw_error = None;
+                    true
+                }
+                Err(error) => {
+                    h.hw_error = Some(error.to_string());
+                    false
+                }
+            })
+            .unwrap_or(false)
         }
         SET_SYSTEM_AV_INFO => {
             if data.is_null() {
@@ -382,6 +611,19 @@ unsafe extern "C" fn environment(cmd: c_uint, data: *mut c_void) -> bool {
     }
 }
 
+unsafe extern "C" fn hw_current_framebuffer() -> usize {
+    0
+}
+
+unsafe extern "C" fn hw_proc_address(name: *const c_char) -> *mut c_void {
+    with_host(|h| {
+        h.hw.as_ref()
+            .map(|hw| hw.proc_address(name))
+            .unwrap_or(ptr::null_mut())
+    })
+    .unwrap_or(ptr::null_mut())
+}
+
 unsafe extern "C" fn netpacket_send(
     _flags: c_int,
     buf: *const c_void,
@@ -482,6 +724,25 @@ unsafe extern "C" fn video_refresh(
     height: c_uint,
     pitch: usize,
 ) {
+    if data as usize == HW_FRAME_BUFFER_VALID {
+        with_host(|h| {
+            let bottom_left = h
+                .hw_callback
+                .as_ref()
+                .map(|callback| callback.bottom_left_origin)
+                .unwrap_or(true);
+            let frame = {
+                let Some(hw) = h.hw.as_ref() else {
+                    return;
+                };
+                let _ = hw.make_current();
+                hw.frame(width, height, bottom_left)
+            };
+            h.format = PixelFormat::Xrgb8888;
+            h.take_frame(frame.as_ptr(), width, height, width as usize * 4);
+        });
+        return;
+    }
     // a null frame is a duplicate: the last picture stands
     if data.is_null() || width == 0 || height == 0 {
         return;
@@ -506,18 +767,42 @@ unsafe extern "C" fn audio_batch(data: *const i16, frames: usize) -> usize {
 unsafe extern "C" fn input_poll() {}
 
 unsafe extern "C" fn input_state(port: c_uint, device: c_uint, _index: c_uint, id: c_uint) -> i16 {
-    if device != DEVICE_JOYPAD {
-        return 0;
-    }
-    with_host(|h| {
-        let Some(&input) = h.inputs.get(port as usize) else {
-            return 0;
-        };
-        match id {
-            JOYPAD_MASK => input as i16,
-            _ if id < 16 => ((input >> id) & 1) as i16,
-            _ => 0,
+    with_host(|h| match device {
+        DEVICE_JOYPAD => {
+            let Some(&input) = h.inputs.get(port as usize) else {
+                return 0;
+            };
+            match id {
+                JOYPAD_MASK => input as i16,
+                _ if id < 16 => ((input >> id) & 1) as i16,
+                _ => 0,
+            }
         }
+        DEVICE_MOUSE if port == 0 => match id {
+            MOUSE_X => h.computer.mouse_x,
+            MOUSE_Y => h.computer.mouse_y,
+            MOUSE_LEFT => (h.computer.mouse_buttons & ComputerInput::MOUSE_LEFT != 0) as i16,
+            MOUSE_RIGHT => (h.computer.mouse_buttons & ComputerInput::MOUSE_RIGHT != 0) as i16,
+            _ => 0,
+        },
+        DEVICE_KEYBOARD if port == 0 => {
+            let bit = match id {
+                273 => ComputerInput::UP,
+                274 => ComputerInput::DOWN,
+                276 => ComputerInput::LEFT,
+                275 => ComputerInput::RIGHT,
+                13 => ComputerInput::ENTER,
+                32 => ComputerInput::SPACE,
+                27 => ComputerInput::ESCAPE,
+                9 => ComputerInput::TAB,
+                304 => ComputerInput::SHIFT,
+                306 => ComputerInput::CONTROL,
+                8 => ComputerInput::BACKSPACE,
+                _ => 0,
+            };
+            (h.computer.keys & bit != 0) as i16
+        }
+        _ => 0,
     })
     .unwrap_or(0)
 }
@@ -752,8 +1037,25 @@ impl LibretroCore {
         if !self.loaded {
             return;
         }
-        let _a = Active::bind(&mut self.host);
-        unsafe { (self.api.unload_game)() };
+        {
+            let _a = Active::bind(&mut self.host);
+            unsafe { (self.api.unload_game)() };
+        }
+        if let Some(destroy) = self
+            .host
+            .hw_callback
+            .and_then(|callback| callback.context_destroy)
+        {
+            if let Some(hw) = self.host.hw.as_ref() {
+                unsafe {
+                    let _ = hw.make_current();
+                }
+            }
+            let _a = Active::bind(&mut self.host);
+            unsafe { destroy() };
+        }
+        self.host.hw_callback = None;
+        self.host.hw = None;
         self.loaded = false;
     }
 }
@@ -802,9 +1104,25 @@ impl RetroCore for LibretroCore {
             unsafe { (self.api.load_game)(&info) }
         };
         if !ok {
+            if let Some(error) = self.host.hw_error.take() {
+                return Err(CoreError::Load(error));
+            }
             self.rom = Vec::new();
             self.rom_path = None;
             return Err(CoreError::Load(format!("core refused {}", rom.display())));
+        }
+        if let Some(reset) = self
+            .host
+            .hw_callback
+            .and_then(|callback| callback.context_reset)
+        {
+            if let Some(hw) = self.host.hw.as_ref() {
+                unsafe {
+                    let _ = hw.make_current();
+                }
+            }
+            let _a = Active::bind(&mut self.host);
+            unsafe { reset() };
         }
         self.loaded = true;
         let mut av = SystemAvInfo::default();
@@ -827,8 +1145,20 @@ impl RetroCore for LibretroCore {
             return;
         }
         self.host.inputs = [p1.0, p2.0];
+        let frame_time = self.host.frame_time;
         let _a = Active::bind(&mut self.host);
-        unsafe { (self.api.run)() };
+        unsafe {
+            if let Some(frame_time) = frame_time {
+                if let Some(callback) = frame_time.callback {
+                    callback(frame_time.reference);
+                }
+            }
+            (self.api.run)()
+        };
+    }
+
+    fn set_computer_input(&mut self, input: ComputerInput) {
+        self.host.computer = input;
     }
 
     /// Asks the core to skip drawing the next frame both ways a core may listen: an audio
@@ -1866,6 +2196,33 @@ mod tests {
         let _active = Active::bind(&mut host);
 
         assert_eq!(unsafe { input_state(2, DEVICE_JOYPAD, 0, JOYPAD_MASK) }, 0);
+    }
+
+    #[test]
+    fn input_state_maps_computer_keys_on_port_0() {
+        let mut host = host_with(HashMap::new(), false);
+        host.computer.keys = ComputerInput::UP | ComputerInput::ENTER;
+        let _active = Active::bind(&mut host);
+
+        assert_eq!(unsafe { input_state(0, DEVICE_KEYBOARD, 0, 273) }, 1);
+        assert_eq!(unsafe { input_state(0, DEVICE_KEYBOARD, 0, 13) }, 1);
+        assert_eq!(unsafe { input_state(0, DEVICE_KEYBOARD, 0, 32) }, 0);
+        assert_eq!(unsafe { input_state(1, DEVICE_KEYBOARD, 0, 273) }, 0);
+    }
+
+    #[test]
+    fn input_state_maps_relative_mouse_on_port_0() {
+        let mut host = host_with(HashMap::new(), false);
+        host.computer.mouse_x = -6;
+        host.computer.mouse_y = 4;
+        host.computer.mouse_buttons = ComputerInput::MOUSE_LEFT;
+        let _active = Active::bind(&mut host);
+
+        assert_eq!(unsafe { input_state(0, DEVICE_MOUSE, 0, MOUSE_X) }, -6);
+        assert_eq!(unsafe { input_state(0, DEVICE_MOUSE, 0, MOUSE_Y) }, 4);
+        assert_eq!(unsafe { input_state(0, DEVICE_MOUSE, 0, MOUSE_LEFT) }, 1);
+        assert_eq!(unsafe { input_state(0, DEVICE_MOUSE, 0, MOUSE_RIGHT) }, 0);
+        assert_eq!(unsafe { input_state(1, DEVICE_MOUSE, 0, MOUSE_X) }, 0);
     }
 
     #[test]

@@ -66,8 +66,65 @@ impl ControlsView {
         game.extend([("MENU ×2", "SAVE STATES"), ("HOLD MENU", "EJECT")]);
         match platform {
             Platform::Gba | Platform::Gb | Platform::Gbc => game.push(("SELECT+MENU", "LINK")),
-            Platform::Ps1 => game.push(("SELECT+MENU", "DISC")),
-            Platform::Snes => {}
+            Platform::SegaCd
+            | Platform::Cd32
+            | Platform::Tg16CdPceCd
+            | Platform::NeoGeoCd
+            | Platform::Ps1 => game.push(("SELECT+MENU", "DISC")),
+            Platform::Genesis
+            | Platform::GameGear
+            | Platform::MasterSystem
+            | Platform::Sg1000
+            | Platform::Sega32X
+            | Platform::Nes
+            | Platform::SufamiTurbo
+            | Platform::Snes
+            | Platform::Atari2600
+            | Platform::Atari800
+            | Platform::Atari5200
+            | Platform::Atari7800
+            | Platform::AtariJaguar
+            | Platform::AtariJaguarCd
+            | Platform::AtariSt
+            | Platform::GameAndWatch
+            | Platform::Arduboy
+            | Platform::WonderSwan
+            | Platform::WonderSwanColor
+            | Platform::MegaDuck
+            | Platform::Supervision
+            | Platform::Tic80
+            | Platform::Chip8
+            | Platform::Pico8
+            | Platform::Java
+            | Platform::Vircon32
+            | Platform::Uzem
+            | Platform::Daphne
+            | Platform::Tg16Pce
+            | Platform::SuperGrafx => {}
+            Platform::PcFx => {}
+            Platform::NeoGeo
+            | Platform::Cps1
+            | Platform::Cps2
+            | Platform::Cps3
+            | Platform::FbNeo => {}
+            Platform::Mame | Platform::Gp32 | Platform::Vectrex => {}
+            Platform::AtariLynx => {
+                game.extend([("L1", "OPTION 1"), ("R1", "OPTION 2"), ("SELECT", "ROTATE")])
+            }
+            Platform::VirtualBoy => {}
+            Platform::PokemonMini => game.extend([("L1", "SHAKE"), ("R1", "C")]),
+            Platform::NeoGeoPocket | Platform::NeoGeoPocketColor => {}
+            Platform::Pc8800 => game.extend([
+                ("SELECT+Y", "KEYBOARD MODE"),
+                ("A/B", "ENTER/SPACE"),
+                ("X/Y", "ESC/TAB"),
+            ]),
+            Platform::Pc9800 => game.extend([
+                ("SELECT+Y", "KEYBOARD MODE"),
+                ("SELECT+X", "MOUSE MODE"),
+                ("A/B", "L/R CLICK"),
+            ]),
+            Platform::FamicomDiskSystem => game.push(("R1", "DISK SIDE")),
         }
         game.extend([
             ("SELECT+▲▼", "BRIGHTNESS"),

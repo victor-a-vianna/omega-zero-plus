@@ -9,6 +9,9 @@ license.workspace = true
 default = ["host"]
 host = ["dep:winit", "dep:cpal", "dep:gilrs", "omega-gfx/host"]
 device = ["omega-gfx/device"]
+# H700 packaging policy. Platform integrations remain compiled and available to other builds;
+# this feature only removes systems that are unsuitable for the H700 product profile.
+h700 = []
 
 [dependencies]
 omega-gfx = { path = "../omega-gfx", default-features = false }

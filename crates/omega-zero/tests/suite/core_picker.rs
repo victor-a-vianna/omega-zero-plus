@@ -24,9 +24,27 @@ fn the_gba_and_the_snes_each_have_two_sockets_and_the_rest_one() {
         Core::for_platform(Platform::Snes),
         [Core::Snes9x, Core::Supafaust]
     );
-    for p in [Platform::Gb, Platform::Gbc, Platform::Ps1] {
+    for p in [
+        Platform::Gb,
+        Platform::Gbc,
+        Platform::Genesis,
+        Platform::Sega32X,
+        Platform::SegaCd,
+        Platform::Cd32,
+        Platform::Gp32,
+        Platform::Vectrex,
+        Platform::Nes,
+        Platform::Ps1,
+    ] {
         assert_eq!(Core::for_platform(p).len(), 1, "{p:?} has a core to pick");
     }
+    assert_eq!(Core::for_platform(Platform::Genesis), [Core::Picodrive]);
+    assert_eq!(Core::for_platform(Platform::Sega32X), [Core::Picodrive]);
+    assert_eq!(Core::for_platform(Platform::SegaCd), [Core::Picodrive]);
+    assert_eq!(Core::for_platform(Platform::Cd32), [Core::Puae]);
+    assert_eq!(Core::for_platform(Platform::Gp32), [Core::Gp32Emu]);
+    assert_eq!(Core::for_platform(Platform::Vectrex), [Core::Vecx]);
+    assert_eq!(Core::for_platform(Platform::Nes), [Core::Mesen]);
 }
 
 #[test]

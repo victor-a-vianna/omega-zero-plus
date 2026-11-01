@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 410">
+  <path d="M 7 28 Q 7 27 10 27 H 64 Q 108 27 140 7 H 460 Q 492 27 536 27 H 590 Q 593 27 593 30" fill="none" stroke="#fff" stroke-opacity="0.30" stroke-width="5"/>
+  <path d="M 593 28 V 384 Q 593 403 574 403 H 26" fill="none" stroke="#000" stroke-opacity="0.30" stroke-width="6"/>
+  <!-- Landscape label in the upper central recess. -->
+  <rect x="137" y="10" width="326" height="194" rx="7" fill="#000" fill-opacity="0.14"/>
+  <path d="M 145 10 H 455 Q 463 10 463 18 V 196" fill="none" stroke="#000" stroke-opacity="0.48" stroke-width="5"/>
+  <path d="M 455 204 H 145 Q 137 204 137 196 V 18" fill="none" stroke="#fff" stroke-opacity="0.34" stroke-width="3"/>
+  <!-- Wide ribbed lower grip. -->
+  <path d="M 0 307 H 600 V 385 Q 600 410 575 410 H 25 Q 0 410 0 385 Z" fill="#000" fill-opacity="0.10"/>
+  <g stroke="#000" stroke-opacity="0.34" stroke-width="4">
+    <path d="M 0 315 H 600"/><path d="M 0 327 H 600"/><path d="M 0 339 H 600"/>
+    <path d="M 0 351 H 600"/><path d="M 0 363 H 600"/><path d="M 0 375 H 600"/><path d="M 0 387 H 600"/>
+  </g>
+  <path d="M 72 307 V 402 M 284 307 V 402 M 516 307 V 402" stroke="#000" stroke-opacity="0.35" stroke-width="5"/>
+</svg>

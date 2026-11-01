@@ -1,4 +1,6 @@
 use std::ffi::{c_char, c_void, CString};
+use std::fs::File;
+use std::os::fd::AsRawFd;
 
 use libloading::Library;
 
@@ -22,6 +24,10 @@ const EGL_CONTEXT_CLIENT_VERSION: i32 = 0x3098;
 const EGL_OPENGL_ES_API: u32 = 0x30A0;
 const EGL_WINDOW_BIT: i32 = 0x0004;
 const EGL_OPENGL_ES2_BIT: i32 = 0x0004;
+const EGL_PLATFORM_GBM_KHR: u32 = 0x31d7;
+const GBM_FORMAT_XRGB8888: u32 = 0x3432_5258;
+const GBM_BO_USE_SCANOUT: u32 = 1;
+const GBM_BO_USE_RENDERING: u32 = 4;
 
 type Ptr = *mut c_void;
 type GetDisplay = unsafe extern "C" fn(Ptr) -> Ptr;
@@ -37,6 +43,11 @@ type SwapInterval = unsafe extern "C" fn(Ptr, i32) -> u32;
 type GetProcAddress = unsafe extern "C" fn(*const c_char) -> *const c_void;
 type GetError = unsafe extern "C" fn() -> i32;
 type Terminate = unsafe extern "C" fn(Ptr) -> u32;
+type GetPlatformDisplayExt = unsafe extern "C" fn(u32, Ptr, *const i32) -> Ptr;
+type GbmCreateDevice = unsafe extern "C" fn(i32) -> Ptr;
+type GbmDeviceDestroy = unsafe extern "C" fn(Ptr);
+type GbmSurfaceCreate = unsafe extern "C" fn(Ptr, u32, u32, u32, u32) -> Ptr;
+type GbmSurfaceDestroy = unsafe extern "C" fn(Ptr);
 
 struct Egl {
     get_display: GetDisplay,
@@ -227,6 +238,146 @@ impl FbdevSurface {
     }
 }
 
+/// A KMS/GBM surface for DRM devices.  It is deliberately opt-in: BaseOS H700
+/// devices keep their fbdev path, while RK3566 can use Mesa's Panfrost driver.
+pub struct DrmSurface {
+    egl: Egl,
+    gles: Library,
+    _gbm: Library,
+    _card: File,
+    device: Ptr,
+    gbm_surface: Ptr,
+    display: Ptr,
+    surface: Ptr,
+    context: Ptr,
+    size: (u32, u32),
+    gbm_device_destroy: GbmDeviceDestroy,
+    gbm_surface_destroy: GbmSurfaceDestroy,
+}
+
+impl DrmSurface {
+    /// Open the KMS card.  `OMEGA_DRM_CARD` is useful for development; BaseOS
+    /// RK3566 normally exposes its display controller as card0.
+    pub fn new() -> Result<Self, GfxError> {
+        let card = std::env::var("OMEGA_DRM_CARD").unwrap_or_else(|_| "/dev/dri/card0".into());
+        let card = File::options()
+            .read(true)
+            .write(true)
+            .open(&card)
+            .map_err(|e| GfxError::Context(format!("open KMS card: {e}")))?;
+        let egl = Egl::load()?;
+        let gles = open("libGLESv2.so.2").or_else(|_| open("libGLESv2.so"))?;
+        let gbm = open("libgbm.so.1").or_else(|_| open("libgbm.so"))?;
+        unsafe {
+            let create_device: GbmCreateDevice = sym(&gbm, "gbm_create_device")?;
+            let destroy_device: GbmDeviceDestroy = sym(&gbm, "gbm_device_destroy")?;
+            let create_surface: GbmSurfaceCreate = sym(&gbm, "gbm_surface_create")?;
+            let destroy_surface: GbmSurfaceDestroy = sym(&gbm, "gbm_surface_destroy")?;
+            let device = create_device(card.as_raw_fd());
+            if device.is_null() {
+                return Err(GfxError::Context("gbm_create_device failed".into()));
+            }
+            let gbm_surface = create_surface(
+                device,
+                720,
+                720,
+                GBM_FORMAT_XRGB8888,
+                GBM_BO_USE_SCANOUT | GBM_BO_USE_RENDERING,
+            );
+            if gbm_surface.is_null() {
+                destroy_device(device);
+                return Err(GfxError::Context("gbm_surface_create failed".into()));
+            }
+            let get_platform: GetPlatformDisplayExt = sym(&egl._lib, "eglGetPlatformDisplayEXT")
+                .or_else(|_| {
+                    let name = CString::new("eglGetPlatformDisplayEXT").expect("static name");
+                    let ptr = (egl.get_proc_address)(name.as_ptr());
+                    if ptr.is_null() {
+                        Err(GfxError::Context(
+                            "eglGetPlatformDisplayEXT unavailable".into(),
+                        ))
+                    } else {
+                        Ok(std::mem::transmute(ptr))
+                    }
+                })?;
+            let display = get_platform(EGL_PLATFORM_GBM_KHR, device, std::ptr::null());
+            if display.is_null()
+                || (egl.initialize)(display, std::ptr::null_mut(), std::ptr::null_mut()) == 0
+            {
+                destroy_surface(gbm_surface);
+                destroy_device(device);
+                return Err(egl.fail("eglInitialize GBM"));
+            }
+            if (egl.bind_api)(EGL_OPENGL_ES_API) == 0 {
+                (egl.terminate)(display);
+                destroy_surface(gbm_surface);
+                destroy_device(device);
+                return Err(egl.fail("eglBindAPI"));
+            }
+            let attrs = [
+                EGL_SURFACE_TYPE,
+                EGL_WINDOW_BIT,
+                EGL_RED_SIZE,
+                8,
+                EGL_GREEN_SIZE,
+                8,
+                EGL_BLUE_SIZE,
+                8,
+                EGL_RENDERABLE_TYPE,
+                EGL_OPENGL_ES2_BIT,
+                EGL_NONE,
+            ];
+            let mut config: Ptr = std::ptr::null_mut();
+            let mut found = 0;
+            if (egl.choose_config)(display, attrs.as_ptr(), &mut config, 1, &mut found) == 0
+                || found == 0
+            {
+                (egl.terminate)(display);
+                destroy_surface(gbm_surface);
+                destroy_device(device);
+                return Err(egl.fail("eglChooseConfig GBM"));
+            }
+            let surface =
+                (egl.create_window_surface)(display, config, gbm_surface, std::ptr::null());
+            if surface.is_null() {
+                (egl.terminate)(display);
+                destroy_surface(gbm_surface);
+                destroy_device(device);
+                return Err(egl.fail("eglCreateWindowSurface GBM"));
+            }
+            let context_attrs = [EGL_CONTEXT_CLIENT_VERSION, 2, EGL_NONE];
+            let context = (egl.create_context)(
+                display,
+                config,
+                std::ptr::null_mut(),
+                context_attrs.as_ptr(),
+            );
+            if context.is_null() || (egl.make_current)(display, surface, surface, context) == 0 {
+                (egl.terminate)(display);
+                destroy_surface(gbm_surface);
+                destroy_device(device);
+                return Err(egl.fail("eglMakeCurrent GBM"));
+            }
+            (egl.swap_interval)(display, 1);
+            let size = query_size(&egl, display, surface).unwrap_or((720, 720));
+            Ok(Self {
+                egl,
+                gles,
+                _gbm: gbm,
+                _card: card,
+                device,
+                gbm_surface,
+                display,
+                surface,
+                context,
+                size,
+                gbm_device_destroy: destroy_device,
+                gbm_surface_destroy: destroy_surface,
+            })
+        }
+    }
+}
+
 fn query_size(egl: &Egl, display: Ptr, surface: Ptr) -> Option<(u32, u32)> {
     let (mut w, mut h) = (0, 0);
     unsafe {
@@ -273,6 +424,42 @@ impl Surface for FbdevSurface {
     }
 }
 
+impl Surface for DrmSurface {
+    fn make_current(&mut self) -> Result<(), GfxError> {
+        if unsafe {
+            (self.egl.make_current)(self.display, self.surface, self.surface, self.context)
+        } == 0
+        {
+            Err(self.egl.fail("eglMakeCurrent GBM"))
+        } else {
+            Ok(())
+        }
+    }
+
+    fn window_size(&self) -> (u32, u32) {
+        self.size
+    }
+
+    fn swap(&mut self) -> Result<(), GfxError> {
+        if unsafe { (self.egl.swap_buffers)(self.display, self.surface) } == 0 {
+            Err(self.egl.fail("eglSwapBuffers GBM"))
+        } else {
+            Ok(())
+        }
+    }
+
+    fn proc_address(&self, name: &str) -> *const c_void {
+        let Ok(c) = CString::new(name) else {
+            return std::ptr::null();
+        };
+        let exported = unsafe { self.gles.get::<unsafe extern "C" fn()>(name.as_bytes()) };
+        match exported {
+            Ok(f) => *f as *const c_void,
+            Err(_) => unsafe { (self.egl.get_proc_address)(c.as_ptr()) },
+        }
+    }
+}
+
 impl Drop for FbdevSurface {
     fn drop(&mut self) {
         unsafe {
@@ -283,6 +470,22 @@ impl Drop for FbdevSurface {
                 std::ptr::null_mut(),
             );
             (self.egl.terminate)(self.display);
+        }
+    }
+}
+
+impl Drop for DrmSurface {
+    fn drop(&mut self) {
+        unsafe {
+            (self.egl.make_current)(
+                self.display,
+                std::ptr::null_mut(),
+                std::ptr::null_mut(),
+                std::ptr::null_mut(),
+            );
+            (self.egl.terminate)(self.display);
+            (self.gbm_surface_destroy)(self.gbm_surface);
+            (self.gbm_device_destroy)(self.device);
         }
     }
 }

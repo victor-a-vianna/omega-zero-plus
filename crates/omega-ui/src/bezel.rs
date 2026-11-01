@@ -36,7 +36,58 @@ pub fn bezel_mark_face(platform: Platform, height: u32) -> Option<UndoFace> {
         Platform::Gba => GBA_MARK,
         Platform::Gb => GB_MARK,
         Platform::Gbc => GBC_MARK,
-        Platform::Snes | Platform::Ps1 => return None,
+        Platform::Genesis
+        | Platform::GameGear
+        | Platform::MasterSystem
+        | Platform::Sg1000
+        | Platform::Sega32X
+        | Platform::SegaCd
+        | Platform::Cd32
+        | Platform::Nes
+        | Platform::FamicomDiskSystem
+        | Platform::Atari2600
+        | Platform::Atari800
+        | Platform::Atari5200
+        | Platform::Atari7800
+        | Platform::AtariLynx
+        | Platform::VirtualBoy
+        | Platform::PokemonMini
+        | Platform::GameAndWatch
+        | Platform::Arduboy
+        | Platform::WonderSwan
+        | Platform::WonderSwanColor
+        | Platform::MegaDuck
+        | Platform::Supervision
+        | Platform::Tic80
+        | Platform::Chip8
+        | Platform::Pico8
+        | Platform::Java
+        | Platform::Vircon32
+        | Platform::Uzem
+        | Platform::Daphne
+        | Platform::NeoGeoPocket
+        | Platform::NeoGeoPocketColor
+        | Platform::SufamiTurbo
+        | Platform::Snes
+        | Platform::Ps1 => return None,
+        Platform::AtariJaguar
+        | Platform::AtariJaguarCd
+        | Platform::Tg16Pce
+        | Platform::Tg16CdPceCd
+        | Platform::SuperGrafx => return None,
+        Platform::PcFx => return None,
+        Platform::NeoGeo
+        | Platform::NeoGeoCd
+        | Platform::Cps1
+        | Platform::Cps2
+        | Platform::Cps3
+        | Platform::FbNeo
+        | Platform::Mame
+        | Platform::Gp32
+        | Platform::Vectrex
+        | Platform::AtariSt
+        | Platform::Pc8800
+        | Platform::Pc9800 => return None,
     };
     let mark = decode(png)?;
     let (sw, sh) = (mark.w, mark.h);

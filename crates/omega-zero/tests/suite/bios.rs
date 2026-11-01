@@ -8,6 +8,91 @@ use omega_store::Core;
 use omega_zero::core::open_core_for;
 use tempfile::tempdir;
 
+#[test]
+fn famicom_disk_system_requires_an_8k_disksys_rom() {
+    let d = tempdir().unwrap();
+    std::fs::create_dir(d.path().join("BIOS")).unwrap();
+    assert!(!omega_zero::root::has_fds_bios(d.path()));
+    std::fs::write(d.path().join("BIOS/disksys.rom"), vec![0; 8191]).unwrap();
+    assert!(!omega_zero::root::has_fds_bios(d.path()));
+    std::fs::write(d.path().join("BIOS/disksys.rom"), vec![0; 8192]).unwrap();
+    assert!(omega_zero::root::has_fds_bios(d.path()));
+}
+
+#[test]
+fn sufami_turbo_requires_a_256k_stbios() {
+    let d = tempdir().unwrap();
+    std::fs::create_dir(d.path().join("BIOS")).unwrap();
+    assert!(!omega_zero::root::has_sufami_turbo_bios(d.path()));
+    std::fs::write(d.path().join("BIOS/STBIOS.bin"), vec![0; 262_143]).unwrap();
+    assert!(!omega_zero::root::has_sufami_turbo_bios(d.path()));
+    std::fs::write(d.path().join("BIOS/STBIOS.bin"), vec![0; 262_144]).unwrap();
+    assert!(omega_zero::root::has_sufami_turbo_bios(d.path()));
+}
+
+#[test]
+fn atari_5200_requires_a_2k_5200_rom() {
+    let d = tempdir().unwrap();
+    std::fs::create_dir(d.path().join("BIOS")).unwrap();
+    std::fs::write(d.path().join("BIOS/5200.rom"), vec![0; 2047]).unwrap();
+    assert!(!omega_zero::root::has_atari5200_bios(d.path()));
+    std::fs::write(d.path().join("BIOS/5200.rom"), vec![0; 2048]).unwrap();
+    assert!(omega_zero::root::has_atari5200_bios(d.path()));
+}
+
+#[test]
+fn sega_cd_bios_is_found_in_the_shared_bios_directory() {
+    let d = tempdir().unwrap();
+    std::fs::create_dir(d.path().join("BIOS")).unwrap();
+    assert!(!omega_zero::root::has_segacd_bios(d.path()));
+
+    std::fs::write(d.path().join("BIOS/bios_CD_U.bin"), b"bios").unwrap();
+    assert!(omega_zero::root::has_segacd_bios(d.path()));
+}
+
+#[test]
+fn cd32_accepts_a_combined_or_split_kickstart_set() {
+    let d = tempdir().unwrap();
+    std::fs::create_dir(d.path().join("BIOS")).unwrap();
+    let kick = d.path().join("BIOS/kick40060.CD32");
+    let ext = d.path().join("BIOS/kick40060.CD32.ext");
+    assert!(!omega_zero::root::has_cd32_bios(d.path()));
+
+    std::fs::write(&kick, vec![0; 512 * 1024]).unwrap();
+    assert!(!omega_zero::root::has_cd32_bios(d.path()));
+    std::fs::write(&ext, vec![0; 512 * 1024]).unwrap();
+    assert!(omega_zero::root::has_cd32_bios(d.path()));
+
+    std::fs::remove_file(&ext).unwrap();
+    std::fs::write(&kick, vec![0; 1024 * 1024]).unwrap();
+    assert!(omega_zero::root::has_cd32_bios(d.path()));
+}
+
+#[test]
+fn pc_engine_cd_bios_is_found_in_the_shared_bios_directory() {
+    let d = tempdir().unwrap();
+    std::fs::create_dir(d.path().join("BIOS")).unwrap();
+    assert!(!omega_zero::root::has_pce_cd_bios(d.path()));
+
+    std::fs::write(d.path().join("BIOS/syscard3.pce"), b"bios").unwrap();
+    assert!(omega_zero::root::has_pce_cd_bios(d.path()));
+}
+
+#[test]
+fn fbneo_finds_neogeo_bioses_in_its_recommended_directory() {
+    let d = tempdir().unwrap();
+    std::fs::create_dir_all(d.path().join("BIOS/fbneo")).unwrap();
+    assert!(!omega_zero::root::has_neogeo_bios(d.path()));
+    assert!(!omega_zero::root::has_neogeo_cd_bios(d.path()));
+
+    std::fs::write(d.path().join("BIOS/fbneo/neogeo.zip"), b"bios").unwrap();
+    assert!(omega_zero::root::has_neogeo_bios(d.path()));
+    assert!(!omega_zero::root::has_neogeo_cd_bios(d.path()));
+
+    std::fs::write(d.path().join("BIOS/fbneo/neocdz.zip"), b"bios").unwrap();
+    assert!(omega_zero::root::has_neogeo_cd_bios(d.path()));
+}
+
 fn vendored_core_paths() -> Vec<PathBuf> {
     common::vendored_core().into_iter().collect()
 }

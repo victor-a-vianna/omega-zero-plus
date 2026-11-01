@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 450 500">
+  <!-- Thick rounded outer casing and a nearly full-height label well. -->
+  <rect x="7" y="7" width="436" height="486" rx="14" fill="#000" fill-opacity="0.10"/>
+  <rect x="35" y="27" width="380" height="438" rx="9" fill="#000" fill-opacity="0.14"/>
+  <path d="M 45 27 H 405 Q 415 27 415 37 V 455" fill="none" stroke="#000" stroke-opacity="0.60" stroke-width="5"/>
+  <path d="M 405 465 H 45 Q 35 465 35 455 V 37" fill="none" stroke="#fff" stroke-opacity="0.30" stroke-width="3"/>
+  <!-- Rolled shell highlights distinguish it from the flatter 2600 case. -->
+  <path d="M 18 7 H 432 Q 443 7 443 18" fill="none" stroke="#fff" stroke-opacity="0.20" stroke-width="4"/>
+  <path d="M 443 18 V 482 Q 443 493 432 493 H 18" fill="none" stroke="#000" stroke-opacity="0.36" stroke-width="5"/>
+</svg>

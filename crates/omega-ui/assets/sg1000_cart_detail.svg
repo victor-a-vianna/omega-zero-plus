@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 500">
+  <!-- Raised side rails. -->
+  <path d="M 20 7 H 55 L 62 17 H 358 L 365 7 H 400" fill="none" stroke="#fff" stroke-opacity="0.30" stroke-width="4"/>
+  <path d="M 405 12 V 488 Q 405 494 399 494 H 21" fill="none" stroke="#000" stroke-opacity="0.30" stroke-width="6"/>
+  <path d="M 42 8 V 492 M 378 8 V 492" stroke="#000" stroke-opacity="0.24" stroke-width="5"/>
+  <!-- Upper portrait label panel. -->
+  <rect x="55" y="17" width="310" height="279" rx="7" fill="#000" fill-opacity="0.14"/>
+  <path d="M 63 17 H 357 Q 365 17 365 25 V 288" fill="none" stroke="#000" stroke-opacity="0.46" stroke-width="4"/>
+  <path d="M 357 296 H 63 Q 55 296 55 288 V 25" fill="none" stroke="#fff" stroke-opacity="0.34" stroke-width="3"/>
+  <!-- Side grip teeth. -->
+  <g fill="#000" fill-opacity="0.30">
+    <rect x="0" y="44" width="15" height="9" rx="2"/><rect x="0" y="65" width="15" height="9" rx="2"/>
+    <rect x="0" y="86" width="15" height="9" rx="2"/><rect x="0" y="107" width="15" height="9" rx="2"/>
+    <rect x="0" y="128" width="15" height="9" rx="2"/><rect x="0" y="149" width="15" height="9" rx="2"/>
+    <rect x="0" y="170" width="15" height="9" rx="2"/><rect x="0" y="191" width="15" height="9" rx="2"/>
+    <rect x="405" y="44" width="15" height="9" rx="2"/><rect x="405" y="65" width="15" height="9" rx="2"/>
+    <rect x="405" y="86" width="15" height="9" rx="2"/><rect x="405" y="107" width="15" height="9" rx="2"/>
+    <rect x="405" y="128" width="15" height="9" rx="2"/><rect x="405" y="149" width="15" height="9" rx="2"/>
+    <rect x="405" y="170" width="15" height="9" rx="2"/><rect x="405" y="191" width="15" height="9" rx="2"/>
+  </g>
+</svg>

@@ -1,0 +1,4 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 340 500">
+  <!-- Thin vertical HuCard/TurboChip with softly rounded lower corners. -->
+  <path d="M 22 0 H 318 Q 340 0 340 22 V 470 Q 340 500 310 500 H 30 Q 0 500 0 470 V 22 Q 0 0 22 0 Z" fill="#fff"/>
+</svg>

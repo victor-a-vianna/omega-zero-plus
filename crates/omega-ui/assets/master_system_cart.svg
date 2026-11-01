@@ -1,0 +1,4 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 360">
+  <!-- Wide Master System cartridge with end caps and a small central top tab. -->
+  <path d="M 9 8 H 267 L 273 0 H 327 L 333 8 H 591 Q 600 8 600 17 V 112 H 594 V 348 Q 594 360 582 360 H 18 Q 6 360 6 348 V 112 H 0 V 17 Q 0 8 9 8 Z" fill="#fff"/>
+</svg>

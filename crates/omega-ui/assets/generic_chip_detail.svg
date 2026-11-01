@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 420">
+  <!-- Raised package with no label panel: the UI will render the game's name below the chip. -->
+  <rect x="51" y="51" width="318" height="318" rx="22" fill="#000" fill-opacity="0.12"/>
+  <path d="M 72 51 H 348 Q 369 51 369 72" fill="none" stroke="#fff" stroke-opacity="0.22" stroke-width="5"/>
+  <path d="M 369 72 V 348 Q 369 369 348 369 H 72" fill="none" stroke="#000" stroke-opacity="0.44" stroke-width="6"/>
+  <!-- Pin-one marker and four subtle mould marks are the only face details. -->
+  <circle cx="82" cy="82" r="12" fill="#000" fill-opacity="0.42"/>
+  <circle cx="338" cy="82" r="8" fill="#000" fill-opacity="0.24"/>
+  <circle cx="82" cy="338" r="8" fill="#000" fill-opacity="0.24"/>
+  <circle cx="338" cy="338" r="8" fill="#000" fill-opacity="0.24"/>
+  <!-- Alternating pin shadows keep the legs readable at small sizes. -->
+  <g stroke="#000" stroke-opacity="0.30" stroke-width="4">
+    <path d="M 80 4 V 43 M 120 4 V 43 M 160 4 V 43 M 200 4 V 43 M 240 4 V 43 M 280 4 V 43 M 320 4 V 43"/>
+    <path d="M 80 377 V 416 M 120 377 V 416 M 160 377 V 416 M 200 377 V 416 M 240 377 V 416 M 280 377 V 416 M 320 377 V 416"/>
+    <path d="M 4 80 H 43 M 4 120 H 43 M 4 160 H 43 M 4 200 H 43 M 4 240 H 43 M 4 280 H 43 M 4 320 H 43"/>
+    <path d="M 377 80 H 416 M 377 120 H 416 M 377 160 H 416 M 377 200 H 416 M 377 240 H 416 M 377 280 H 416 M 377 320 H 416"/>
+  </g>
+</svg>

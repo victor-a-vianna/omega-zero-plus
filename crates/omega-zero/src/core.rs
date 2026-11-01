@@ -84,7 +84,36 @@ pub fn open(root: &Path, core: Core, setup: Setup) -> Opened {
 fn stand_in(core: Core) -> MockCore {
     match core {
         Core::Mgba | Core::Gpsp => MockCore::new(),
-        Core::Snes9x | Core::Supafaust => MockCore::sized(256, 224),
+        Core::Picodrive => MockCore::sized(320, 224),
+        Core::Mesen | Core::Snes9x | Core::Supafaust => MockCore::sized(256, 224),
+        Core::Stella2023 | Core::Prosystem => MockCore::sized(320, 240),
+        Core::Atari800 => MockCore::sized(336, 240),
+        Core::Handy => MockCore::sized(160, 102),
+        Core::BeetleVb => MockCore::sized(384, 224),
+        Core::PokeMini => MockCore::sized(384, 256),
+        Core::Gw => MockCore::sized(320, 240),
+        Core::Arduous => MockCore::sized(128, 64),
+        Core::BeetleWswan => MockCore::sized(224, 144),
+        Core::SameDuck => MockCore::sized(160, 144),
+        Core::Potator => MockCore::sized(160, 160),
+        Core::Tic80 => MockCore::sized(240, 136),
+        Core::Retro8 => MockCore::sized(128, 128),
+        Core::Jaxe => MockCore::sized(128, 64),
+        Core::SquirrelJme => MockCore::sized(240, 320),
+        Core::Vircon32 => MockCore::sized(640, 360),
+        Core::Uzem => MockCore::sized(240, 224),
+        Core::Hypseus => MockCore::sized(640, 480),
+        Core::BeetleNgp => MockCore::sized(160, 152),
+        Core::BigPemu | Core::BeetlePceFast | Core::BeetleSuperGrafx | Core::BeetlePcFx => {
+            MockCore::sized(320, 240)
+        }
+        Core::Hatari => MockCore::sized(640, 400),
+        Core::Quasi88 | Core::Np2Kai => MockCore::sized(640, 400),
+        Core::FbNeo => MockCore::sized(320, 224),
+        Core::Mame2003Plus => MockCore::sized(320, 240),
+        Core::Gp32Emu => MockCore::sized(320, 240),
+        Core::Vecx => MockCore::sized(330, 410),
+        Core::Puae => MockCore::sized(320, 256),
         Core::PcsxRearmed => MockCore::sized(320, 240),
     }
 }
@@ -170,7 +199,42 @@ pub fn colour_option(which: Core, on: bool) -> Option<(&'static str, &'static st
             "gpsp_color_correction",
             if on { "enabled" } else { "disabled" },
         )),
-        Core::Snes9x | Core::Supafaust | Core::PcsxRearmed => None,
+        Core::Picodrive
+        | Core::Mesen
+        | Core::Stella2023
+        | Core::Atari800
+        | Core::Prosystem
+        | Core::Handy
+        | Core::BeetleVb
+        | Core::PokeMini
+        | Core::Gw
+        | Core::Arduous
+        | Core::BeetleWswan
+        | Core::SameDuck
+        | Core::Potator
+        | Core::Tic80
+        | Core::Retro8
+        | Core::Jaxe
+        | Core::SquirrelJme
+        | Core::Vircon32
+        | Core::Uzem
+        | Core::Hypseus
+        | Core::BeetleNgp
+        | Core::BigPemu
+        | Core::Hatari
+        | Core::Quasi88
+        | Core::Np2Kai
+        | Core::BeetlePceFast
+        | Core::BeetlePcFx
+        | Core::BeetleSuperGrafx
+        | Core::FbNeo
+        | Core::Mame2003Plus
+        | Core::Gp32Emu
+        | Core::Vecx
+        | Core::Puae
+        | Core::Snes9x
+        | Core::Supafaust
+        | Core::PcsxRearmed => None,
     }
 }
 
@@ -230,6 +294,97 @@ pub fn core_options(
                 put("gpsp_boot_mode", "bios");
             }
         }
+        Core::Picodrive => {
+            put("picodrive_input1", "6 button pad");
+            put("picodrive_input2", "6 button pad");
+            put("picodrive_region", "Auto");
+            put("picodrive_aspect", "4/3");
+        }
+        Core::Mesen => {
+            put("mesen_region", "Auto");
+            put("mesen_overscan_down", "None");
+            put("mesen_overscan_up", "None");
+            put("mesen_overscan_left", "None");
+            put("mesen_overscan_right", "None");
+        }
+        Core::Stella2023 | Core::Prosystem => {}
+        Core::Handy => {
+            put("handy_refresh_rate", "60");
+            put("handy_rot", "Auto");
+            put("handy_lcd_ghosting", "disabled");
+            put("handy_frameskip", "auto");
+        }
+        Core::BeetleVb => {
+            put("vb_3dmode", "anaglyph");
+            put("vb_anaglyph_preset", "disabled");
+            put("vb_color_mode", "black & red");
+        }
+        Core::PokeMini => {
+            put("pokemini_video_scale", "4x");
+            put("pokemini_60hz_mode", "enabled");
+            put("pokemini_lcdfilter", "dotmatrix");
+            put("pokemini_lcdmode", "analog");
+            put("pokemini_palette", "Default");
+        }
+        Core::Gw => {}
+        Core::Arduous => {}
+        Core::BeetleWswan => {
+            put("wswan_rotate_display", "auto");
+            put("wswan_gfx_colors", "16bit");
+            put("wswan_frameskip", "auto");
+        }
+        Core::SameDuck => {}
+        Core::Potator => {}
+        Core::Tic80 => {}
+        Core::Retro8 => {}
+        Core::Jaxe => {}
+        Core::SquirrelJme => {}
+        Core::Vircon32 => put("vircon32_enable_frameskip", "Enabled"),
+        Core::Uzem => {}
+        Core::Hypseus => {}
+        Core::BeetleNgp => {}
+        Core::BeetlePcFx => {
+            // The H700 benefits substantially from the core's lower-cost dot-clock mode.
+            put("pcfx_high_dotclock_width", "256");
+            put("pcfx_resamp_quality", "2");
+        }
+        Core::BigPemu
+        | Core::Hatari
+        | Core::Quasi88
+        | Core::BeetlePceFast
+        | Core::BeetleSuperGrafx => {}
+        Core::Np2Kai => {
+            put("np2kai_joymode", "Arrows 3button");
+            put("np2kai_joynp2menu", "L2");
+            put("np2kai_stick2mouse", "R-stick");
+        }
+        Core::FbNeo => {
+            put("fbneo-neogeo-mode", "AES");
+            put("fbneo-cpu-speed-adjust", "100%");
+            put("fbneo-force-60hz", "disabled");
+            put("fbneo-frameskip-type", "disabled");
+        }
+        Core::Mame2003Plus => {}
+        // Prefer the real firmware when it is installed; fall back to HLE when absent.
+        // Some commercial games only get past a black screen with the firmware boot path.
+        Core::Gp32Emu => put("gp32emu_boot_mode", "auto"),
+        Core::Vecx => put("vecx_res_multi", "1"),
+        Core::Puae => {
+            put("puae_model", "CD32");
+            put("puae_model_cd", "CD32");
+            put("puae_cd_speed", "100");
+        }
+        Core::Atari800 => {
+            put(
+                "atari800_system",
+                if serial == "5200" {
+                    "5200"
+                } else {
+                    "800XL (64K)"
+                },
+            );
+            put("atari800_internalbasic", "disabled");
+        }
         Core::Snes9x => put("snes9x_overscan", "enabled"),
         Core::Supafaust => {
             put("supafaust_thread_affinity_emu", "0x0");
@@ -285,11 +440,23 @@ mod tests {
     #[test]
     fn every_option_is_spelt_with_its_own_core_s_prefix() {
         for which in Core::ALL {
-            let prefix = format!("{}_", which.as_str());
+            let prefix = match which {
+                Core::BeetleVb => "vb_".to_string(),
+                Core::BeetleWswan => "wswan_".to_string(),
+                Core::BeetlePcFx => "pcfx_".to_string(),
+                Core::FbNeo => "fbneo-".to_string(),
+                _ => format!("{}_", which.as_str()),
+            };
             for key in keys(which) {
                 assert!(key.starts_with(&prefix), "{key} set on {which:?}");
             }
         }
+    }
+
+    #[test]
+    fn atari800_selects_the_5200_machine_from_the_session() {
+        let options = core_options(Core::Atari800, "5200", false, false);
+        assert!(options.contains(&("atari800_system", "5200".to_string())));
     }
 
     #[test]
@@ -316,7 +483,12 @@ mod tests {
 
     #[test]
     fn the_consoles_take_no_handheld_options() {
-        for which in [Core::Snes9x, Core::Supafaust, Core::PcsxRearmed] {
+        for which in [
+            Core::Picodrive,
+            Core::Snes9x,
+            Core::Supafaust,
+            Core::PcsxRearmed,
+        ] {
             assert_eq!(
                 core_options(which, "rfu", true, true),
                 core_options(which, "auto", false, false),
@@ -330,6 +502,7 @@ mod tests {
     #[test]
     fn a_missing_console_core_is_stood_in_for_at_its_system_s_size() {
         assert_eq!(stand_in(Core::Mgba).video_size(), (240, 160));
+        assert_eq!(stand_in(Core::Picodrive).video_size(), (320, 224));
         assert_eq!(stand_in(Core::Snes9x).video_size(), (256, 224));
         assert_eq!(stand_in(Core::Supafaust).video_size(), (256, 224));
         assert_eq!(stand_in(Core::PcsxRearmed).video_size(), (320, 240));

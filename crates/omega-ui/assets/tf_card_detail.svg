@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 520">
+  <!-- Monochrome relief only: no brand, capacity or speed markings. -->
+  <path fill="none" stroke="#000" stroke-width="7" opacity=".70"
+        d="M42 18h292l48 48v404q0 28-28 28H42q-24 0-24-24V126h16V58H18V42q0-24 24-24z"/>
+  <path fill="none" stroke="#fff" stroke-width="3" opacity=".25"
+        d="M44 24h286l44 44v396q0 25-25 25H46q-19 0-19-19V132"/>
+  <!-- Recessed printable label. The frontend can composite scraped artwork in this panel. -->
+  <path fill="#000" opacity=".14"
+        d="M58 92h270q18 0 18 18v318q0 18-18 18H58q-18 0-18-18V110q0-18 18-18z"/>
+  <rect x="47" y="99" width="292" height="340" rx="13" fill="none"
+        stroke="#000" stroke-width="6" opacity=".60"/>
+  <path d="M61 105h264" fill="none" stroke="#fff" stroke-width="3" opacity=".25"/>
+  <!-- Header and footer bands suggest a memory-card label without embedding text. -->
+  <path fill="#000" opacity=".24" d="M52 106h282v74H52z"/>
+  <path fill="#000" opacity=".16" d="M70 360h246v58H70z"/>
+  <path d="M70 419h246" fill="none" stroke="#fff" stroke-width="3" opacity=".22"/>
+  <!-- Write-lock slider and moulding detail. -->
+  <path fill="#000" opacity=".55" d="M0 136h20v70H0z"/>
+  <path d="M24 216h22" fill="none" stroke="#000" stroke-width="5" opacity=".55"/>
+  <path d="M27 224h19" fill="none" stroke="#fff" stroke-width="3" opacity=".20"/>
+</svg>

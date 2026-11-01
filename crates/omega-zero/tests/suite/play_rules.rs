@@ -126,7 +126,13 @@ fn on_a_handheld_held_x_and_y_are_turbo_a_and_b() {
 
 #[test]
 fn on_a_console_x_and_y_reach_the_game_as_themselves() {
-    for platform in [Platform::Snes, Platform::Ps1] {
+    for platform in [
+        Platform::Genesis,
+        Platform::Sega32X,
+        Platform::SegaCd,
+        Platform::Snes,
+        Platform::Ps1,
+    ] {
         let p = play(platform, XY | ButtonMask::L2 | ButtonMask::R2);
         let frames = first_frames(&p, 12);
         assert!(

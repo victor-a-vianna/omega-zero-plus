@@ -9,7 +9,8 @@ use std::time::{Duration, Instant};
 
 use crate::cable::{self, Cable};
 use omega_retro::{
-    AvInfo, ButtonMask, Link, LinkChannel, RetroCore, Rumble, GBA_H, GBA_W, NETPACKET_RELIABLE,
+    AvInfo, ButtonMask, ComputerInput, Link, LinkChannel, RetroCore, Rumble, GBA_H, GBA_W,
+    NETPACKET_RELIABLE,
 };
 use omega_store::Platform;
 
@@ -176,6 +177,7 @@ enum Cmd {
 
 struct Shared {
     input: AtomicU16,
+    computer: AtomicU64,
     speed: AtomicU8,
     observed: AtomicU8,
     state: AtomicU8,
@@ -262,6 +264,7 @@ impl EmuHandle {
         let frames = Frames::new((GBA_W * GBA_H * 4) as usize);
         let shared = Arc::new(Shared {
             input: AtomicU16::new(0),
+            computer: AtomicU64::new(0),
             speed: AtomicU8::new(Speed::Paused as u8),
             observed: AtomicU8::new(Speed::Paused as u8),
             state: AtomicU8::new(CoreState::Loading as u8),
@@ -430,6 +433,14 @@ impl EmuHandle {
     pub fn set_input(&self, mask: ButtonMask) {
         let before = self.shared.input.swap(mask.0, Ordering::Relaxed);
         crate::latency::applied(before, mask.0);
+    }
+
+    pub fn set_computer_input(&self, input: ComputerInput) {
+        let packed = input.keys as u64
+            | ((input.mouse_x as u16 as u64) << 16)
+            | ((input.mouse_y as u16 as u64) << 32)
+            | ((input.mouse_buttons as u64) << 48);
+        self.shared.computer.store(packed, Ordering::Relaxed);
     }
 
     pub fn input(&self) -> ButtonMask {
@@ -788,6 +799,13 @@ impl Worker {
                     };
                     turbo_frame = turbo_frame.wrapping_add(1);
                     core.set_frame_skip(!last);
+                    let packed = self.shared.computer.load(Ordering::Relaxed);
+                    core.set_computer_input(ComputerInput {
+                        keys: packed as u16,
+                        mouse_x: (packed >> 16) as u16 as i16,
+                        mouse_y: (packed >> 32) as u16 as i16,
+                        mouse_buttons: (packed >> 48) as u8,
+                    });
                     let frame_began = Instant::now();
                     match cable.as_mut() {
                         Some(c) => {
@@ -1498,7 +1516,10 @@ mod tests {
             let rules = Rules::of(platform);
             assert_eq!(
                 rules.turbo,
-                matches!(platform, Platform::Gba | Platform::Gb | Platform::Gbc),
+                matches!(
+                    platform,
+                    Platform::Gba | Platform::Gb | Platform::Gbc | Platform::GameGear
+                ),
                 "{platform:?}"
             );
             assert_eq!(rules.rewinds, platform != Platform::Ps1, "{platform:?}");

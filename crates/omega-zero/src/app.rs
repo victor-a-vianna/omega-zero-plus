@@ -12,13 +12,13 @@ use omega_store::{
 use omega_ui::kit::action::Font;
 use omega_ui::kit::fade::stepped;
 use omega_ui::{
-    backdrop_shift, board_from, board_zoom, draw_backdrop, draw_pattern, draw_solid, ease, grown,
-    lid_of, lift_of, model_box, model_cart_at, on_board, posed_cart, posed_face, push_cart_side,
-    sockets_of, CartDive, CartMeshes, CartModel, ChromeColours, ClockPicker, CornerBadge, Draw,
-    FfState, GaugeIcon, GbShell, Hud, HudKind, KeyboardFaces, LinkBadge, LinkFaces, Links, Millis,
-    Placed, Polaroids, PowerChoice, Refusal, SettingsFaces, SettingsRow, Shelf, Sockets, TexId,
-    Toast, GBA_SOCKETS, HOP_LIFT, LID_SHADOW_H, LID_SHADOW_W, SHADOW_AT, SHADOW_H, SPRITE_PX,
-    TOP_BAR_H, TURN_PAD,
+    backdrop_shift, board_from, board_zoom, clean_label, draw_backdrop, draw_pattern, draw_solid,
+    ease, grown, lid_of, lift_of, model_box, model_cart_at, on_board, posed_cart, posed_face,
+    push_cart_side, sockets_of, CartDive, CartMeshes, CartModel, ChromeColours, ClockPicker,
+    CornerBadge, Draw, FfState, GaugeIcon, GbShell, Hud, HudKind, KeyboardFaces, LinkBadge,
+    LinkFaces, Links, Millis, Placed, Polaroids, PowerChoice, Refusal, SettingsFaces, SettingsRow,
+    Shelf, Sockets, TexId, Toast, GBA_SOCKETS, HOP_LIFT, LID_SHADOW_H, LID_SHADOW_W, SHADOW_AT,
+    SHADOW_H, SPRITE_PX, TOP_BAR_H, TURN_PAD,
 };
 
 use crate::audio::Sfx;
@@ -399,8 +399,12 @@ pub struct App {
 }
 
 fn shelves_of(carts: Vec<Cart>) -> Vec<(Platform, Shelf)> {
-    let mut rows: Vec<(Platform, Vec<Cart>)> =
-        Platform::ALL.iter().map(|p| (*p, Vec::new())).collect();
+    let mut rows: Vec<(Platform, Vec<Cart>)> = Platform::ALL
+        .iter()
+        .copied()
+        .filter(|platform| crate::root::platform_enabled(*platform))
+        .map(|platform| (platform, Vec::new()))
+        .collect();
     for cart in carts {
         if let Some((_, row)) = rows.iter_mut().find(|(p, _)| *p == cart.platform) {
             row.push(cart);
@@ -413,7 +417,12 @@ fn shelves_of(carts: Vec<Cart>) -> Vec<(Platform, Shelf)> {
 
 impl App {
     pub fn new(carts: Vec<Cart>) -> Self {
-        let shelves = shelves_of(carts);
+        let shelves = shelves_of(
+            carts
+                .into_iter()
+                .filter(|cart| crate::root::platform_enabled(cart.platform))
+                .collect(),
+        );
         let shelf_at = shelves
             .iter()
             .position(|(_, s)| !s.carts.is_empty())
@@ -731,7 +740,7 @@ impl App {
             None => self
                 .shelves
                 .get(self.shelf_at)
-                .map(|(platform, _)| platform.dir_name().to_string()),
+                .map(|(platform, _)| platform.pill_name().to_string()),
         }
     }
 
@@ -921,7 +930,7 @@ impl App {
     }
 
     pub fn may_load_state(&self) -> bool {
-        !self.link_active()
+        !self.link_active() && self.core != Core::Np2Kai
     }
 
     pub fn may_fast_forward(&self) -> bool {
@@ -1135,6 +1144,13 @@ impl App {
             .carts
             .get(self.shelf().index)
             .map(|c| c.stem.as_str())
+    }
+
+    /// The readable ROM name shown over the shelf for its selected cart.
+    pub fn selected_title(&self) -> Option<String> {
+        (self.on_shelf() && !self.power_shown())
+            .then(|| self.selected_stem().map(clean_label))
+            .flatten()
     }
 
     pub fn battery(&self) -> Option<Battery> {
@@ -2368,6 +2384,12 @@ impl App {
 
     pub fn starting_clean(&self) -> bool {
         matches!(self.phase, Phase::Inserting { clean: true, .. })
+    }
+
+    /// The final inserted frame has remained visible before a heavy core may begin loading.
+    pub fn cart_load_ready(&self) -> bool {
+        const LOAD_GRACE_S: f32 = 0.15;
+        matches!(self.phase, Phase::Inserting { t, .. } if t >= INSERT_S + LOAD_GRACE_S)
     }
 
     fn play_hold(&mut self) {

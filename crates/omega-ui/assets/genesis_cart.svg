@@ -1,0 +1,4 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 550 350">
+  <!-- Wide third-party Mega Drive shell from the reference, including its left grip notch. -->
+  <path d="M 48 0 H 502 Q 550 0 550 44 V 326 Q 550 350 522 350 H 28 Q 0 350 0 326 V 211 H 21 V 157 H 0 V 44 Q 0 0 48 0 Z" fill="#fff"/>
+</svg>

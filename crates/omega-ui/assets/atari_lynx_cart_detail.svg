@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500">
+  <!-- Thick rolled cap and shoulder seam. -->
+  <path d="M 25 5 H 475 Q 493 5 495 30 V 94 H 5 V 30 Q 7 5 25 5 Z" fill="#000" fill-opacity="0.10"/>
+  <path d="M 5 94 H 495" stroke="#000" stroke-opacity="0.26" stroke-width="5"/>
+  <path d="M 18 7 H 478 Q 491 8 494 28" fill="none" stroke="#fff" stroke-opacity="0.32" stroke-width="4"/>
+  <!-- Portrait label recess. -->
+  <rect x="16" y="104" width="468" height="300" rx="4" fill="#000" fill-opacity="0.15"/>
+  <path d="M 21 104 H 479 Q 484 104 484 109 V 399" fill="none" stroke="#000" stroke-opacity="0.58" stroke-width="4"/>
+  <path d="M 479 404 H 21 Q 16 404 16 399 V 109" fill="none" stroke="#fff" stroke-opacity="0.32" stroke-width="3"/>
+  <!-- Exposed PCB and its gold contact fingers. -->
+  <rect x="14" y="406" width="472" height="66" rx="3" fill="#000" fill-opacity="0.25"/>
+  <g fill="#000" fill-opacity="0.42">
+    <rect x="18" y="409" width="12" height="55"/><rect x="34" y="409" width="12" height="55"/>
+    <rect x="50" y="409" width="12" height="55"/><rect x="66" y="409" width="12" height="55"/>
+    <rect x="82" y="409" width="12" height="55"/><rect x="98" y="409" width="12" height="55"/>
+    <rect x="114" y="409" width="12" height="55"/><rect x="130" y="409" width="12" height="55"/>
+    <rect x="146" y="409" width="12" height="55"/><rect x="162" y="409" width="12" height="55"/>
+    <rect x="178" y="409" width="12" height="55"/><rect x="194" y="409" width="12" height="55"/>
+    <rect x="210" y="409" width="12" height="55"/><rect x="226" y="409" width="12" height="55"/>
+    <rect x="242" y="409" width="12" height="55"/><rect x="258" y="409" width="12" height="55"/>
+    <rect x="274" y="409" width="12" height="55"/><rect x="290" y="409" width="12" height="55"/>
+    <rect x="306" y="409" width="12" height="55"/><rect x="322" y="409" width="12" height="55"/>
+    <rect x="338" y="409" width="12" height="55"/><rect x="354" y="409" width="12" height="55"/>
+    <rect x="370" y="409" width="12" height="55"/><rect x="386" y="409" width="12" height="55"/>
+    <rect x="402" y="409" width="12" height="55"/><rect x="418" y="409" width="12" height="55"/>
+    <rect x="434" y="409" width="12" height="55"/><rect x="450" y="409" width="12" height="55"/>
+    <rect x="466" y="409" width="12" height="55"/>
+  </g>
+</svg>

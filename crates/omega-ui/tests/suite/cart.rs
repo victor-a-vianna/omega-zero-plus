@@ -633,6 +633,8 @@ fn every_cartridge_is_centred_on_the_row_and_clears_both_bars() {
             "the Super Famicom cart",
             CartModel::Snes(SnesShell::Famicom),
         ),
+        ("the Genesis cart", CartModel::Genesis),
+        ("the 32X cart", CartModel::Genesis32X),
         ("the PlayStation disc", CartModel::Disc),
     ] {
         let h = model_shelf_box(model).1;

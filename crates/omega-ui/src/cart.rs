@@ -4,7 +4,12 @@ use omega_store::gb::Class;
 use omega_store::{Cart, Outline, Platform};
 
 use crate::label_cut::label_art;
-use crate::models::{disc, snes, snes::SnesShell};
+use crate::models::{
+    atari_800, atari_console, atari_console::AtariShell, atari_jaguar, atari_lynx, disc,
+    famicom_disk_system, generic_chip, generic_floppy, genesis, genesis_32x, megaduck, neo_geo_aes,
+    neo_geo_pocket, nes, pokemon_mini, sega_8bit, sega_8bit::Sega8Shell, snes, snes::SnesShell,
+    sufami_turbo, supervision, tf_card, tg16_pce, vectrex, virtual_boy, wonderswan,
+};
 use crate::shell::{shell_for, Finish, Shell};
 use crate::silhouette::{
     cart_depth, cart_mask, detail_mask, gb_cart_depth, gb_cart_mask, gb_detail_mask, Detail,
@@ -91,7 +96,59 @@ pub(crate) struct Board {
 
 pub fn gb_shell_of(cart: &Cart) -> Option<GbShell> {
     match cart.platform {
-        Platform::Gba | Platform::Snes | Platform::Ps1 => None,
+        Platform::Gba
+        | Platform::Genesis
+        | Platform::GameGear
+        | Platform::MasterSystem
+        | Platform::Sg1000
+        | Platform::Sega32X
+        | Platform::SegaCd
+        | Platform::Cd32
+        | Platform::Nes
+        | Platform::FamicomDiskSystem
+        | Platform::Atari2600
+        | Platform::Atari800
+        | Platform::Atari5200
+        | Platform::Atari7800
+        | Platform::AtariLynx
+        | Platform::VirtualBoy
+        | Platform::PokemonMini
+        | Platform::GameAndWatch
+        | Platform::Arduboy
+        | Platform::WonderSwan
+        | Platform::WonderSwanColor
+        | Platform::MegaDuck
+        | Platform::Supervision
+        | Platform::Tic80
+        | Platform::Chip8
+        | Platform::Pico8
+        | Platform::Java
+        | Platform::Vircon32
+        | Platform::Uzem
+        | Platform::Daphne
+        | Platform::NeoGeoPocket
+        | Platform::NeoGeoPocketColor
+        | Platform::AtariJaguar
+        | Platform::AtariJaguarCd
+        | Platform::AtariSt
+        | Platform::Pc8800
+        | Platform::Pc9800
+        | Platform::Tg16Pce
+        | Platform::Tg16CdPceCd
+        | Platform::SuperGrafx
+        | Platform::PcFx
+        | Platform::NeoGeo
+        | Platform::NeoGeoCd
+        | Platform::Cps1
+        | Platform::Cps2
+        | Platform::Cps3
+        | Platform::FbNeo
+        | Platform::Mame
+        | Platform::Gp32
+        | Platform::Vectrex
+        | Platform::SufamiTurbo
+        | Platform::Snes
+        | Platform::Ps1 => None,
         Platform::Gb | Platform::Gbc => Some(match cart.shell.map(|c| c.outline) {
             Some(Outline::Notched) => GbShell::Notched,
             Some(Outline::Rounded) => GbShell::Rounded,
@@ -111,7 +168,45 @@ pub fn model_of(cart: &Cart) -> CartModel {
             CartModel::Gb(gb_shell_of(cart).unwrap_or(GbShell::Notched))
         }
         Platform::Snes => CartModel::Snes(snes::shell_of(cart)),
-        Platform::Ps1 => CartModel::Disc,
+        Platform::SufamiTurbo => CartModel::SufamiTurbo,
+        Platform::Nes => CartModel::Nes(nes::shell_of(cart)),
+        Platform::FamicomDiskSystem => CartModel::FamicomDiskSystem,
+        Platform::Genesis => CartModel::Genesis,
+        Platform::GameGear => CartModel::Sega8(Sega8Shell::GameGear),
+        Platform::MasterSystem => CartModel::Sega8(Sega8Shell::MasterSystem),
+        Platform::Sg1000 => CartModel::Sega8(Sega8Shell::Sg1000),
+        Platform::Atari2600 => CartModel::Atari(AtariShell::Atari2600),
+        Platform::Atari5200 => CartModel::Atari(AtariShell::Atari5200),
+        Platform::Atari7800 => CartModel::Atari(AtariShell::Atari7800),
+        Platform::AtariLynx => CartModel::AtariLynx,
+        Platform::Atari800 => CartModel::Atari800,
+        Platform::VirtualBoy => CartModel::VirtualBoy,
+        Platform::PokemonMini => CartModel::PokemonMini,
+        Platform::GameAndWatch
+        | Platform::Arduboy
+        | Platform::Tic80
+        | Platform::Chip8
+        | Platform::Pico8
+        | Platform::Cps1
+        | Platform::Cps2
+        | Platform::Cps3
+        | Platform::FbNeo => CartModel::GenericChip,
+        Platform::Mame => CartModel::GenericChip,
+        Platform::Java | Platform::Vircon32 | Platform::Uzem | Platform::Gp32 => CartModel::TfCard,
+        Platform::WonderSwan | Platform::WonderSwanColor => CartModel::WonderSwan,
+        Platform::MegaDuck => CartModel::MegaDuck,
+        Platform::Supervision => CartModel::Supervision,
+        Platform::Vectrex => CartModel::Vectrex,
+        Platform::NeoGeoPocket | Platform::NeoGeoPocketColor => CartModel::NeoGeoPocket,
+        Platform::AtariJaguar => CartModel::AtariJaguar,
+        Platform::AtariJaguarCd => CartModel::Disc,
+        Platform::AtariSt | Platform::Pc8800 | Platform::Pc9800 => CartModel::GenericFloppy,
+        Platform::Tg16Pce | Platform::SuperGrafx => CartModel::Tg16Pce,
+        Platform::Tg16CdPceCd | Platform::PcFx => CartModel::Disc,
+        Platform::NeoGeo => CartModel::NeoGeoAes,
+        Platform::NeoGeoCd => CartModel::Disc,
+        Platform::Sega32X => CartModel::Genesis32X,
+        Platform::SegaCd | Platform::Cd32 | Platform::Daphne | Platform::Ps1 => CartModel::Disc,
     }
 }
 
@@ -130,6 +225,28 @@ pub fn model_shadow(model: CartModel) -> CartFace {
 pub(crate) fn spec(model: CartModel) -> Spec {
     match model {
         CartModel::Snes(shell) => snes::spec(shell),
+        CartModel::Nes(shell) => nes::spec(shell),
+        CartModel::Genesis => genesis::spec(),
+        CartModel::Genesis32X => genesis_32x::spec(),
+        CartModel::Sega8(shell) => sega_8bit::spec(shell),
+        CartModel::Atari(shell) => atari_console::spec(shell),
+        CartModel::Atari800 => atari_800::spec(),
+        CartModel::AtariLynx => atari_lynx::spec(),
+        CartModel::VirtualBoy => virtual_boy::spec(),
+        CartModel::PokemonMini => pokemon_mini::spec(),
+        CartModel::NeoGeoPocket => neo_geo_pocket::spec(),
+        CartModel::WonderSwan => wonderswan::spec(),
+        CartModel::MegaDuck => megaduck::spec(),
+        CartModel::Supervision => supervision::spec(),
+        CartModel::Vectrex => vectrex::spec(),
+        CartModel::AtariJaguar => atari_jaguar::spec(),
+        CartModel::GenericFloppy => generic_floppy::spec(),
+        CartModel::GenericChip => generic_chip::spec(),
+        CartModel::TfCard => tf_card::spec(),
+        CartModel::Tg16Pce => tg16_pce::spec(),
+        CartModel::NeoGeoAes => neo_geo_aes::spec(),
+        CartModel::SufamiTurbo => sufami_turbo::spec(),
+        CartModel::FamicomDiskSystem => famicom_disk_system::spec(),
         CartModel::Disc => disc::spec(),
         CartModel::Gba => Spec {
             w: CART_W,
@@ -178,11 +295,60 @@ pub fn seated_box(platform: Platform) -> (u32, u32) {
     match platform {
         Platform::Gba => (SEATED_W, SEATED_H),
         Platform::Gb | Platform::Gbc => (SEATED_W, GB_SEATED_H),
+        Platform::Genesis => model_box(CartModel::Genesis),
+        Platform::GameGear => model_box(CartModel::Sega8(Sega8Shell::GameGear)),
+        Platform::MasterSystem => model_box(CartModel::Sega8(Sega8Shell::MasterSystem)),
+        Platform::Sg1000 => model_box(CartModel::Sega8(Sega8Shell::Sg1000)),
+        Platform::Atari2600 => model_box(CartModel::Atari(AtariShell::Atari2600)),
+        Platform::Atari5200 => model_box(CartModel::Atari(AtariShell::Atari5200)),
+        Platform::Atari7800 => model_box(CartModel::Atari(AtariShell::Atari7800)),
+        Platform::AtariLynx => model_box(CartModel::AtariLynx),
+        Platform::Atari800 => model_box(CartModel::Atari800),
+        Platform::VirtualBoy => model_box(CartModel::VirtualBoy),
+        Platform::PokemonMini => model_box(CartModel::PokemonMini),
+        Platform::GameAndWatch
+        | Platform::Arduboy
+        | Platform::Tic80
+        | Platform::Chip8
+        | Platform::Pico8
+        | Platform::Cps1
+        | Platform::Cps2
+        | Platform::Cps3
+        | Platform::FbNeo => model_box(CartModel::GenericChip),
+        Platform::Mame => model_box(CartModel::GenericChip),
+        Platform::Java | Platform::Vircon32 | Platform::Uzem | Platform::Gp32 => {
+            model_box(CartModel::TfCard)
+        }
+        Platform::WonderSwan | Platform::WonderSwanColor => model_box(CartModel::WonderSwan),
+        Platform::MegaDuck => model_box(CartModel::MegaDuck),
+        Platform::Supervision => model_box(CartModel::Supervision),
+        Platform::Vectrex => model_box(CartModel::Vectrex),
+        Platform::NeoGeoPocket | Platform::NeoGeoPocketColor => model_box(CartModel::NeoGeoPocket),
+        Platform::AtariJaguar => model_box(CartModel::AtariJaguar),
+        Platform::AtariSt | Platform::Pc8800 | Platform::Pc9800 => {
+            model_box(CartModel::GenericFloppy)
+        }
+        Platform::Tg16Pce | Platform::SuperGrafx => model_box(CartModel::Tg16Pce),
+        Platform::NeoGeo => model_box(CartModel::NeoGeoAes),
+        Platform::Sega32X => model_box(CartModel::Genesis32X),
+        Platform::Nes => {
+            let (_, (w, h)) = nes::outline(nes::NesShell::Famicom);
+            (w.round() as u32, h.round() as u32)
+        }
+        Platform::FamicomDiskSystem => model_box(CartModel::FamicomDiskSystem),
         Platform::Snes => {
             let (_, (w, h)) = snes::outline(SnesShell::Famicom);
             (w.round() as u32, h.round() as u32)
         }
-        Platform::Ps1 => {
+        Platform::SufamiTurbo => model_box(CartModel::SufamiTurbo),
+        Platform::SegaCd
+        | Platform::Cd32
+        | Platform::Daphne
+        | Platform::AtariJaguarCd
+        | Platform::Tg16CdPceCd
+        | Platform::NeoGeoCd
+        | Platform::PcFx
+        | Platform::Ps1 => {
             let (_, (w, h)) = crate::spin::outline(CartModel::Disc);
             (w.round() as u32, h.round() as u32)
         }
@@ -194,8 +360,50 @@ pub fn cart_box(platform: Platform) -> (u32, u32) {
     model_box(match platform {
         Platform::Gba => CartModel::Gba,
         Platform::Gb | Platform::Gbc => CartModel::Gb(GbShell::Notched),
+        Platform::Genesis => CartModel::Genesis,
+        Platform::GameGear => CartModel::Sega8(Sega8Shell::GameGear),
+        Platform::MasterSystem => CartModel::Sega8(Sega8Shell::MasterSystem),
+        Platform::Sg1000 => CartModel::Sega8(Sega8Shell::Sg1000),
+        Platform::Atari2600 => CartModel::Atari(AtariShell::Atari2600),
+        Platform::Atari5200 => CartModel::Atari(AtariShell::Atari5200),
+        Platform::Atari7800 => CartModel::Atari(AtariShell::Atari7800),
+        Platform::AtariLynx => CartModel::AtariLynx,
+        Platform::Atari800 => CartModel::Atari800,
+        Platform::VirtualBoy => CartModel::VirtualBoy,
+        Platform::PokemonMini => CartModel::PokemonMini,
+        Platform::GameAndWatch
+        | Platform::Arduboy
+        | Platform::Tic80
+        | Platform::Chip8
+        | Platform::Pico8
+        | Platform::Cps1
+        | Platform::Cps2
+        | Platform::Cps3
+        | Platform::FbNeo => CartModel::GenericChip,
+        Platform::Mame => CartModel::GenericChip,
+        Platform::Java | Platform::Vircon32 | Platform::Uzem | Platform::Gp32 => CartModel::TfCard,
+        Platform::WonderSwan | Platform::WonderSwanColor => CartModel::WonderSwan,
+        Platform::MegaDuck => CartModel::MegaDuck,
+        Platform::Supervision => CartModel::Supervision,
+        Platform::Vectrex => CartModel::Vectrex,
+        Platform::NeoGeoPocket | Platform::NeoGeoPocketColor => CartModel::NeoGeoPocket,
+        Platform::AtariJaguar => CartModel::AtariJaguar,
+        Platform::AtariSt | Platform::Pc8800 | Platform::Pc9800 => CartModel::GenericFloppy,
+        Platform::Tg16Pce | Platform::SuperGrafx => CartModel::Tg16Pce,
+        Platform::NeoGeo => CartModel::NeoGeoAes,
+        Platform::Sega32X => CartModel::Genesis32X,
+        Platform::Nes => CartModel::Nes(nes::NesShell::Famicom),
+        Platform::FamicomDiskSystem => CartModel::FamicomDiskSystem,
         Platform::Snes => CartModel::Snes(SnesShell::Famicom),
-        Platform::Ps1 => CartModel::Disc,
+        Platform::SufamiTurbo => CartModel::SufamiTurbo,
+        Platform::SegaCd
+        | Platform::Cd32
+        | Platform::Daphne
+        | Platform::AtariJaguarCd
+        | Platform::Tg16CdPceCd
+        | Platform::NeoGeoCd
+        | Platform::PcFx
+        | Platform::Ps1 => CartModel::Disc,
     })
 }
 
@@ -218,6 +426,9 @@ fn shadow(w: u32, h: u32, mask: &[u8]) -> CartFace {
 /// The label scans `cart`'s face is drawn with, each with the size it is drawn at there.
 pub(crate) fn label_scans(cart: &Cart) -> Vec<(PathBuf, u32, u32)> {
     let model = model_of(cart);
+    if model == CartModel::GenericChip {
+        return Vec::new();
+    }
     if model == CartModel::Disc {
         return disc::label_scans(cart);
     }
@@ -231,10 +442,76 @@ pub fn face_labels(platform: Platform) -> Vec<(u32, u32)> {
     CartModel::ALL
         .into_iter()
         .filter(|model| match model {
-            CartModel::Gba => platform == Platform::Gba,
+            CartModel::Gba => matches!(
+                platform,
+                Platform::Gba | Platform::Atari2600 | Platform::Atari5200 | Platform::Atari7800
+            ),
+            CartModel::Atari800 => platform == Platform::Atari800,
+            CartModel::AtariLynx => platform == Platform::AtariLynx,
+            CartModel::VirtualBoy => platform == Platform::VirtualBoy,
+            CartModel::PokemonMini => platform == Platform::PokemonMini,
+            CartModel::GenericChip => {
+                matches!(
+                    platform,
+                    Platform::GameAndWatch
+                        | Platform::Arduboy
+                        | Platform::Tic80
+                        | Platform::Pico8
+                        | Platform::Chip8
+                        | Platform::Cps1
+                        | Platform::Cps2
+                        | Platform::Cps3
+                        | Platform::FbNeo
+                        | Platform::Mame
+                )
+            }
+            CartModel::TfCard => {
+                matches!(
+                    platform,
+                    Platform::Java | Platform::Vircon32 | Platform::Uzem | Platform::Gp32
+                )
+            }
+            CartModel::NeoGeoPocket => {
+                matches!(
+                    platform,
+                    Platform::NeoGeoPocket | Platform::NeoGeoPocketColor
+                )
+            }
+            CartModel::WonderSwan => {
+                matches!(platform, Platform::WonderSwan | Platform::WonderSwanColor)
+            }
+            CartModel::MegaDuck => platform == Platform::MegaDuck,
+            CartModel::Supervision => platform == Platform::Supervision,
+            CartModel::Vectrex => platform == Platform::Vectrex,
+            CartModel::AtariJaguar => platform == Platform::AtariJaguar,
+            CartModel::GenericFloppy => matches!(
+                platform,
+                Platform::AtariSt | Platform::Pc8800 | Platform::Pc9800
+            ),
+            CartModel::Tg16Pce => matches!(platform, Platform::Tg16Pce | Platform::SuperGrafx),
+            CartModel::NeoGeoAes => platform == Platform::NeoGeo,
+            CartModel::Sega8(Sega8Shell::GameGear) => platform == Platform::GameGear,
+            CartModel::Sega8(Sega8Shell::MasterSystem) => platform == Platform::MasterSystem,
+            CartModel::Sega8(Sega8Shell::Sg1000) => platform == Platform::Sg1000,
+            CartModel::Atari(AtariShell::Atari2600) => platform == Platform::Atari2600,
+            CartModel::Atari(AtariShell::Atari5200) => platform == Platform::Atari5200,
+            CartModel::Atari(AtariShell::Atari7800) => platform == Platform::Atari7800,
             CartModel::Gb(_) => matches!(platform, Platform::Gb | Platform::Gbc),
             CartModel::Snes(_) => platform == Platform::Snes,
-            CartModel::Disc => platform == Platform::Ps1,
+            CartModel::SufamiTurbo => platform == Platform::SufamiTurbo,
+            CartModel::Nes(_) => platform == Platform::Nes,
+            CartModel::FamicomDiskSystem => platform == Platform::FamicomDiskSystem,
+            CartModel::Genesis => platform == Platform::Genesis,
+            CartModel::Genesis32X => platform == Platform::Sega32X,
+            CartModel::Disc => matches!(
+                platform,
+                Platform::SegaCd
+                    | Platform::AtariJaguarCd
+                    | Platform::Tg16CdPceCd
+                    | Platform::NeoGeoCd
+                    | Platform::PcFx
+                    | Platform::Ps1
+            ),
         })
         .map(|model| match model {
             CartModel::Disc => (disc::DISC_PX, disc::DISC_PX),
@@ -268,6 +545,11 @@ fn face_of(cart: &Cart, scans: bool) -> CartFace {
     let s = spec(model);
     let shell = shell_for(cart);
     let mut face = shell_face(&s, &shell);
+    if model == CartModel::GenericChip {
+        mould_detail(&s, &mut face);
+        clip_to_silhouette(&s, &mut face);
+        return face;
+    }
     let (_, _, lw, lh) = s.label;
     let scan = cart.label.as_deref().filter(|_| scans);
     let label = match scan.and_then(|p| label_art(p, lw, lh)) {
@@ -301,6 +583,7 @@ pub fn label_text(cart: &Cart) -> String {
 }
 
 pub fn clean_label(stem: &str) -> String {
+    let stem = stem.replace('_', " ");
     let mut bare = String::with_capacity(stem.len());
     let mut depth = 0u32;
     for ch in stem.chars() {
@@ -320,7 +603,7 @@ pub fn clean_label(stem: &str) -> String {
         out.push_str(word);
     }
     if out.is_empty() {
-        stem.to_string()
+        stem
     } else {
         out
     }

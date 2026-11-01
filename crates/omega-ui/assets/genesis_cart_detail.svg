@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 550 350">
+  <!-- The reference has a nearly full-height label between broad vertical grip wings. -->
+  <rect x="86" y="8" width="381" height="312" rx="4" fill="#000" fill-opacity="0.23"/>
+  <path d="M 92 8 H 461" stroke="#000" stroke-width="5" fill="none"/>
+  <path d="M 86 14 V 314" stroke="#000" stroke-width="5" fill="none"/>
+  <path d="M 92 320 H 461" stroke="#fff" stroke-opacity="0.48" stroke-width="4" fill="none"/>
+  <path d="M 467 14 V 314" stroke="#fff" stroke-opacity="0.38" stroke-width="4" fill="none"/>
+  <!-- Narrow seams separate the label panel from the two rounded textured grips. -->
+  <path d="M 82 3 V 331" stroke="#000" stroke-opacity="0.48" stroke-width="5" fill="none"/>
+  <path d="M 471 3 V 331" stroke="#000" stroke-opacity="0.48" stroke-width="5" fill="none"/>
+  <path d="M 77 4 V 330" stroke="#fff" stroke-opacity="0.16" stroke-width="2" fill="none"/>
+  <path d="M 476 4 V 330" stroke="#fff" stroke-opacity="0.16" stroke-width="2" fill="none"/>
+</svg>

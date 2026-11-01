@@ -74,6 +74,17 @@ const DOZE_TIMEOUT: Duration = Duration::from_secs(180);
 /// well inside the opening a boot plays over the shelf.
 const FACE_BYTES_PER_FRAME: usize = 1 << 20;
 
+fn bezel_fill(platform: omega_store::Platform) -> [f32; 4] {
+    if matches!(
+        platform,
+        omega_store::Platform::Gba | omega_store::Platform::Gb | omega_store::Platform::Gbc
+    ) {
+        BEZEL_FILL
+    } else {
+        [0.0, 0.0, 0.0, 1.0]
+    }
+}
+
 pub struct Frontend {
     session: Session,
     start: Instant,
@@ -125,6 +136,8 @@ pub struct Frontend {
     /// The system and size of the last game picture uploaded, which a SNES or PlayStation
     /// game is laid out by.
     picture: Option<(omega_store::Platform, (u32, u32))>,
+    selected_title: Option<(String, u8)>,
+    selected_title_tex: Option<TexId>,
 }
 
 /// Each cart's generated face for the boot, drawn on as many threads as there are cores, and
@@ -161,6 +174,22 @@ struct BezelMark {
     tex: TexId,
     w: u32,
     h: u32,
+}
+
+fn selected_title_face(title: &str, pal: &omega_ui::kit::palette::Palette) -> UndoFace {
+    const W: u32 = 320;
+    const H: u32 = 40;
+    const PAD: f32 = 12.0;
+    let mut rgba = vec![0; (W * H * 4) as usize];
+    for pixel in rgba.chunks_exact_mut(4) {
+        pixel.copy_from_slice(&[pal.well[0], pal.well[1], pal.well[2], 224]);
+    }
+    if let Some(font) = omega_ui::text::label_font() {
+        let layout =
+            omega_ui::text::fit_box(font, title, W as f32 - PAD * 2.0, H as f32, 2, 16.0, 10.0);
+        omega_ui::text::draw_centred(&mut rgba, W, H, &layout, pal.cream);
+    }
+    UndoFace { rgba, w: W, h: H }
 }
 
 impl Frontend {
@@ -206,6 +235,8 @@ impl Frontend {
             opening: TerminalRows::default(),
             start_notice: TerminalRows::default(),
             picture: None,
+            selected_title: None,
+            selected_title_tex: None,
         }
     }
 
@@ -379,7 +410,44 @@ impl Frontend {
         self.drop_boot_logo(compositor);
         self.draws.clear();
         self.session.app().draw(&mut self.draws);
+        self.draw_selected_title(compositor);
         compositor.draw_list(&self.draws);
+    }
+
+    fn draw_selected_title(&mut self, compositor: &mut Compositor) {
+        // Keep the ROM strip behind the boot/opening reveal, just like the shelf itself.
+        // It used to be appended after every overlay and therefore appeared on the black
+        // opening screen before the carts were visible.
+        if self.session.app().opening_shown()
+            || self.session.app().start_notice_due()
+            || self.session.app().boot_logo_alpha().is_some()
+        {
+            return;
+        }
+        let Some(title) = self.session.app().selected_title() else {
+            self.selected_title = None;
+            return;
+        };
+        let colour = self.session.app().palette_colour();
+        let key = (title.clone(), colour);
+        if self.selected_title.as_ref() != Some(&key) {
+            let face = selected_title_face(&title, self.session.app().palette());
+            faces::upload_nearest(compositor, &mut self.selected_title_tex, &face);
+            self.selected_title = Some(key);
+        }
+        let Some(tex) = self.selected_title_tex else {
+            return;
+        };
+        const W: f32 = 320.0;
+        const H: f32 = 40.0;
+        self.draws.push(Draw::Tex {
+            x: (out_w() as f32 - W) / 2.0,
+            y: omega_ui::TOP_BAR_H + 20.0,
+            w: W,
+            h: H,
+            tex,
+            alpha: 1.0,
+        });
     }
 
     /// Uploads the faces the label workers have handed back onto the faces their carts are drawn
@@ -424,7 +492,7 @@ impl Frontend {
         if overlay.is_some() {
             return Some(Bezel {
                 bands,
-                fill: BEZEL_FILL,
+                fill: bezel_fill(platform),
                 rims: Vec::new(),
                 marks: Vec::new(),
                 overlay,
@@ -449,7 +517,7 @@ impl Frontend {
             .collect();
         Some(Bezel {
             bands,
-            fill: BEZEL_FILL,
+            fill: bezel_fill(platform),
             rims,
             marks,
             overlay: None,
@@ -587,6 +655,10 @@ impl Frontend {
 
     pub fn powering_off(&self) -> bool {
         self.session.app().ready_to_power_off()
+    }
+
+    pub fn standalone_requested(&self) -> bool {
+        self.session.standalone_requested()
     }
 
     pub fn restarting(&self) -> bool {

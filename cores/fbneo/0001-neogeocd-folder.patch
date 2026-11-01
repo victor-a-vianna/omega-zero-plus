@@ -1,0 +1,14 @@
+--- a/src/burner/libretro/libretro.cpp
++++ b/src/burner/libretro/libretro.cpp
+@@ -2482,7 +2482,9 @@
+ 	// prepare g_driver_name
+-	static bool ready = false;
++	bool ready = false;
+ #ifdef BUILD_NEOGEO
+-	if (!ready && (strcmp(g_rom_parent_dir, "neocd")==0 || strncmp(g_driver_name, "neocd_", 6)==0)) {
++	if (!ready && (strcasecmp(g_rom_parent_dir, "neocd")==0 ||
++		strcasecmp(g_rom_parent_dir, "neogeocd")==0 ||
++		strncmp(g_driver_name, "neocd_", 6)==0)) {
+ 		HandleMessage(RETRO_LOG_INFO, "[FBNeo] subsystem neocd identified from parent folder\n");
+ 		prefix = "";
+ 		nGameType = RETRO_GAME_TYPE_NEOCD;

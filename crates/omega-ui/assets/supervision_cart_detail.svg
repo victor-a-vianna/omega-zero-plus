@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="560" height="500" viewBox="0 0 560 500">
+  <!-- Monochrome relief derived from the Watara Supervision cartridge. -->
+  <path d="M67 91h426" fill="none" stroke="#fff" stroke-width="3" opacity=".22"/>
+  <path d="M67 95h426" fill="none" stroke="#000" stroke-width="5" opacity=".62"/>
+  <path d="M130 47h300M130 58h300" fill="none" stroke="#fff" stroke-width="3" opacity=".20"/>
+  <path d="M132 50h296M132 61h296" fill="none" stroke="#000" stroke-width="4" opacity=".64"/>
+  <rect x="46" y="108" width="468" height="304" rx="24" fill="none" stroke="#fff" stroke-width="3" opacity=".23"/>
+  <rect x="51" y="113" width="458" height="294" rx="20" fill="none" stroke="#000" stroke-width="7" opacity=".74"/>
+  <path d="M250 421h60l-30 30z" fill="#fff" opacity=".20"/>
+  <path d="M254 424h52l-26 25z" fill="#000" opacity=".72"/>
+  <path d="M52 446h456v42l-10 8H62l-10-8z" fill="none" stroke="#000" stroke-width="5" opacity=".58"/>
+  <path d="M58 448h444" fill="none" stroke="#fff" stroke-width="3" opacity=".20"/>
+  <g fill="#000" opacity=".58">
+    <path d="M68 451h14v37H68zm22 0h14v37H90zm22 0h14v37h-14zm22 0h14v37h-14zm22 0h14v37h-14zm22 0h14v37h-14zm22 0h14v37h-14zm22 0h14v37h-14zm22 0h14v37h-14zm22 0h14v37h-14zm22 0h14v37h-14zm22 0h14v37h-14zm22 0h14v37h-14zm22 0h14v37h-14zm22 0h14v37h-14zm22 0h14v37h-14zm22 0h14v37h-14zm22 0h14v37h-14zm22 0h14v37h-14zm22 0h14v37h-14z"/>
+  </g>
+</svg>
