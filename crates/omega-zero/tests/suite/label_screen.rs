@@ -9,7 +9,7 @@ use omega_ui::{SettingsRow, TexId};
 use omega_zero::app::{App, Phase};
 use omega_zero::label_screen::{Sel, SyncState};
 use omega_zero::label_sync::{
-    Account, LabelJob, LabelJobs, LabelNews, Quota, SyncFail, Tally, Who, ACCOUNT_FILE,
+    title_path, Account, LabelJob, LabelJobs, LabelNews, Quota, SyncFail, Tally, Who, ACCOUNT_FILE,
 };
 use omega_zero::list_view::{LegendHint, RowValue};
 use omega_zero::wifi::{Status, WifiJob, WifiJobs, WifiNews};
@@ -55,6 +55,18 @@ impl LabelJobs for Scraper {
     fn news(&mut self) -> Vec<LabelNews> {
         std::mem::take(&mut self.0.lock().unwrap().news)
     }
+}
+
+#[test]
+fn the_shelf_strip_prefers_the_scraped_title_without_renaming_the_rom() {
+    let d = tmp_root_with_carts(&["Emerald", "Fusion"]);
+    let path = title_path(d.path(), Platform::Gba, "Emerald");
+    std::fs::create_dir_all(path.parent().unwrap()).unwrap();
+    std::fs::write(path, "Pokémon Emerald").unwrap();
+    let r = Rig::on(d, Some(account()), &[]);
+
+    assert_eq!(r.a.selected_title().as_deref(), Some("Pokémon Emerald"));
+    assert!(r.d.path().join("Games/GBA/Emerald.gba").is_file());
 }
 
 /// A radio that is on and has whatever network the test says joined.
@@ -284,7 +296,7 @@ fn y_signs_out_and_forgets_the_account() {
 }
 
 #[test]
-fn fetching_waits_for_a_network_and_then_looks_up_only_the_carts_without_labels() {
+fn fetching_waits_for_a_network_and_looks_up_missing_labels_or_titles() {
     let mut r = Rig::with(Some(account()), &["Fusion"]);
     r.open_labels();
     r.go(Sel::Sync);
@@ -297,13 +309,20 @@ fn fetching_waits_for_a_network_and_then_looks_up_only_the_carts_without_labels(
     r.press(Btn::A);
     assert_eq!(
         r.scraper.syncs(),
-        [(account(), vec!["Emerald".to_string(), "Zero".to_string()])]
+        [(
+            account(),
+            vec![
+                "Emerald".to_string(),
+                "Fusion".to_string(),
+                "Zero".to_string()
+            ]
+        )]
     );
     assert_eq!(
         r.a.labels().state(),
         &SyncState::Working {
             done: 0,
-            total: 2,
+            total: 3,
             title: "Emerald".into()
         }
     );
@@ -420,15 +439,24 @@ fn a_playstation_game_is_looked_up_disc_by_disc() {
     let game = "Parasite Eve (USA)".to_string();
     assert_eq!(
         r.scraper.syncs(),
-        [(account(), vec![game.clone(), game.clone()])],
+        [(
+            account(),
+            vec![
+                "Emerald".to_string(),
+                "Fusion".to_string(),
+                "Zero".to_string(),
+                game.clone(),
+                game.clone()
+            ]
+        )],
         "each disc is not looked up on its own"
     );
     assert_eq!(
         r.a.labels().state(),
         &SyncState::Working {
             done: 0,
-            total: 2,
-            title: "Parasite Eve, disc 1".into()
+            total: 5,
+            title: "Emerald".into()
         }
     );
 

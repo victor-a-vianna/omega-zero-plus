@@ -186,7 +186,7 @@ fn selected_title_face(title: &str, pal: &omega_ui::kit::palette::Palette) -> Un
     }
     if let Some(font) = omega_ui::text::label_font() {
         let layout =
-            omega_ui::text::fit_box(font, title, W as f32 - PAD * 2.0, H as f32, 2, 16.0, 10.0);
+            omega_ui::text::fit_box(font, title, W as f32 - PAD * 2.0, H as f32, 2, 10.0, 8.0);
         omega_ui::text::draw_centred(&mut rgba, W, H, &layout, pal.cream);
     }
     UndoFace { rgba, w: W, h: H }
@@ -442,7 +442,10 @@ impl Frontend {
         const H: f32 = 40.0;
         self.draws.push(Draw::Tex {
             x: (out_w() as f32 - W) / 2.0,
-            y: omega_ui::TOP_BAR_H + 20.0,
+            // Below the shelf, clear of the top bar's volume and battery indicators.
+            // `selected_title()` only returns a title in Phase::Shelf, so the strip is
+            // removed on the very first insert/eject animation frame.
+            y: out_h() as f32 - H - 44.0,
             w: W,
             h: H,
             tex,

@@ -1,0 +1,77 @@
+diff --git a/src/libretro/bundled_jre.c b/src/libretro/bundled_jre.c
+--- a/src/libretro/bundled_jre.c
++++ b/src/libretro/bundled_jre.c
+@@ -80,12 +80,50 @@ static bool file_exists(const char *path)
+ {
+ 	struct stat st;
+ 	return stat(path, &st) == 0;
+ }
+ 
++static void configure_bundled_fonts(const char *runtimeDir, retro_log_printf_t log)
++{
++#if defined(__linux__)
++	const char *config = "/tmp/freej2me-fonts.conf";
++	char fonts[BUNDLED_JRE_PATH_MAX];
++	char libraries[BUNDLED_JRE_PATH_MAX];
++	char libraryPath[BUNDLED_JRE_PATH_MAX * 2];
++	const char *inherited;
++	FILE *file;
++	snprintf(fonts, sizeof(fonts), "%s%slib%sfonts", runtimeDir, SLASH, SLASH);
++	snprintf(libraries, sizeof(libraries), "%s%slib%sfontconfig",
++		runtimeDir, SLASH, SLASH);
++	file = fopen(config, "w");
++	if (file)
++	{
++		fprintf(file,
++			"<?xml version=\"1.0\"?>\n"
++			"<!DOCTYPE fontconfig SYSTEM \"urn:fontconfig:fonts.dtd\">\n"
++			"<fontconfig>\n"
++			"<dir>%s</dir>\n"
++			"<cachedir>/tmp/freej2me-fontconfig-cache</cachedir>\n"
++			"<alias><family>sans-serif</family><prefer><family>Pixel Code</family></prefer></alias>\n"
++			"<alias><family>serif</family><prefer><family>Pixel Code</family></prefer></alias>\n"
++			"<alias><family>monospace</family><prefer><family>Pixel Code</family></prefer></alias>\n"
++			"</fontconfig>\n", fonts);
++		fclose(file);
++		inherited = getenv("LD_LIBRARY_PATH");
++		snprintf(libraryPath, sizeof(libraryPath), "%s%s%s", libraries,
++			inherited && inherited[0] ? ":" : "", inherited ? inherited : "");
++		setenv("LD_LIBRARY_PATH", libraryPath, 1);
++		setenv("FONTCONFIG_FILE", config, 1);
++		setenv("FONTCONFIG_PATH", "", 1);
++		unsetenv("FONTCONFIG_SYSROOT");
++		log(RETRO_LOG_INFO, "Using bundled fontconfig %s\n", config);
++	}
++#endif
++}
++
+ static bool is_dir(const char *path)
+ {
+ 	struct stat st;
+ 	return stat(path, &st) == 0 && (st.st_mode & S_IFDIR);
+ }
+ 
+ static void make_dirs(const char *path)
+@@ -223,6 +238,7 @@ bool bundled_jre_find(const char *systemDir,
+ 		if (!file_exists(java))
+ 			return false;
+ 		log(RETRO_LOG_INFO, "Using the Java runtime in %s\n", runtimeDir);
++		configure_bundled_fonts(runtimeDir, log);
+ 		return true;
+ 	}
+ 
+@@ -240,6 +256,7 @@ bool bundled_jre_find(const char *systemDir,
+ 	if (!strcmp(current, stamp) && file_exists(java))
+ 	{
+ 		log(RETRO_LOG_INFO, "Using the Java runtime in %s\n", runtimeDir);
++		configure_bundled_fonts(runtimeDir, log);
+ 		return true;
+ 	}
+ 
+@@ -288,5 +305,6 @@ bool bundled_jre_find(const char *systemDir,
+ 	if (!file_exists(java))
+ 		return false;
+ 	log(RETRO_LOG_INFO, "Using the Java runtime in %s\n", runtimeDir);
++	configure_bundled_fonts(runtimeDir, log);
+ 	return true;
+ }

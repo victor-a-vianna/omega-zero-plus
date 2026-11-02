@@ -8,8 +8,8 @@ use omega_store::{Cart, Platform};
 use omega_zero::json::Json;
 use omega_zero::label_sync::{
     crc32, fetch_width, game_url, label_regions, lookups, media_url, pick_label, pick_media,
-    read_reply, regions, sync, title, wants, Account, Found, Http, LabelNews, Lookup, Media, Quota,
-    Reply, Sync, SyncFail, Tally, Want, Who,
+    pick_title, read_reply, read_title, regions, sync, title, title_path, wants, Account, Found,
+    Http, LabelNews, Lookup, Media, Quota, Reply, Sync, SyncFail, Tally, Want, Who,
 };
 
 #[test]
@@ -130,7 +130,10 @@ fn a_scan_is_fetched_half_as_wide_again_as_its_widest_face() {
 
 const GAME: &str = r#"{"header": {"success": "true"}, "response": {
     "ssuser": {"id": "middlebaws", "maxrequestsperday": "20000", "requeststoday": "47"},
-    "jeu": {"id": "3767", "medias": [
+    "jeu": {"id": "3767", "noms": [
+        {"region": "jp", "text": "Metroid Fusion JP"},
+        {"region": "us", "text": "Metroid Fusion"}
+    ], "medias": [
         {"type": "box-2D", "parent": "jeu", "region": "us", "url": "https://ss/box-us", "format": "png"},
         {"type": "support-texture", "parent": "jeu", "region": "jp", "url": "https://ss/tex-jp", "format": "png"},
         {"type": "support-texture", "parent": "jeu", "region": "us", "url": "https://ss/tex-us", "format": "png"},
@@ -140,10 +143,16 @@ const GAME: &str = r#"{"header": {"success": "true"}, "response": {
 #[test]
 fn a_reply_names_the_game_its_media_and_the_lookups_left_today() {
     let (reply, quota) = read_reply(200, GAME.as_bytes());
-    let Reply::Game(Found { medias, disc }) = reply else {
+    let Reply::Game(Found {
+        medias,
+        names,
+        disc,
+    }) = reply
+    else {
         panic!("{reply:?}");
     };
     assert_eq!(medias.len(), 4);
+    assert_eq!(names.len(), 2);
     assert_eq!(disc, None, "the reply names no disc");
     assert_eq!(
         quota,
@@ -161,6 +170,9 @@ fn a_reply_names_the_game_its_media_and_the_lookups_left_today() {
         .filter(|m| m.kind != "support-texture")
         .collect();
     assert_eq!(pick_label(&boxes, &["us"]), None, "a box is not a label");
+    let found = found(GAME);
+    let want = want(std::path::Path::new("/tmp"), "Metroid Fusion (USA)");
+    assert_eq!(pick_title(&found, &want), Some("Metroid Fusion"));
 }
 
 #[test]
@@ -309,6 +321,15 @@ fn a_found_label_is_saved_where_the_shelf_looks_and_the_rest_are_counted() {
     let (news, _) = run(root.path(), &wants, &mut server);
     let label = root.path().join("Labels/GBA/Metroid Fusion (USA).png");
     assert_eq!(std::fs::read(&label).unwrap(), png(600, 310));
+    assert_eq!(
+        read_title(root.path(), Platform::Gba, "Metroid Fusion (USA)").as_deref(),
+        Some("Metroid Fusion")
+    );
+    assert_eq!(
+        title_path(root.path(), Platform::Gba, "Metroid Fusion (USA)"),
+        root.path()
+            .join("Metadata/Titles/GBA/Metroid Fusion (USA).txt")
+    );
     assert!(server.asked[0].contains(&format!("crc={:08X}", crc32(b"Metroid Fusion (USA)"))));
     assert!(server.asked[0].contains("romtaille=20"));
     assert_eq!(
@@ -489,7 +510,12 @@ fn every_disc_with_no_label_of_its_own_is_wanted() {
         Some(root.join("Labels/PS1/Vagrant Story (USA).png")),
     );
     touch(&root.join("Labels/PS1/Vagrant Story (USA).png"), b"png");
+    touch(
+        &title_path(root, Platform::Ps1, "Vagrant Story (USA)"),
+        b"Vagrant Story",
+    );
     let gba = root.join("Games/GBA/Fusion.gba");
+    touch(&title_path(root, Platform::Gba, "Zero"), b"Zero");
     let carts = [
         cart(Platform::Gba, "Fusion", gba.clone(), None),
         cart(
@@ -540,6 +566,16 @@ fn every_disc_with_no_label_of_its_own_is_wanted() {
     assert_eq!(again.iter().map(|w| w.disc).collect::<Vec<_>>(), [0, 2]);
     let mut shelved = game.clone();
     shelved.label = Some(disc_label(root, &discs[0]));
+    let again = wants(Some(root), std::slice::from_ref(&shelved));
+    assert_eq!(
+        again.iter().map(|w| w.disc).collect::<Vec<_>>(),
+        [0, 2],
+        "a labelled game without a scraped display title is looked up again"
+    );
+    touch(
+        &title_path(root, Platform::Ps1, "Final Fantasy VII (USA)"),
+        b"Final Fantasy VII",
+    );
     let again = wants(Some(root), std::slice::from_ref(&shelved));
     assert_eq!(again.iter().map(|w| w.disc).collect::<Vec<_>>(), [2]);
 }

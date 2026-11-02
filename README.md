@@ -126,6 +126,11 @@ The enhancement keeps the cartridge-and-disc presentation and adds dedicated mon
 for the new physical media. On first start, omega-zero creates the matching directory under
 `Games/` (and matching `Labels/`, `Overlays/`, `Saves/` and `States/` directories).
 
+ScreenScraper also stores the matched game name under
+`Metadata/Titles/<PLATFORM>/<ROM stem>.txt`. The shelf strip prefers that display title and falls
+back to the normalized ROM filename when it is absent; ROM files, save paths and state paths are
+never renamed.
+
 ### Integrated platforms
 
 | Platform | Games directory | Core / runtime | Accepted content |
@@ -169,7 +174,7 @@ for the new physical media. On first start, omega-zero creates the matching dire
 | Amiga CD32 | `CD32` | PUAE | `.cue`, `.ccd`, `.nrg`, `.mds`, `.iso`, `.chd`, `.m3u` |
 | PlayStation | `PS1` | PCSX-ReARMed | `.cue`, `.chd`, `.pbp`, `.m3u` |
 | TIC-80 / PICO-8 / CHIP-8 | `TIC80`, `PICO8`, `CHIP8` | TIC-80 / Retro8 / JAXE | `.tic`; `.p8`, `.png`; `.ch8`, `.c8`, `.sc8`, `.xo8` |
-| Java ME | `JAVA` | SquirrelJME | `.jar`, `.jad` and supported Java ME package formats |
+| Java ME | `JAVA` | FreeJ2ME-Plus (SquirrelJME retained as an optional core) | `.jar`, `.jad` and supported Java ME package formats |
 | Vircon32 / Uzebox | `VIRCON32`, `UZEM` | Vircon32 / Uzem | `.v32`; `.uze` |
 | Daphne laserdisc | `DAPHNE` | Hypseus Singe | `.daphne` launch entries |
 
@@ -177,9 +182,9 @@ for the new physical media. On first start, omega-zero creates the matching dire
 
 The repository keeps every platform integration above for future device profiles. The H700
 release intentionally omits **Amiga CD32, GP32, NEC PC-8800, NEC PC-9800, NEC PC-FX, Atari
-Jaguar, Atari Jaguar CD and Daphne** because their current cores/runtimes are unstable or too
-slow on that SoC. Their source code, assets, build recipes and documentation remain in the
-project.
+Jaguar, Atari Jaguar CD, Java ME, Vircon32 and Daphne** because their current cores/runtimes
+are unstable or too slow on that SoC. Their source code, assets, build recipes and documentation
+remain in the project.
 
 `task dist:device` and the device deployment tasks build the `device,h700` frontend, create no
 folders for those platforms, and do not package their exclusive cores. `task cores:device`
@@ -207,6 +212,7 @@ are case-sensitive. Put user-provided files under `BIOS/` exactly as shown.
 | GP32 | Optional | `gp32166m.bin`; GP32emu uses the real firmware when present and falls back to HLE when absent |
 | Game Boy Advance | Optional | `gba_bios.bin` (16 KiB); mGBA/gpSP can use built-in boot paths |
 | PlayStation | Optional | A compatible BIOS such as `scph5501.bin`; PCSX-ReARMed can use its built-in HLE BIOS |
+| Java ME | Required by profiles that enable Java ME | `freej2me_plus-lr.jar` and `freej2me_plus_runtime_linux-arm64.tar.gz` |
 
 ### Enhancement credits
 
@@ -224,7 +230,7 @@ this enhancement is provided by the respective upstream projects: [Stella 2023](
 [MAME 2003-Plus](https://github.com/libretro/mame2003-plus-libretro), [GP32emu](https://github.com/gameblabla/gp32emu),
 [VecX](https://github.com/libretro/libretro-vecx), [PUAE](https://github.com/libretro/libretro-uae),
 [TIC-80](https://github.com/libretro/TIC-80), [Retro8](https://github.com/libretro/retro8),
-[SquirrelJME](https://github.com/SquirrelJME/SquirrelJME), [Vircon32](https://github.com/vircon32/vircon32-libretro),
+[FreeJ2ME-Plus](https://github.com/TASEmulators/freej2me-plus), [SquirrelJME](https://github.com/SquirrelJME/SquirrelJME), [Vircon32](https://github.com/vircon32/vircon32-libretro),
 [Uzem](https://github.com/libretro/libretro-uzem), [JAXE](https://github.com/kurtjd/jaxe),
 [Hypseus Singe](https://github.com/DirtBagXon/hypseus-singe) and BigPEmu by Rich Whitehouse.
 

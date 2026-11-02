@@ -575,9 +575,9 @@ fn every_cores_name_fits_its_chip_with_room_either_side() {
         Core::ALL.map(Core::text),
         [
             "mGBA", "gpSP", "Pico", "Mesen", "Stel", "A800", "Pro", "Hndy", "VB", "Poke", "GW",
-            "Ardu", "WS", "Duck", "Pot", "TIC", "R8", "C8", "SJME", "V32", "Uzem", "DAPH", "NGP",
-            "BigP", "Hatr", "Q88", "NP2", "PCE", "SGX", "PCFX", "FBN", "MAME", "GP32", "VecX",
-            "PUAE", "Snes9x", "Faust", "PCSX",
+            "Ardu", "WS", "Duck", "Pot", "TIC", "R8", "C8", "FJ2", "SJME", "V32", "Uzem", "DAPH",
+            "NGP", "BigP", "Hatr", "Q88", "NP2", "PCE", "SGX", "PCFX", "FBN", "MAME", "GP32",
+            "VecX", "PUAE", "Snes9x", "Faust", "PCSX",
         ]
     );
 }

@@ -26,6 +26,7 @@ pub enum Core {
     Tic80,
     Retro8,
     Jaxe,
+    FreeJ2mePlus,
     SquirrelJme,
     Vircon32,
     Uzem,
@@ -49,7 +50,7 @@ pub enum Core {
 }
 
 impl Core {
-    pub const ALL: [Core; 38] = [
+    pub const ALL: [Core; 39] = [
         Core::Mgba,
         Core::Gpsp,
         Core::Picodrive,
@@ -68,6 +69,7 @@ impl Core {
         Core::Tic80,
         Core::Retro8,
         Core::Jaxe,
+        Core::FreeJ2mePlus,
         Core::SquirrelJme,
         Core::Vircon32,
         Core::Uzem,
@@ -110,6 +112,7 @@ impl Core {
             Core::Tic80 => "tic80",
             Core::Retro8 => "retro8",
             Core::Jaxe => "jaxe",
+            Core::FreeJ2mePlus => "freej2me_plus",
             Core::SquirrelJme => "squirreljme",
             Core::Vircon32 => "vircon32",
             Core::Uzem => "uzem",
@@ -167,6 +170,7 @@ impl Core {
             Core::Tic80 => "TIC",
             Core::Retro8 => "R8",
             Core::Jaxe => "C8",
+            Core::FreeJ2mePlus => "FJ2",
             Core::SquirrelJme => "SJME",
             Core::Vircon32 => "V32",
             Core::Uzem => "Uzem",
@@ -211,6 +215,7 @@ impl Core {
             Core::Tic80 => "TIC-80",
             Core::Retro8 => "Retro8",
             Core::Jaxe => "JAXE",
+            Core::FreeJ2mePlus => "FreeJ2ME-Plus",
             Core::SquirrelJme => "SquirrelJME",
             Core::Vircon32 => "Vircon32",
             Core::Uzem => "Uzem",
@@ -254,6 +259,7 @@ impl Core {
             "tic80" => Some(Core::Tic80),
             "retro8" => Some(Core::Retro8),
             "jaxe" => Some(Core::Jaxe),
+            "freej2me_plus" | "freej2me-plus" | "freej2me" => Some(Core::FreeJ2mePlus),
             "squirreljme" | "squirrel_jme" => Some(Core::SquirrelJme),
             "vircon32" => Some(Core::Vircon32),
             "uzem" => Some(Core::Uzem),
@@ -305,7 +311,7 @@ impl Core {
             Platform::Tic80 => &[Core::Tic80],
             Platform::Pico8 => &[Core::Retro8],
             Platform::Chip8 => &[Core::Jaxe],
-            Platform::Java => &[Core::SquirrelJme],
+            Platform::Java => &[Core::FreeJ2mePlus, Core::SquirrelJme],
             Platform::Vircon32 => &[Core::Vircon32],
             Platform::Uzem => &[Core::Uzem],
             Platform::Daphne => &[Core::Hypseus],

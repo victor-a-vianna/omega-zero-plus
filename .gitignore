@@ -25,6 +25,9 @@
 *.log
 *.tmp
 *.temp
+*.trace
+*.stackdump
+*.pid
 *.bak
 *.orig
 *.rej
@@ -57,9 +60,19 @@ lcov.info
 
 # Editor and operating-system metadata.
 .DS_Store
+._*
+.AppleDouble
+.LSOverride
+.Spotlight-V100/
+.Trashes/
+.fseventsd/
 Thumbs.db
 .idea/
 .vscode/
+.fleet/
+.history/
+.direnv/
+.envrc
 *.swp
 *.swo
 

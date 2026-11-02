@@ -320,6 +320,9 @@ pub struct App {
     pub(crate) restarting: bool,
     pub(crate) act_at: Millis,
     pub(crate) root: Option<PathBuf>,
+    /// ScreenScraper names keyed independently from ROM paths, loaded once and refreshed as a
+    /// sync finishes each game.
+    display_titles: HashMap<(u8, String), String>,
     pub(crate) state: AppState,
     pub(crate) vol_before: Vec<(u8, bool, Millis)>,
     pub(crate) snapshot: Option<Box<dyn Snapshot>>,
@@ -490,6 +493,7 @@ impl App {
             restarting: false,
             act_at: 0,
             root: None,
+            display_titles: HashMap::new(),
             state: AppState::default(),
             vol_before: Vec::new(),
             snapshot: None,
@@ -536,6 +540,13 @@ impl App {
         omega_ui::set_theme(Theme::read(root));
         let mut app = App::new(scan(root).unwrap_or_default());
         app.root = Some(root.to_path_buf());
+        app.display_titles = app
+            .carts()
+            .filter_map(|cart| {
+                crate::label_sync::read_title(root, cart.platform, &cart.stem)
+                    .map(|title| ((cart.platform as u8, cart.stem.clone()), title))
+            })
+            .collect();
         app.theme = Theme::read_override(root);
         app.state = read_app_state(root);
         app.wifi.start(app.state.wifi);
@@ -1148,9 +1159,16 @@ impl App {
 
     /// The readable ROM name shown over the shelf for its selected cart.
     pub fn selected_title(&self) -> Option<String> {
-        (self.on_shelf() && !self.power_shown())
-            .then(|| self.selected_stem().map(clean_label))
-            .flatten()
+        if !self.on_shelf() || self.power_shown() {
+            return None;
+        }
+        let cart = self.shelf().carts.get(self.shelf().index)?;
+        Some(
+            self.display_titles
+                .get(&(cart.platform as u8, cart.stem.clone()))
+                .cloned()
+                .unwrap_or_else(|| clean_label(&cart.stem)),
+        )
     }
 
     pub fn battery(&self) -> Option<Battery> {
@@ -1382,6 +1400,10 @@ impl App {
         };
         for (platform, stem) in self.labels.take_fresh() {
             let path = crate::label_sync::label_path(&root, platform, &stem);
+            if let Some(title) = crate::label_sync::read_title(&root, platform, &stem) {
+                self.display_titles
+                    .insert((platform as u8, stem.clone()), title);
+            }
             let shelf = self.shelves.iter_mut().find(|(p, _)| *p == platform);
             let Some(cart) = shelf.and_then(|(_, s)| s.carts.iter_mut().find(|c| c.stem == stem))
             else {

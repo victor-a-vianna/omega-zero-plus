@@ -23,10 +23,11 @@ vars:
   SAMEDUCK_COMMIT: 040e19c379f00dae10afe0eb0c1b2b019b985bbe
   POTATOR_COMMIT: 227c5f6f3ce74d32e9002ce24c1420288559a860
   TIC80_COMMIT: 14fd99edc29962778bc88d81773288ffc6e8aa53
-  TIC80_ENGINE_COMMIT: 4609f5f724b5f5398a591532c1a6e71bb747ca4f
+  TIC80_ENGINE_COMMIT: b3dbd597eecfe6742f64001c2fe5ba6c1afe55d9
   JAXE_COMMIT: c767afd785e01a15bcd575a2d93b737add82b675
   RETRO8_COMMIT: ddc06a142398ee9755894b3f0bb17c8dc428151d
   SQUIRRELJME_COMMIT: 58c64581371c8ab46a3a711de3a0e8aec3829674
+  FREEJ2ME_PLUS_COMMIT: 3933e75ef927a95eab9f5e065f0b76dabf336069
   VIRCON32_COMMIT: 8b4ff35efb0f3a4c2599fa85ec0e588713f83182
   UZEM_COMMIT: d991ee94547c8294abc1c4cb73d63116aa58b5bc
   HYPSEUS_COMMIT: 4cfd20d834ee6cf42c1c347ffd2627d87aaf8e2f
@@ -52,14 +53,13 @@ vars:
   BIGPEMU_SDL2_VERSION: 2.30.6
   BIGPEMU_SDL2_SHA256: c6ef64ca18a19d13df6eb22df9aff19fb0db65610a74cc81dae33a82235cacd4
   # The libretro names of the cores the device bundle ships, <name>_libretro.so in System/
-  DEVICE_CORES: mgba gpsp picodrive mesen stella2023 atari800 prosystem handy hatari2014 quasi88 np2kai mednafen_vb pokemini gw arduous mednafen_wswan sameduck potator tic80 jaxe retro8 squirreljme vircon32 uzem mednafen_ngp mednafen_pce_fast mednafen_supergrafx mednafen_pcfx fbneo mame2003_plus gp32emu vecx puae snes9x mednafen_supafaust pcsx_rearmed
-  # H700 excludes QUASI88, NP2Kai, Beetle PC-FX, GP32emu and PUAE. Jaguar/BigPEmu and
-  # Daphne/Hypseus are standalone runtimes and are likewise omitted by the H700 profile.
-  H700_DEVICE_CORES: mgba gpsp picodrive mesen stella2023 atari800 prosystem handy hatari2014 mednafen_vb pokemini gw arduous mednafen_wswan sameduck potator tic80 jaxe retro8 squirreljme vircon32 uzem mednafen_ngp mednafen_pce_fast mednafen_supergrafx fbneo mame2003_plus vecx snes9x mednafen_supafaust pcsx_rearmed
+  DEVICE_CORES: mgba gpsp picodrive mesen stella2023 atari800 prosystem handy hatari2014 quasi88 np2kai mednafen_vb pokemini gw arduous mednafen_wswan sameduck potator tic80 jaxe retro8 squirreljme freej2me_plus vircon32 uzem mednafen_ngp mednafen_pce_fast mednafen_supergrafx mednafen_pcfx fbneo mame2003_plus gp32emu vecx puae snes9x mednafen_supafaust pcsx_rearmed
+  # H700 excludes the cores/runtimes listed in H700_EXCLUDED, including Java ME.
+  H700_DEVICE_CORES: mgba gpsp picodrive mesen stella2023 atari800 prosystem handy hatari2014 mednafen_vb pokemini gw arduous mednafen_wswan sameduck potator tic80 jaxe retro8 uzem mednafen_ngp mednafen_pce_fast mednafen_supergrafx fbneo mame2003_plus vecx snes9x mednafen_supafaust pcsx_rearmed
   # The cores built by cores/<name>/build.sh whose source archive ships in System/licenses/
   # beside them, as <name>:<libretro name>. gpSP's ships too, the way it always has
-  SOURCE_CORES: picodrive:picodrive mesen:mesen stella2023:stella2023 atari800:atari800 prosystem:prosystem handy:handy hatari:hatari2014 quasi88:quasi88 np2kai:np2kai beetle_vb:mednafen_vb pokemini:pokemini gw:gw arduous:arduous beetle_wswan:mednafen_wswan sameduck:sameduck potator:potator tic80:tic80 jaxe:jaxe retro8:retro8 squirreljme:squirreljme vircon32:vircon32 uzem:uzem beetle_ngp:mednafen_ngp beetle_pce_fast:mednafen_pce_fast beetle_supergrafx:mednafen_supergrafx beetle_pcfx:mednafen_pcfx fbneo:fbneo mame2003_plus:mame2003_plus gp32emu:gp32emu vecx:vecx puae:puae snes9x:snes9x supafaust:mednafen_supafaust pcsx_rearmed:pcsx_rearmed
-  H700_SOURCE_CORES: picodrive:picodrive mesen:mesen stella2023:stella2023 atari800:atari800 prosystem:prosystem handy:handy hatari:hatari2014 beetle_vb:mednafen_vb pokemini:pokemini gw:gw arduous:arduous beetle_wswan:mednafen_wswan sameduck:sameduck potator:potator tic80:tic80 jaxe:jaxe retro8:retro8 squirreljme:squirreljme vircon32:vircon32 uzem:uzem beetle_ngp:mednafen_ngp beetle_pce_fast:mednafen_pce_fast beetle_supergrafx:mednafen_supergrafx fbneo:fbneo mame2003_plus:mame2003_plus vecx:vecx snes9x:snes9x supafaust:mednafen_supafaust pcsx_rearmed:pcsx_rearmed
+  SOURCE_CORES: picodrive:picodrive mesen:mesen stella2023:stella2023 atari800:atari800 prosystem:prosystem handy:handy hatari:hatari2014 quasi88:quasi88 np2kai:np2kai beetle_vb:mednafen_vb pokemini:pokemini gw:gw arduous:arduous beetle_wswan:mednafen_wswan sameduck:sameduck potator:potator tic80:tic80 jaxe:jaxe retro8:retro8 squirreljme:squirreljme freej2me_plus:freej2me_plus vircon32:vircon32 uzem:uzem beetle_ngp:mednafen_ngp beetle_pce_fast:mednafen_pce_fast beetle_supergrafx:mednafen_supergrafx beetle_pcfx:mednafen_pcfx fbneo:fbneo mame2003_plus:mame2003_plus gp32emu:gp32emu vecx:vecx puae:puae snes9x:snes9x supafaust:mednafen_supafaust pcsx_rearmed:pcsx_rearmed
+  H700_SOURCE_CORES: picodrive:picodrive mesen:mesen stella2023:stella2023 atari800:atari800 prosystem:prosystem handy:handy hatari:hatari2014 beetle_vb:mednafen_vb pokemini:pokemini gw:gw arduous:arduous beetle_wswan:mednafen_wswan sameduck:sameduck potator:potator tic80:tic80 jaxe:jaxe retro8:retro8 uzem:uzem beetle_ngp:mednafen_ngp beetle_pce_fast:mednafen_pce_fast beetle_supergrafx:mednafen_supergrafx fbneo:fbneo mame2003_plus:mame2003_plus vecx:vecx snes9x:snes9x supafaust:mednafen_supafaust pcsx_rearmed:pcsx_rearmed
 
 tasks:
   default:
@@ -874,6 +874,63 @@ tasks:
       - rm -f vendor/squirreljme_libretro.so vendor/squirreljme_libretro.so.meta vendor/squirreljme-0.3.0-fast.jar vendor/squirreljme-src.tar.gz vendor/squirreljme-src.sha
       - task: core:squirreljme
 
+  core:freej2me-plus:
+    desc: Build FreeJ2ME-Plus and its self-contained ARM64 Java runtime
+    status:
+      - test -f vendor/freej2me_plus_libretro.so
+      - test -f vendor/freej2me_plus-lr.jar
+      - test -f vendor/freej2me_plus_runtime_linux-arm64.tar.gz
+      - test "$(cat vendor/freej2me_plus-src.sha 2>/dev/null)" = "{{.FREEJ2ME_PLUS_COMMIT}}"
+      - test "$(cat vendor/freej2me_plus_libretro.so.meta 2>/dev/null)" = "$(sh cores/freej2me_plus/build.sh stamp {{.FREEJ2ME_PLUS_COMMIT}})"
+    cmds:
+      - |
+        set -euo pipefail
+        mkdir -p vendor
+        curl -fsSL -o vendor/freej2me_plus-src.tar.gz \
+          "https://github.com/TASEmulators/freej2me-plus/archive/{{.FREEJ2ME_PLUS_COMMIT}}.tar.gz"
+        tar -tzf vendor/freej2me_plus-src.tar.gz | \
+          grep -q '^freej2me-plus-{{.FREEJ2ME_PLUS_COMMIT}}/src/libretro/Makefile$'
+        echo "{{.FREEJ2ME_PLUS_COMMIT}}" > vendor/freej2me_plus-src.sha
+      - task: device:sh
+        vars:
+          IMAGE: eclipse-temurin:8-jdk
+          CMD: >-
+            command -v ant >/dev/null 2>&1 && command -v make >/dev/null 2>&1 ||
+            (apt-get update && apt-get install -y --no-install-recommends ant build-essential);
+            sh cores/freej2me_plus/build.sh build {{.FREEJ2ME_PLUS_COMMIT}}
+            vendor/freej2me_plus-src.tar.gz target-device/freej2me_plus
+            vendor/freej2me_plus_libretro.so vendor/freej2me_plus-lr.jar
+      - task: device:sh
+        vars:
+          IMAGE: rust:1-bullseye
+          CMD: >-
+            sh cores/freej2me_plus/native.sh {{.FREEJ2ME_PLUS_COMMIT}}
+            vendor/freej2me_plus-src.tar.gz target-device/freej2me_plus-native
+            vendor/freej2me_plus_libretro.so
+      - task: device:sh
+        vars:
+          IMAGE: rust:1-bullseye
+          CMD: >-
+            apt-get update && apt-get install -y --no-install-recommends fontconfig;
+            sh cores/freej2me_plus/native-fonts.sh target-device/freej2me-font-libs
+      - task: device:sh
+        vars:
+          IMAGE: eclipse-temurin:21-jdk
+          CMD: >-
+            sh cores/freej2me_plus/runtime.sh vendor/freej2me_plus-lr.jar
+            target-device/freej2me_plus-runtime vendor/freej2me_plus_runtime_linux-arm64.tar.gz
+            target-device/freej2me-font-libs
+      - file vendor/freej2me_plus_libretro.so | grep -q aarch64
+      - >-
+        ! objdump -T vendor/freej2me_plus_libretro.so |
+        grep -Eq 'GLIBC_2\.(3[2-9]|[4-9][0-9])'
+
+  core:freej2me-plus:update:
+    desc: Refetch and rebuild FreeJ2ME-Plus for the device
+    cmds:
+      - rm -f vendor/freej2me_plus_libretro.so vendor/freej2me_plus_libretro.so.meta vendor/freej2me_plus-lr.jar vendor/freej2me_plus_runtime_linux-arm64.tar.gz vendor/freej2me_plus-src.tar.gz vendor/freej2me_plus-src.sha
+      - task: core:freej2me-plus
+
   core:vircon32:
     desc: Build the aarch64 Linux Vircon32 core with OpenGL ES 2
     status:
@@ -1185,11 +1242,11 @@ tasks:
 
   cores:device:
     desc: Build every ARM64 core retained by the project, including cores omitted from H700
-    deps: [core:device, core:gpsp, core:picodrive, core:mesen, core:stella2023, core:atari800, core:prosystem, core:handy, core:hatari, core:quasi88, core:np2kai, core:beetle-vb, core:pokemini, core:gw, core:arduous, core:beetle-wswan, core:sameduck, core:potator, core:tic80, core:jaxe, core:retro8, core:squirreljme, core:vircon32, core:uzem, core:beetle-ngp, core:beetle-pce-fast, core:beetle-supergrafx, core:beetle-pcfx, core:fbneo, core:mame2003-plus, core:gp32emu, core:vecx, core:puae, core:snes9x, core:supafaust, core:pcsx]
+    deps: [core:device, core:gpsp, core:picodrive, core:mesen, core:stella2023, core:atari800, core:prosystem, core:handy, core:hatari, core:quasi88, core:np2kai, core:beetle-vb, core:pokemini, core:gw, core:arduous, core:beetle-wswan, core:sameduck, core:potator, core:tic80, core:jaxe, core:retro8, core:squirreljme, core:freej2me-plus, core:vircon32, core:uzem, core:beetle-ngp, core:beetle-pce-fast, core:beetle-supergrafx, core:beetle-pcfx, core:fbneo, core:mame2003-plus, core:gp32emu, core:vecx, core:puae, core:snes9x, core:supafaust, core:pcsx]
 
   cores:h700:
     desc: Build only the cores shipped in the H700 profile
-    deps: [core:device, core:gpsp, core:picodrive, core:mesen, core:stella2023, core:atari800, core:prosystem, core:handy, core:hatari, core:beetle-vb, core:pokemini, core:gw, core:arduous, core:beetle-wswan, core:sameduck, core:potator, core:tic80, core:jaxe, core:retro8, core:squirreljme, core:vircon32, core:uzem, core:beetle-ngp, core:beetle-pce-fast, core:beetle-supergrafx, core:fbneo, core:mame2003-plus, core:vecx, core:snes9x, core:supafaust, core:pcsx]
+    deps: [core:device, core:gpsp, core:picodrive, core:mesen, core:stella2023, core:atari800, core:prosystem, core:handy, core:hatari, core:beetle-vb, core:pokemini, core:gw, core:arduous, core:beetle-wswan, core:sameduck, core:potator, core:tic80, core:jaxe, core:retro8, core:uzem, core:beetle-ngp, core:beetle-pce-fast, core:beetle-supergrafx, core:fbneo, core:mame2003-plus, core:vecx, core:snes9x, core:supafaust, core:pcsx]
 
   device:sh:
     desc: >-
@@ -1259,7 +1316,6 @@ tasks:
           cp "vendor/${lib}_libretro.so" {{.OUT}}/System/
         done
       - cp -r licenses {{.OUT}}/System/licenses
-      - cp vendor/squirreljme-0.3.0-fast.jar {{.OUT}}/BIOS/
       - |
         set -euo pipefail
         sha="$(cat vendor/gpsp-src.sha)"

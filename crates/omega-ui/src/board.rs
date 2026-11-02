@@ -692,6 +692,7 @@ pub fn sockets_of(core: Core) -> Sockets {
         | Core::Tic80
         | Core::Jaxe
         | Core::Retro8
+        | Core::FreeJ2mePlus
         | Core::SquirrelJme
         | Core::Vircon32
         | Core::Uzem

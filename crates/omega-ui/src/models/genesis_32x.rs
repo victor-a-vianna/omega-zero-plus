@@ -19,7 +19,8 @@ pub const W: u32 = 360;
 pub const H: u32 = 228;
 
 const UNITS: (f32, f32) = (500.0, 316.0);
-const LABEL: (u32, u32, u32, u32) = (52, 16, 256, 105);
+// A quarter taller than the original panel, kept vertically centred on the shell.
+const LABEL: (u32, u32, u32, u32) = (52, 3, 256, 131);
 const LABEL_ROUND: u32 = 7;
 const RIM: u32 = 7;
 

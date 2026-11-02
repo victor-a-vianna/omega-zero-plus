@@ -99,7 +99,7 @@ fn stand_in(core: Core) -> MockCore {
         Core::Tic80 => MockCore::sized(240, 136),
         Core::Retro8 => MockCore::sized(128, 128),
         Core::Jaxe => MockCore::sized(128, 64),
-        Core::SquirrelJme => MockCore::sized(240, 320),
+        Core::FreeJ2mePlus | Core::SquirrelJme => MockCore::sized(240, 320),
         Core::Vircon32 => MockCore::sized(640, 360),
         Core::Uzem => MockCore::sized(240, 224),
         Core::Hypseus => MockCore::sized(640, 480),
@@ -215,6 +215,7 @@ pub fn colour_option(which: Core, on: bool) -> Option<(&'static str, &'static st
         | Core::Tic80
         | Core::Retro8
         | Core::Jaxe
+        | Core::FreeJ2mePlus
         | Core::SquirrelJme
         | Core::Vircon32
         | Core::Uzem
@@ -338,6 +339,11 @@ pub fn core_options(
         Core::Tic80 => {}
         Core::Retro8 => {}
         Core::Jaxe => {}
+        Core::FreeJ2mePlus => {
+            put("freej2me_resolution", "240x320");
+            put("freej2me_phone", "Default");
+            put("freej2me_fps", "Auto");
+        }
         Core::SquirrelJme => {}
         Core::Vircon32 => put("vircon32_enable_frameskip", "Enabled"),
         Core::Uzem => {}
@@ -445,6 +451,7 @@ mod tests {
                 Core::BeetleWswan => "wswan_".to_string(),
                 Core::BeetlePcFx => "pcfx_".to_string(),
                 Core::FbNeo => "fbneo-".to_string(),
+                Core::FreeJ2mePlus => "freej2me_".to_string(),
                 _ => format!("{}_", which.as_str()),
             };
             for key in keys(which) {

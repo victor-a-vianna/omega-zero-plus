@@ -4,7 +4,7 @@ use omega_store::Platform;
 
 /// Platforms retained in the project but omitted from the H700 product profile because their
 /// current cores are unstable or too slow on that SoC.
-pub const H700_EXCLUDED: [Platform; 8] = [
+pub const H700_EXCLUDED: [Platform; 10] = [
     Platform::Cd32,
     Platform::Gp32,
     Platform::Pc9800,
@@ -13,6 +13,8 @@ pub const H700_EXCLUDED: [Platform; 8] = [
     Platform::AtariJaguar,
     Platform::AtariJaguarCd,
     Platform::Daphne,
+    Platform::Vircon32,
+    Platform::Java,
 ];
 
 pub fn platform_enabled(platform: Platform) -> bool {

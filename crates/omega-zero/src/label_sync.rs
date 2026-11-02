@@ -33,6 +33,7 @@ fn is_disc_platform(platform: Platform) -> bool {
 const API: &str = "https://api.screenscraper.fr/api2";
 pub const SOFTNAME: &str = "omega-zero";
 pub const ACCOUNT_FILE: &str = "Config/screenscraper.conf";
+pub const TITLES_DIR: &str = "Metadata/Titles";
 
 /// The widest label scan worth fetching for `platform`: half as wide again as its widest face's
 /// label, never drawn bigger than a texel to a pixel, which leaves room for a scan of a wider
@@ -170,8 +171,11 @@ impl Want {
 pub fn wants<'a>(root: Option<&Path>, carts: impl IntoIterator<Item = &'a Cart>) -> Vec<Want> {
     let mut out = Vec::new();
     for cart in carts {
+        let title_missing = root
+            .map(|root| !title_path(root, cart.platform, &cart.stem).is_file())
+            .unwrap_or(false);
         if !is_disc_platform(cart.platform) {
-            if cart.label.is_none() {
+            if cart.label.is_none() || title_missing {
                 out.push(Want::cart(cart));
             }
             continue;
@@ -182,7 +186,7 @@ pub fn wants<'a>(root: Option<&Path>, carts: impl IntoIterator<Item = &'a Cart>)
                 Some(root) => ps1::disc_label_for(root, cart.platform, disc).is_file(),
                 None => cart.label.is_some(),
             };
-            if own && (i > 0 || cart.label.is_some()) {
+            if own && (i > 0 || cart.label.is_some()) && !(i == 0 && title_missing) {
                 continue;
             }
             out.push(Want {
@@ -205,6 +209,21 @@ pub fn label_path(root: &Path, platform: Platform, stem: &str) -> PathBuf {
     root.join("Labels")
         .join(platform.dir_name())
         .join(format!("{stem}.png"))
+}
+
+/// Where ScreenScraper's title is kept, separately from the ROM name and label image.
+pub fn title_path(root: &Path, platform: Platform, stem: &str) -> PathBuf {
+    root.join(TITLES_DIR)
+        .join(platform.dir_name())
+        .join(format!("{stem}.txt"))
+}
+
+/// A scraped display title, trimmed and single-line. An absent or empty file means fallback to
+/// the ROM's readable file name.
+pub fn read_title(root: &Path, platform: Platform, stem: &str) -> Option<String> {
+    let text = std::fs::read_to_string(title_path(root, platform, stem)).ok()?;
+    let title = text.split_whitespace().collect::<Vec<_>>().join(" ");
+    (!title.is_empty()).then_some(title)
 }
 
 /// ScreenScraper's number for each system.
@@ -641,8 +660,15 @@ pub struct Media {
 #[derive(Clone, PartialEq, Eq, Debug)]
 pub struct Found {
     pub medias: Vec<Media>,
+    pub names: Vec<GameName>,
     /// Which disc of its game the file asked about is, from 1, when the reply says.
     pub disc: Option<u64>,
+}
+
+#[derive(Clone, PartialEq, Eq, Debug)]
+pub struct GameName {
+    pub region: String,
+    pub text: String,
 }
 
 /// Whose credentials ScreenScraper turned away.
@@ -734,12 +760,41 @@ pub fn read_reply(status: u16, body: &[u8]) -> (Reply, Option<Quota>) {
             })
         })
         .collect();
+    let names = game
+        .get("noms")
+        .map(Json::list)
+        .unwrap_or_default()
+        .iter()
+        .filter_map(|name| {
+            let text = name
+                .get("text")?
+                .text()?
+                .split_whitespace()
+                .collect::<Vec<_>>()
+                .join(" ");
+            (!text.is_empty()).then(|| GameName {
+                region: name
+                    .get("region")
+                    .and_then(Json::text)
+                    .unwrap_or_default()
+                    .to_string(),
+                text,
+            })
+        })
+        .collect();
     let disc = game
         .get("rom")
         .and_then(|r| r.get("romnumsupport"))
         .and_then(Json::count)
         .filter(|n| *n >= 1);
-    (Reply::Game(Found { medias, disc }), quota)
+    (
+        Reply::Game(Found {
+            medias,
+            names,
+            disc,
+        }),
+        quota,
+    )
 }
 
 /// The scan of the cart's own label, from the first of `regions` that has one, else from
@@ -791,6 +846,16 @@ pub fn pick_media<'a>(found: &'a Found, want: &Want) -> Option<&'a Media> {
     label_kinds(want.platform)
         .iter()
         .find_map(|kind| pick(&found.medias, |m| m.kind == *kind && own_disc(m), &regions))
+}
+
+/// The game's display name in the ROM's preferred region, falling back to any name returned.
+pub fn pick_title<'a>(found: &'a Found, want: &Want) -> Option<&'a str> {
+    let regions = label_regions(want);
+    regions
+        .iter()
+        .find_map(|region| found.names.iter().find(|name| name.region == *region))
+        .or_else(|| found.names.first())
+        .map(|name| name.text.as_str())
 }
 
 /// How a sync went.
@@ -887,6 +952,13 @@ fn keep(path: &Path, png: &[u8]) -> std::io::Result<()> {
     omega_store::atomic_write(path, png)
 }
 
+fn keep_title(path: &Path, title: &str) -> std::io::Result<()> {
+    if let Some(dir) = path.parent() {
+        std::fs::create_dir_all(dir)?;
+    }
+    omega_store::atomic_write(path, title.as_bytes())
+}
+
 /// What ScreenScraper says to one request, asked once more after a pause when it is busy;
 /// nothing when it cannot be reached.
 fn ask(
@@ -958,6 +1030,9 @@ pub fn sync(
         }
         match asked {
             Some(Reply::Game(found)) => {
+                let named = pick_title(&found, want).is_some_and(|title| {
+                    keep_title(&title_path(root, want.platform, &want.stem), title).is_ok()
+                });
                 let scan = pick_media(&found, want)
                     .and_then(|m| http.get(&media_url(&m.url, want.platform)))
                     .filter(|(status, body)| *status == 200 && is_png(body));
@@ -968,12 +1043,14 @@ pub fn sync(
                 });
                 if kept {
                     tally.saved += 1;
+                } else {
+                    tally.bare += 1;
+                }
+                if kept || named {
                     news(LabelNews::Saved {
                         platform: want.platform,
                         stem: want.stem.clone(),
                     });
-                } else {
-                    tally.bare += 1;
                 }
             }
             Some(Reply::NotFound | Reply::Other(_) | Reply::Busy) | None => tally.unknown += 1,
