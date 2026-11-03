@@ -1,18 +1,16 @@
 <h1 align="center"><img src="assets/logo/omega-zero-logo@2x.png" width="420" alt="omega-zero"></h1>
 
-<p align="center">A Game Boy-centric frontend for Anbernic H700 handhelds running
-<a href="https://github.com/pvaibhav/BaseOS">BaseOS</a>. It plays GBA, GBC and GB games, and Genesis,
-32X, Sega CD, SNES and PlayStation games too, on a shelf of cartridges and discs that go down into the handheld when
-you play them.</p>
+<p align="center">A lightweight, shelf-based emulation frontend for Anbernic H700 handhelds
+running <a href="https://github.com/pvaibhav/BaseOS">BaseOS</a>. Games are presented as animated
+cartridges, discs, floppy disks, memory cards and chips that move into the handheld when launched.</p>
 
 <p align="center">
-<a href="https://oauramos.github.io/omega-zero/"><b>Site</b></a> ·
-<a href="https://github.com/oauramos/omega-zero/releases/latest"><b>Download</b></a> ·
-<a href="https://github.com/oauramos/omega-zero/wiki"><b>Wiki</b></a> ·
+<a href="#quick-start"><b>Install</b></a> ·
+<a href="#platform-and-core-matrix"><b>Platforms</b></a> ·
 <a href="CHANGELOG.md"><b>Changelog</b></a>
 </p>
 
-<img src="site/media/readme/supported-devices.png" width="760" alt="">
+<img src="assets/readme/supported-devices.png" width="760" alt="">
 
 ## Supported devices
 
@@ -29,10 +27,9 @@ for its panel.
 | RG CubeXX | 720x720 | Experimental |
 | RG28XX | 480x640, turned | Experimental |
 
-Own an untested one? A [device report](https://github.com/oauramos/omega-zero/wiki/Device-Reports)
-is the most useful thing you can send.
+Hardware reports for the untested models are welcome through the repository's issue tracker.
 
-<img src="site/media/readme/highlights.png" width="760" alt="">
+<img src="assets/readme/highlights.png" width="760" alt="">
 
 ## Highlights
 
@@ -43,10 +40,9 @@ is the most useful thing you can send.
   the screen into the handheld, and the game comes on like a tube TV. At power-on, an opening in the
   style of Mega Man X5's boot terminal tells you the handheld's memory, chip and battery, then
   fades into the shelf.
-- Seven cores: mGBA and gpSP for the GBA, Mesen for NES/Famicom, PicoDrive for Genesis, 32X and Sega CD, and Snes9x and Supafaust for the SNES, chosen per cart;
-  mGBA for the Game Boys; PCSX ReARMed for the PlayStation, with a BIOS of its own built in. GBA
-  fills a 640x480 screen and the PlayStation fills it at 4:3; the SNES is drawn at twice its size,
-  and Game Boy stays at 3x.
+- A broad set of pinned emulation cores covering 55 platform integrations. The H700 release packages
+  45 integrations selected for that SoC; slower or unstable systems remain in source for future
+  hardware profiles. The complete platform, core, content and BIOS matrix is documented below.
 - A PlayStation game on several discs is one game: DISC, on SELECT+MENU in a game, puts another
   disc in, and the game resumes with the disc that was in the drive.
 - Resume on boot, save states with a switcher, rewind (not on the PlayStation), fast-forward,
@@ -66,63 +62,55 @@ is the most useful thing you can send.
   (Night is grey, Amber is Mega Man Zero's own), and the bottom bar's font, Bold or Thin.
 - A pixel font, a top bar with the radios, clock and battery, and a bottom bar with the buttons.
 
-<img src="site/media/readme/screens.png" width="760" alt="">
+<img src="assets/readme/screens.png" width="760" alt="">
 
 ## Screens
 
 <p align="center">
-<a href="https://oauramos.github.io/omega-zero/"><img src="site/media/loops/lid.webp" width="640" alt="An RG35XX SP drawn in 3D, its lid open on the shelf of carts, Emerald in the middle"></a>
-<br><sub>The RG35XX SP in 3D, drawn the way a PlayStation drew it, with omega-zero's own screens on it: the loops play on the <a href="https://oauramos.github.io/omega-zero/">site</a></sub>
+<img src="assets/readme/lid.webp" width="640" alt="An RG35XX SP drawn in 3D, its lid open on the shelf of carts, Emerald in the middle">
+<br><sub>The RG35XX SP in 3D, drawn the way a PlayStation drew it, with omega-zero's own screens on it</sub>
 </p>
 
 <p align="center">
-<img src="site/media/settings.png" width="380" alt="Settings in Night: CONFIGS (Fast Forward 6X, Fast Forward Sound, Colour Correction, Rumble, Labels) and GENERAL (Date and Time, Network, Bluetooth, Theme, About)">
-<img src="site/media/amber.png" width="380" alt="The same Settings in Amber, Mega Man Zero's own orange and brown">
+<img src="assets/readme/settings.png" width="380" alt="Settings in Night: CONFIGS (Fast Forward 6X, Fast Forward Sound, Colour Correction, Rumble, Labels) and GENERAL (Date and Time, Network, Bluetooth, Theme, About)">
+<img src="assets/readme/amber.png" width="380" alt="The same Settings in Amber, Mega Man Zero's own orange and brown">
 <br><sub>Settings, in Night and in Amber</sub>
 </p>
 
 <p align="center">
-<img src="site/media/network.png" width="380" alt="Network: Wi-Fi, Network Time and SSH on, and the networks around with their padlocks, signal and CONNECTED">
-<img src="site/media/bluetooth.png" width="380" alt="Bluetooth: the radio on, and a gamepad connected, headphones paired, a keyboard and a smart band">
+<img src="assets/readme/network.png" width="380" alt="Network: Wi-Fi, Network Time and SSH on, and the networks around with their padlocks, signal and CONNECTED">
+<img src="assets/readme/bluetooth.png" width="380" alt="Bluetooth: the radio on, and a gamepad connected, headphones paired, a keyboard and a smart band">
 <br><sub>Network and Bluetooth</sub>
 </p>
 
 <p align="center">
-<img src="site/media/theme.png" width="380" alt="Theme: Background Plates, Motion Moving, Colour Night and Font Bold, over the plates pattern">
-<img src="site/media/controls.png" width="380" alt="CONTROLS: what every button does on the shelf and in a game, on one panel">
+<img src="assets/readme/theme.png" width="380" alt="Theme: Background Plates, Motion Moving, Colour Night and Font Bold, over the plates pattern">
+<img src="assets/readme/controls.png" width="380" alt="CONTROLS: what every button does on the shelf and in a game, on one panel">
 <br><sub>Theme, and CONTROLS on a tap of SELECT</sub>
 </p>
 
-<img src="site/media/readme/quick-start.png" width="760" alt="">
+<img src="assets/readme/quick-start.png" width="760" alt="">
 
 ## Quick start
 
-1. Write the [BaseOS image](https://github.com/pvaibhav/BaseOS/releases/latest) for your model to a
-   microSD card, put it in **SD1** and boot once.
-2. Copy the contents of the [latest release](https://github.com/oauramos/omega-zero/releases/latest)
-   to the root of that card.
-3. Put your games in `Games/GBA`, `Games/GB`, `Games/GBC`, `Games/GENESIS`, `Games/32X`,
-   `Games/SEGACD`, `Games/NES`, `Games/SNES` and `Games/PS1`. NES accepts `.nes`, `.unf` and
-   `.unif`; Genesis accepts `.md`, `.gen`, `.smd` and
-   `.bin`; 32X accepts `.32x` and `.bin`; Sega CD accepts `.cue`, `.chd` and `.m3u`. Put the
-   matching Sega CD BIOS files in `BIOS/` as `bios_CD_U.bin`, `bios_CD_E.bin` and
-   `bios_CD_J.bin` for USA, Europe and Japan respectively. A
-   PlayStation game is a `.cue` with its `.bin`, a `.chd`, a `.pbp` or an `.m3u`; a real
-   PlayStation BIOS, such as `scph5501.bin`, is used from `BIOS/` when it is there.
-4. Boot. On the shelf, START opens Settings and a tap of SELECT shows every button.
+1. Write the BaseOS image for your H700 model to a microSD card, put it in **SD1** and boot once
+   so BaseOS can prepare the storage.
+2. Extract the H700 package from this repository's `release/` directory and copy its contents to
+   the root of the BaseOS card. Keep the package's directory structure intact.
+3. Put games in the corresponding `Games/<PLATFORM>` directories. The frontend creates the
+   supported H700 directories automatically; accepted extensions are listed in the matrix below.
+4. Add any required firmware to `BIOS/` using the exact, case-sensitive filenames in the BIOS table.
+5. Boot. On the shelf, START opens Settings and a tap of SELECT shows every button.
 
-Two cards and updating are in the site's
-[install guide](https://oauramos.github.io/omega-zero/#install); controls and everything else are
-in the [wiki](https://github.com/oauramos/omega-zero/wiki).
+## Platform and core matrix
 
-## Extended platform enhancement
+This enhanced edition retains the original shelf experience while expanding it to 55 platform
+integrations and their pinned cores or runtimes. Platform presence means that the frontend,
+directory layout, media model, scanner and launch path are integrated. Hardware compatibility can
+still vary by game, core and device. See **H700 build profile** for the ten integrations retained
+in source but intentionally excluded from the current H700 package.
 
-> This section documents the extended workspace build. It is an enhancement over the original
-> omega-zero project; the original description, installation notes, credits and licence remain
-> intact above and below. Platform presence means the frontend, folders, visual model and launch
-> path are integrated. Hardware compatibility can still vary by game, core and H700 model.
-
-The enhancement keeps the cartridge-and-disc presentation and adds dedicated monochrome models
+The frontend keeps the cartridge-and-disc presentation and adds dedicated monochrome models
 for the new physical media. On first start, omega-zero creates the matching directory under
 `Games/` (and matching `Labels/`, `Overlays/`, `Saves/` and `States/` directories).
 
@@ -131,7 +119,7 @@ ScreenScraper also stores the matched game name under
 back to the normalized ROM filename when it is absent; ROM files, save paths and state paths are
 never renamed.
 
-### Integrated platforms
+### Integrated platforms and cores
 
 | Platform | Games directory | Core / runtime | Accepted content |
 |---|---|---|---|
@@ -214,10 +202,10 @@ are case-sensitive. Put user-provided files under `BIOS/` exactly as shown.
 | PlayStation | Optional | A compatible BIOS such as `scph5501.bin`; PCSX-ReARMed can use its built-in HLE BIOS |
 | Java ME | Required by profiles that enable Java ME | `freej2me_plus-lr.jar` and `freej2me_plus_runtime_linux-arm64.tar.gz` |
 
-### Enhancement credits
+### Core credits
 
-The original omega-zero and slot credits remain the project foundation. Additional emulation in
-this enhancement is provided by the respective upstream projects: [Stella 2023](https://github.com/libretro/stella2023),
+The original omega-zero and slot credits remain the project foundation. Extended emulation is
+provided by the respective upstream projects: [Stella 2023](https://github.com/libretro/stella2023),
 [Atari800](https://github.com/libretro/libretro-atari800), [ProSystem](https://github.com/libretro/prosystem-libretro),
 [Handy](https://github.com/libretro/libretro-handy), [Hatari](https://github.com/libretro/hatari),
 [QUASI88](https://github.com/libretro/quasi88-libretro), [Neko Project II kai](https://github.com/libretro/NP2kai),
@@ -238,11 +226,12 @@ BigPEmu is proprietary and is not relicensed by this project. Its use and redist
 subject to its own terms. Every open-source core built for the device ships with its pinned source
 archive and build metadata under `System/licenses/`.
 
-<img src="site/media/readme/credits.png" width="760" alt="">
+<img src="assets/readme/credits.png" width="760" alt="">
 
 ## Credits and licence
 
-omega-zero is made by **Otávio ([@oauramos](https://github.com/oauramos))**.
+The original omega-zero frontend was created by **Otávio (oauramos)**. This repository extends
+that work with additional platforms, cores, media assets, H700 packaging and runtime fixes.
 
 - Based on [slot](https://github.com/BrandonKowalski/slot) by
   [Brandon T. Kowalski](https://github.com/BrandonKowalski) (GPL-3.0). The code that hosts the
@@ -262,9 +251,8 @@ omega-zero is made by **Otávio ([@oauramos](https://github.com/oauramos))**.
   account.
 
 omega-zero is licensed under the GPL-3.0-or-later; see [LICENSE](LICENSE). It began in October
-2026 as a modified version of slot. It is written with Claude, and reviewed and tested by its
-maintainer. The site and these pictures are drawn with its
-UI kit, [`assets/ui`](assets/ui).
+2026 as a modified version of slot. The documentation pictures are drawn with its UI kit,
+[`assets/ui`](assets/ui).
 
 Game Boy, Game Boy Color, Game Boy Advance, Super Nintendo Entertainment System and Super Famicom
 are trademarks of Nintendo. Genesis, 32X and Sega CD are trademarks of Sega. PlayStation is a trademark of Sony Interactive Entertainment. Anbernic

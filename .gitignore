@@ -78,6 +78,8 @@ Thumbs.db
 
 # Local-only assistant and documentation workspaces.
 /docs/
+/site/
+/.github/
 /CLAUDE.md
 /.ralph/
 /.superpowers/
